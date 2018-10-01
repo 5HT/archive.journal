@@ -1,0 +1,61 @@
+Аксиоматика множеств
+
+Аксиоматика GST:
+1. Extensionality
+2. Specification Schema
+3. Adjunction
+
+Теория TST/NF:
+1. Extensionality
+2. Specification Schema
+
+Теория NFU:
+1. Extensionality
+2. Specification Schema
+3. Atoms
+
+Аксиоматика ST:
+1. Extensionality
+2. Adjunction
+3. Empty Set
+
+Аксиоматика Z содержит 7 аксиом:
+1. Extensionality
+2. Union
+3. Pairing
+4. Infinity
+5. Power Set
+6. Specification Schema (Separation, Comprehension)
+7. Choice
+
+Аксиоматика ZF:
+1. Extensionality
+2. Union
+3. Infinity
+4. Empty Set
+5. Power Set
+6. Regularity (Foundation)
+7. Replacement Schema
+
+Все движения здесь вокруг последней аксиомы выбора. Если ее заменить на противоположную, система будет оставаться непротиворечивой. Существуют варианты замены аксиомы выбора:
+1. WO (гипотеза слабее чем AC)
+2. Opposite to AC (противоположная к AC)
+3. GHC (более сильная чем AC)
+
+Континуум гипотеза:
+1. Constructiblility
+2. Martin’s (противоположная аксиома к Constructiblility)
+
+Теория NGB/MK:
+1. Extensionality
+2. Foundation (Classes)
+3. Pairing
+4. Union
+5. Power Set
+6. Infinity
+7. Limitation of Size
+8. Class Comprehension Schema (с конечным количество классов)
+
+Замечания: 1. Regularity, Pairing, Separation Schema и Replacement Schema выводятся одна их другой. 2. В аксиоматике ZF аксиомы Separation и Pairing выводимы из Replacement Schema. 3. Теорема Adjunction в Z в теориях ST, GST принимается за аксиому. 4. Empty Set выводима из Separation Schema и других аксиом Z. 5. Replacement Schema требует начилися Empty Set, выводимого в Separation Schema теориях. 6. MK allows the bound variables in the schematic formula appearing in the axiom schema of Class Comprehension to range over proper classes as well as sets. NBG restricts these bound variables to sets alone.
+TAGS (EDIT) modeling
+
