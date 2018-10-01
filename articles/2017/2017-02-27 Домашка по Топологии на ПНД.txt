@@ -1,0 +1,39 @@
+Домашка по Топологии на ПНД
+
+Lemma. Consider commutative triangle:
+
+    { f = g . p,
+      f: X -> Z,
+      p: X -> Y,
+      g: Y -> Z } where p: Quotient, g: Surjective.
+
+Then f: Continuous <=> g: Continuous.
+
+
+Record quot_class_of (T Q : Type) := QuotClass {
+       repr : Q -> T;
+       pi : T -> Q;
+       reprK : forall x : Q, pi (repr x) = x }.
+
+Record quotType (T : Type) := QuotType {
+       quot_sort :> Type;
+       quot_class : quot_class_of T quot_sort }
+
+Record type_quotient (T : Type)
+                     (equiv : T -> T -> Prop)
+                     (Hequiv : equivalence equiv) := {
+       quo :> Type;
+       class :> T -> quo;
+       quo_comp : forall (x y : T), equiv x y -> class x = class y;
+       quo_comp_rev : forall (x y : T), class x = class y -> equiv x y;
+       quo_lift : forall (R : Type) (f : T -> R), compatible equiv f -> quo -> R;
+       quo_lift_prop : forall (R : Type) (f : T -> R) (Hf : compatible equiv f),
+                       forall (x : T), (quot_lift Hf \o class) x = f x;
+       quo_surj : forall (c : quo), exists x : T, c = class x
+}.
+
+
+____________
+[1]. http://ai2-s2-pdfs.s3.amazonaws.com/1704/7a639180e384cea1f183cf9082e7e13f021a.pdf
+TAGS (EDIT) cs
+

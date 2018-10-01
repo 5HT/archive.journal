@@ -1,0 +1,49 @@
+Statically typed LLVM-based modern functional language compiler
+
+ main -> repeat 0 1000000 (seq 0 1000).
+
+repeat m m x -> x;
+repeat n m x -> repeat (n+1) m (rev x).
+
+seq n m -> seq n m [].
+
+seq n n acc -> acc;
+seq n m acc -> seq n (m-1) [m|acc].
+
+rev xs -> rev xs [].
+
+rev [] acc -> acc;
+rev [x|xs] acc -> rev xs [x|acc].
+
+
+      1) Erlang version, timer:tc(heap,main,[]) — 13.040s
+      2) L version[1] (llc/gcc), time ./a.out      — 3.456s
+
+         GC: heap size: 4096K
+         GC: runs: 3846
+         GC: reclaimed: 15624375K
+
+Type Inference: 
+
+      $ lc -t heap.l
+
+zf7_3 = $67 -> int -> $67 -> $67.
+tf8_2 = nil + [int|$67] -> $67 -> $67.
+rev2 = $67 -> $67 -> $67.
+rev1 = $67 -> $67.
+gf4_3 = int -> int -> $67 -> $67.
+seq3 = int -> int -> $67 -> $67.
+seq2 = int -> int -> $67.
+gf3_3 = int -> int -> $67 -> $67.
+repeat3 = int -> int -> $67 -> $67.
+main0 = $67.
+$67 = nil + [int|$67].
+
+
+
+New, Better Erlang is coming...
+
+________________
+[1]. LLVM Output: https://gist.github.com/5HT/401a348636af9acd3a16
+TAGS (EDIT) cs, erlang, l
+

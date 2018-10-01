@@ -1,0 +1,25 @@
+Дефорестизационные Интерпретаторы O2
+
+Тут NPONECCOP говорит, что наши JIT интерпретаторы говно, вручную мы аллоцируем регистры или через LLVM калейдоскоп, и что надо делать интерпретаторы с реврайт рулами которые делают фьюжин на стадии прекомпиляции. Такие интерпретаторы надо выделить в отдельный класс О2, например, а О класс пускай включает в себя все нормальные интерпретаторы, включая CPS и JIT.
+
+Примеры элиминаторов или правила дефостеризации для стримов и листов:
+
+stream (unstream s) = s
+foldr k z (build g) = g k z
+
+where 
+
+foldr f z [] = z
+foldr f z (x:xs) = f x (foldr f z xs)
+build g (:) []
+stream :: List -> Stream
+unstream :: Stream -> List
+
+Приложения в промышленности: векторизация, SIMD конвеерация
+
+__________________
+[1]. https://github.com/flypy/flypy/blob/master/docs/source/fusion.rst#id19
+[2]. http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.36.5748&rep=rep1&type=pdf
+[3]. http://citeseer.ist.psu.edu/viewdoc/download;jsessionid=CF2161C30B69C13CB86B4CAB32E6F607?doi=10.1.1.421.8551&rep=rep1&type=pdf
+TAGS (EDIT) cs
+

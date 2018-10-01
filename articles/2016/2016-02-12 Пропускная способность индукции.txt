@@ -1,0 +1,79 @@
+Пропускная способность индукции
+
+NAMO LAMBDA GARBHA
+
+Тут Валкин меряет как раз то, что и надо мерять и выставлять в пасспорт на компиляторах. Вот давайте скажем померяем пропускную способность индукции, закодированной по Черчу-Боему-Беррардуччи на виртуальной машине Erlang. Для этого возьмем Exe язык и напишем на нем обычный список:
+
+    data list: (A:*) → * :=
+         (nil: () → list A)
+         (cons: A → list A → list A)
+
+
+этот список компилируется как известно в три терма "List/Type", "List/Nil" и "List/Cons".
+
+  λ (a: *)
+→ ∀ (List: *)
+→ ∀ (Cons:
+    ∀ (head: a)
+  → ∀ (tail: List)
+  → List)
+→ ∀ (Nil: List)
+→ List
+
+  λ (a: *)
+→ λ (head: a)
+→ λ (tail:
+    ∀ (List: *)
+  → ∀ (Cons:
+      ∀ (head: a)
+    → ∀ (tail: List)
+    → List)
+  → ∀ (Nil: List)
+  → List)
+→ λ (List: *)
+→ λ (Cons:
+    ∀ (head: a)
+  → ∀ (tail: List)
+  → List)
+→ λ (Nil: List)
+→ Cons head (tail List Cons Nil)
+
+  λ (a: *)
+→ λ (List: *)
+→ λ (Cons:
+    ∀ (head: a)
+  → ∀ (tail: List)
+    → List)
+→ λ (Nil: List)
+→ Nil
+
+
+Теперь скомпилируем это в Эрланг, удалив немножко информации о типах — 1 в 1 кодирование (хелперы вверху):
+
+ap(Fun,Args)     -> lists:foldl(fun(X,Acc) -> Acc(X) end,Fun,Args).
+
+unlist (L)       -> ap(L,[kons(),[]]).
+list  ([])       -> nil();
+list  ([A|List]) -> fun (Cons) -> fun (Nil) ->
+                    ap(Cons,[A,ap(list(List),[Cons,Nil])]) end end.
+
+list_() -> [{X,?MODULE:X()}||X<-[list,cons,nil]].
+list () ->            fun (List) -> fun (Cons) -> fun (Nil) -> List end end end.
+nil  () ->                          fun (Cons) -> fun (Nil) -> Nil end end.
+cons () -> fun (A) -> fun (List) -> fun (Cons) -> fun (Nil) -> ap(Cons,[A,ap(List,[Cons,Nil])]) end end end end.
+
+
+Микробенчмарки:
+
+
+L = lists:seq(1,1000000),
+io:format("Pack/Unpack 100 000 Inductive List: ~p~n",
+     [{element(1,timer:tc(fun () ->unlist(list(L)) end)),'_'}]),
+
+> c(ch), ch:main().
+> Pack/Unpack 1 000 000 Inductive List: {1107583,'_'}
+
+
+В пасспорт: roll/unroll идуктивного списка из 1 млн элементов ~ 1 секунда. Средний и понятный результат.
+TAGS (EDIT) cs, erlang, exe, om
+

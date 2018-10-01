@@ -1,0 +1,12 @@
+Retrofitting Linear Types
+
+Когда я сказал недавно известному киевскому хаскелисту, который докладывал на kievfprog, что системам типов Раста сложнее чем у Хаскеля, он гыгыгнул так призрительно, что наверно подумал про HKT (которое на самом деле реаилизуется даже в версии 1.0). Линейные типы — это другое лицо пи калкулуса.
+
+6.6 Ownership typing a` la Rust
+
+Rust [31] features ownership (aka uniqueness) types. But like the original formulation of linear logic, in Rust A stands for linear values, unrestricted values at type A are denoted !A, and duplication is explicit. Rust quite beautifully addresses the problem of being mindful about memory, resources, and latency. But this comes at a heavy price: Rust, as a programming language, is speci cally optimised for writing programs that are structured using the RAII pa ern8 (where resource lifetimes are tied directly or indirectly to stack allocated objects that are freed when the control ow exits the current lexical scope). Ordinary functional programs seldom t this particular resource acquisition pa ern so end up being second class citizens. For instance, tail-call optimization, crucial to the operational behaviour of many functional programs, is not usually sound. is is because resource liberation must be triggered when the tail call returns. Hask-LL aims to hit a di erent point in the design space where regular non-linear expressions are the norm yet gracefully scaling up to latency-sensitive and resource starved programs is still possible.
+
+Очень рад таким пейперам, мечтаю о полной и точной модели скедулера операционной системы, где ядра процессоров являются коиндуктивными процессами, а все программы — индуктивными протоколами. Может у хаскелистов получится нормальный API сделать для простых трех комбинаторов пи-калкулуса. Вот только как в Coq сделать так чтобы по spawn создавался и запускался отдельный CoFixpoint это все очень не просто. Хелоуворлдических статей на эту тему нет. В Агде кстати IO тоже сделано на коиндуктивных типах. Также как у меня в Co. Больше нигде коиндукции в IO нет. Катинг едж.
+____________
+[1] https://www.microsoft.com/en-us/research/wp-content/uploads/2017/03/haskell-linear-submitted.pdf
+TAGS (EDIT) cs

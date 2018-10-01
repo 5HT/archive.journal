@@ -1,0 +1,81 @@
+Coq.io
+
+$ brew install opam
+Warning: opam-1.2.2_2 already installed
+
+$ opam install coq
+
+=-=- Synchronising pinned packages =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+[NOTE] Package coq is already installed (current version is 8.6).
+
+$ opam repo add coq-released https://coq.inria.fr/opam/released
+
+$ opam install -j4 -v coq-io-system
+
+$ export PATH=~/.opam/system/bin:$PATH
+
+$ opam list | grep coq-io
+coq-io                  3.1.0  A library for effects in Coq.
+coq-io-hello-world      1.1.0  A Hello World program in Coq.
+coq-io-system           2.3.0  System effects for Coq.
+coq-io-system-ocaml     2.3.0  Extraction to OCaml of system effects.
+
+$ cat src/Main.v
+Require Import Coq.Lists.List.
+Require Import Io.All.
+Require Import Io.System.All.
+Require Import ListString.All.
+
+Import ListNotations.
+Import C.Notations.
+
+Definition run (argv : list LString.t)
+  : C.t System.effect unit :=
+  let! _ : unit * unit := join
+    (System.log (LString.s "Hello"))
+    (System.log (LString.s "World")) in
+  ret tt.
+
+Definition main := Extraction.launch run.
+Extraction "extraction/main" main.
+
+Module Run.
+  Import Io.Run.
+  Definition run_ok (argv : list LString.t)
+    : Run.t (run argv) tt.
+    apply (Let (Join
+      (Run.log_ok (LString.s "Hello"))
+      (Run.log_ok (LString.s "World")))).
+    apply Ret.
+  Defined.
+End Run.
+
+
+$ cat Make
+-R src repl
+
+src/Main.v
+
+$ coq_makefile -f Make -o Makefile
+
+$ make
+COQDEP src/Main.v
+COQC src/Main.v
+
+$ cat extraction/Makefile
+build:
+    ocamlbuild main.native -use-ocamlfind -package io-system
+clean:
+    ocamlbuild -clean
+
+$ cd extraction && make
+
+$ make
+ocamlbuild main.native -use-ocamlfind -package io-system
+Finished, 5 targets (0 cached) in 00:00:01.
+
+$ ./main.native
+World
+Hello
+TAGS (EDIT) coq, cs
+

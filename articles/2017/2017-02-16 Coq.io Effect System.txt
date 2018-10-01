@@ -1,0 +1,31 @@
+Coq.io Effect System
+
+Module Effect.
+  Record t := New {
+    command : Type;
+    answer : command -> Type }.
+End Effect.
+
+Inductive command : Type :=
+| Print (message : LString.t)
+| ReadLine.
+
+Definition answer (c : command) : Type :=
+  match c with
+  | Print _ => unit
+  | ReadLine => LString.t
+  end.
+
+Definition effect : Effect.t :=
+  Effect.New command answer.
+
+Module Computation.
+  Inductive t (E : Effect.t) : Type -> Type :=
+  | Ret : forall (A : Type) (x : A), t E A
+  | Call : forall (command : Effect.command E), t E (Effect.answer E command)
+  | Let : forall (A B : Type), t E A -> (A -> t E B) -> t E B
+  | Choose : forall (A : Type), t E A -> t E A -> t E A
+  | Join : forall (A B : Type), t E A -> t E B -> t E (A * B).
+End C.
+TAGS (EDIT) coq, cs
+

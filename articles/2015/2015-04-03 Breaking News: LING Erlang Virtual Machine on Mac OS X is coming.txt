@@ -1,0 +1,7 @@
+Breaking News: LING Erlang Virtual Machine on Mac OS X is coming
+
+As was reported today by @darkproger, we have reached Hello World on Yosemite:
+https://pbs.twimg.com/media/CBrZYr8WIAAp0-1.png:large
+
+TAGS (EDIT) erlang, ling, unikernels
+

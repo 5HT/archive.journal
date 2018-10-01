@@ -1,0 +1,15 @@
+Аккерман в L1
+
+Нашел машину на которой Аккерман на К ебет Растовский:
+
+test akkerman_k        ... bench:         635 ns/iter (+/- 73)
+test akkerman_rust     ... bench:       8,968 ns/iter (+/- 322)
+
+$ lscpu
+...
+Model name:            Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              256K
+L3 cache:              8192K
+TAGS (EDIT) kernel, o, rust

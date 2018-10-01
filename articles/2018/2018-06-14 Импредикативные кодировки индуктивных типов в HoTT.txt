@@ -1,0 +1,70 @@
+Импредикативные кодировки индуктивных типов в HoTT
+
+Все, кто хоть раз писал по настоящему на LISP знакомы с кодировкой Черча, в CoC она тоже есть завтиповая, мощная (Morte, Om — языки СoC). В ней NAT = (X:U) -> (X -> X) -> X -> X, где первый аргумент (X -> X) — это succ, а второй X — zero, и результат — во вселенной кодируемого типа Х. Даже если мы закодируем тип с параметром LIST (A: U) = (X:U) -> X -> (A -> X) -> X, и параметр A будет во вселенной 42, а X во вселенной 2, то кодировка всегда будет лендить терм в Х, т.е. во вторую вселенную, в не зависимости от A. Такая зависимость термов называется импредикативной и не работает, например в предикативной или предикативно-кумулятивной иерархии вселенных.
+
+В HoTT номера n-types кодируются n-групоидами, поэтому в кодировку нужно добавить предикат в каком n-типе лендить терм Х: NAT = (X: U) -> isSet X -> (X -> X) -> X -> X, тут появился предикат isSet. С его помощью можно реализовать пропозишинал транкешины ||-|| (лендинг в Prop) и даже HIT (лендинг в Groupoid, например, для окружности):
+
+1) Truncation ||A|| parametrized by (A:U) type = (X: U) -> isProp X -> (A -> X) -> X
+2) S^1 = (X:U) -> isGroupoid X -> ((x:X) -> Path X x x) -> X
+3) Arbitrary (A:U) type = (X: U) -> isSet X -> (A -> X) -> X
+
+На картике приведена кодировка Unit (кроме eta), которую написал Мельников, а я лишь слегонца упростил и убрал лишнее, не все кстати доказано. Кодировка обычного Nat тянет на магистерский проект. Общая схема — PhD и открытый вопрос в теории типов.
+
+Тут предикат isUnitEnc служит доказательством когерентности носителя. Весь жир таких кодировок в том, что для них выразимы термы индукции, они совместимы с унивелентностью и их можно лендить в любые n-типы в любой вселенной, т.е. другими словами, кодировать произовольные индуктивные типы, в том числе и HIT, через любые n-типы. Зацените, что в кодирвке конструкторов можно лендить их в Path (как в окружности), таким образом, демонстрируется совместимость с HIT типами. Список литературы по этому вопросу не широк. Только Эводи, и его студенты. 
+
+Motivation is to have algebra structure that could be used with any coherent carrier. Impredicativity means that we can land inductive type in any universe. E.g. one can change the predicate from isSet to isProp for truncations or to higher n-types. You can also model HIT using impredicative encoding. Universes could be impredicative and univalent at the same time.
+
+Church Encoding Nat:
+
+Nat = (X: U) -> (X -> X) -> X -> X
+
+Nat записан таким образом, чтобы можно было сократить до (X: U) -> id (id X). Незнаю поможет ли это сократить кодировку Nat, но вроде не должно. Т.е. Nat — это квадрат единичной функции.
+
+Impredicative Encoding Unit:
+
+Nat  = (X: U) -> isSet X -> (X -> X) -> X -> X
+Unit = (X: U) -> isSet X -> X -> X
+Unit_Encoding = (one: Unit)
+              * ((X Y: U) (x: isSet X) (y:isSet Y) (f:X->Y)
+             -> naturality X Y f (one X x) (one Y y))
+
+Truncation ||A|| parametrized by (A:U) type = (X: U) -> isProp X -> (A -> X) -> X
+S^1 = (X:U) -> isGroupoid X -> (x:X) -> Path X x x -> X
+Arbitrary (A:U) type = (X: U) -> isSet X -> (A -> X) -> X
+
+module impredicative where
+import proto
+import path
+import iso_pi
+import iso_sigma
+
+-- (1) Signature
+unitEnc': U = (X: U) -> isSet X -> X -> X
+
+-- (2) Property
+naturality (X Y:U)(f:X->Y)(a:X->X)(b:Y->Y): U = Path (X->Y)(o X X Y f a)(o X Y Y b f)
+isUnitEnc (one: unitEnc'): U = (X Y: U) (x: isSet X) (y: isSet Y)
+          (f:X -> Y) -> naturality X Y f (one X x) (one Y y)
+
+-- (3) Former/Intro/Elim/Beta/Eta Full-pack
+unitEnc: U = (x: unitEnc') * isUnitEnc x
+unitEncStar: unitEnc
+  = (\(X:U)(_:isSet X)->idfun X,\(X Y: U)(_:isSet X)(_:isSet Y)->refl(X->Y))
+unitEncRec  (C: U) (s: isSet C) (c: C): unitEnc -> C
+  = \(z: unitEnc) -> z.1 C s c
+unitEncBeta (C: U) (s: isSet C) (c: C): Path C (unitEncRec C s c unitEncStar) c
+  = refl C c
+unitEncEta (z: unitEnc): Path unitEnc unitEncStar z
+  = ...
+unitEncInd (P: unitEnc -> U) (a: unitEnc): P unitEncStar -> P a
+  = subst unitEnc P unitEncStar a (unitEncEta a)
+unitEncCondition (n: unitEnc'): isProp (isUnitEnc n)
+  =  \ (f g: isUnitEnc n) -> <h>  \ (x y: U) -> \ (X: isSet x) -> \ (Y: isSet y)
+  -> \ (F: x -> y) -> <i> \ (R: x) -> Y (F (n x X R)) (n y Y (F R))
+       (<j> f x y X Y F @ j R) (<j>  g x y X Y F @ j R) @ h @ i
+
+_________________
+[1]. https://github.com/sspeight93/Papers/
+[2]. https://homotopytypetheory.org/2017/10/11/impredicative-encodings-of-inductive-types-in-hott/
+[3]. https://www.newton.ac.uk/files/seminar/20170711090010001-1009680.pdf
+TAGS (EDIT) cs, groupoid infinity

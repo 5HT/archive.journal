@@ -1,0 +1,4 @@
+Eliminating Stack Ripping in Interpreter Implementations through Selective CPS Transformation
+
+http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.417.50&rep=rep1&type=pdf
+TAGS (EDIT) cs

@@ -1,0 +1,77 @@
+Пропозишинал равенства написанные на OM
+
+Как выглядит классическое пропозициональное равенство закодировраное с помощью Черч кодировки, где кериером выступает 1-тапл:
+
+$ cat Equ/@
+   \  (T: *)
+-> \  (a: T)
+-> \  (b: T)
+-> \/ (equ:  \/ (a : T) -> T -> #Prop)
+-> \/ (refl: \/(t: T)-> equ t t)
+-> equ a b
+
+$ cat Equ/refl
+  λ (T : *) → λ (a: T)
+→ λ (Equ:  \/ (a : T) -> T -> #Prop)
+→ λ (refl: \/ (a : T) -> Equ a a) -> refl a
+$ cat Equ/theorem
+(\ (x : #Equ/@ #Nat/@ #Nat/Zero #Nat/Zero) -> x) (#Equ/refl #Nat/@ #Nat/Zero)
+
+
+Если попытаться прочекать 0 и 1:
+
+$ om type a "(\ (x : #Equ/@ #Nat/@ #Nat/Zero (#Nat/Succ #Nat/Zero)) -> x) (#Equ/refl #Nat/@ #Nat/Zero)"
+escript: exception error: ["==",
+                  {app,{{var,{'Succ',0}},{var,{'Zero',0}}}},
+                  {var,{'Zero',0}}]
+
+
+В то время как тип сравнения 0 и 0 населен:
+
+$ om fst erase a "(\ (x : #Equ/@ #Nat/@ #Nat/Zero #Nat/Zero) -> x) (#Equ/refl #Nat/@ #Nat/Zero)"
+{app,{{{"λ",{x,0}},{any,{var,{x,0}}}},
+      {app,{{{"λ",{a,0}},
+             {any,{{"λ",{refl,0}},{any,{app,{{var,{refl,0}},{var,{a,0}}}}}}}},
+            {{"λ",{'Succ',0}},
+             {any,{{"λ",{'Zero',0}},{any,{var,{'Zero',0}}}}}}}}}}
+
+
+Ну и для полноты картины равенство Лейбница (пользовать также):
+
+$ cat Leibnitz/@
+   \  (T: *)
+-> \  (a: T)
+-> \  (b: T)
+-> \/ (equ: T -> #Prop)
+-> equ a -> equ b
+
+$ cat Leibnitz/refl
+  λ (T : *)
+→ λ (a: T)
+→ λ (Equ: \/ (a : T) -> #Prop)
+→ (\(x: #Prop) -> \ (t: x) -> t) (Equ a)
+
+
+В этой кодирвке мы избались от 1-тапла и термы более компактные.
+
+Еще немного Логических комбинаторов!
+Встречайте: S K, используещиеся в системах Лукашевича и Фреге:
+
+$ cat Simple/@
+forall (p: #Prop) -> forall (q: #Prop) -> p -> (q -> p)
+
+$ cat Simple/intro
+\(p: #Prop) -> \ (q: #Prop) -> \(pp: p) -> \ (qq: q) -> pp
+
+$ cat Frege/@
+forall (p: #Prop) -> forall (q: #Prop) -> forall (r: #Prop) ->
+(p -> q -> r) -> (p -> q) -> p -> r
+
+$ cat Frege/intro
+\(p : #Prop) -> \(q : #Prop) -> \(r : #Prop) ->
+\(f : p -> q -> r) ->
+\(g : p -> q) ->
+\(pp : p) ->
+f pp (g pp)
+TAGS (EDIT) #equ, #nat, #prop, cs, erlang, om
+

@@ -1,0 +1,43 @@
+Towards Инфинити Категории
+
+Из серии давно забытых срачей. Когда-то Жорж, автор учебника по Теории Категорий https://github.com/George66/Textbook/blob/master/Учебник%20версия%209.pdf решительно громко хлопнул дверью и ушел из "всем похуй" камюнити в ЖЖ про теоркат, с которого начался теоркат в ЖЖ (ну пиздежь конечно) https://category-theory.livejournal.com/34284.html Спустя годы в условиях жесткой изоляции коммуникаций по предмету решил зайти на https://dxdy.ru/topic127434.html и задать вопрос про 2-категории и бикатегории, вопрос их изоморфизма произведению категорий. И что вы думаете — мне ответил Жорж! Посмотрим как будет разворачиваться борьба. Включайте подписку HBO!
+
+Cat: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
+    Ob: U = precategory
+    Hom (A B: Ob): U = catfunctor A B
+    id (A: Ob): catfunctor A A = idFunctor A
+    c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C = compFunctor A B C f g
+    ...
+
+Func (X Y: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
+    Ob: U = catfunctor X Y
+    Hom (A B: Ob): U = ntrans X Y A B
+    id (A: Ob): ntrans X Y A A = ...
+    c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C = ...
+    ...
+
+Cat2 : U
+     = (Ob: U)
+     * (Hom: (A B: Ob) -> U)
+     * (Hom2: (A B: Ob) -> (C F: Hom A B) -> U)
+     * (id: (A: Ob) -> Hom A A)
+     * (id2: (A: Ob) -> (B: Hom A A) -> Hom2 A A B B)
+     * (c:  (A B C: Ob) (f: Hom A B) (g: Hom B C) -> Hom A C)
+     * (c2: (A B: Ob) (X Y Z: Hom A B)
+            (f: Hom2 A B X Y) (g: Hom2 A B Y Z) -> Hom2 A B X Z)
+     * ...
+
+Cat2Impl1 : Cat2
+        = ( {- Ob -}   Cat.1.1,
+            {- Hom -}  \ (X Y: Cat.1.1) -> (Func X Y).1.1,
+            {- Hom2 -} \ (X Y: Cat.1.1) -> (Func X Y).1.2,
+            {- id -}   Cat.2.1,
+            {- id2 -}  \ (A: Cat.1.1)   -> (Func A A).2.1,
+            {- c -}    Cat.2.2.1,
+            {- c2 -}   \ (X Y: Cat.1.1) -> (Func X Y).2.2.1,
+            ... )
+
+_______________________
+[1]. http://groupoid.space/mltt/types/category/
+[2]. https://github.com/groupoid/infinity/blob/master/priv/category.ctt
+TAGS (EDIT) cs, groupoid infinity

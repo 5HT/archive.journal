@@ -1,0 +1,33 @@
+CoFixpoint Extraction
+
+Coq Corecursion:
+CoInductive Stream: Type := Cons: nat -> Stream -> Stream.
+CoFixpoint facs : nat -> Stream := fun n : nat => Cons n (facs (n+1)).
+Definition fs := facs 0.
+Extraction "extraction/co" fs.
+
+ML Extraction:
+type nat = | O | S of nat
+let rec add n m = 
+    match n with
+    | O -> m
+    | S p -> S (add p m)
+
+type stream = __stream Lazy.t
+and __stream = | Cons of nat * stream
+let rec facs n = lazy (Cons (n, (facs (add n (S O)))))
+let fs = facs O
+
+Proto Actor Process
+CoInductive Compute (A:Set) : Type :=
+   | Return : A -> Compute A
+   | Bind : forall (B:Set), (B-> Compute A) -> Compute B -> Compute A.
+
+Process Tree
+CoInductive t (E : Effect.t) : Type -> Type :=
+  | Ret : forall (A : Type) (x : A), t E A
+  | Call : forall (command : Effect.command E), t E (Effect.answer E command)
+  | Let : forall (A B : Type), t E A -> (A -> t E B) -> t E B
+  | Split : forall (A : Type), t E A -> t E A -> t E A
+  | Join : forall (A B : Type), t E A -> t E B -> t E (A * B).
+TAGS (EDIT) cs. cofixpoint, groupoid infinity

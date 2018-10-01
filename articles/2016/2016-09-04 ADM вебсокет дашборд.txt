@@ -1,0 +1,21 @@
+ADM вебсокет дашборд
+
+Сделали концепт админки для KVS. Графика на D3.js, CSS на flexbox. Так как не хочется тянуть N2O вместе c KVS и BPE, то оформили в виде отдельного приложения ADM, которое будет поставлятся сразу со всеми виджетами и дашбордами для продуктов Synrc. 
+
+___________
+[1]. http://ns.synrc.com:8108
+[2]. https://github.com/synrc/adm
+
+
+
+Language       LOC
+------------- ----
+CSS            148
+Javascript/D3   49
+HTML            53
+Erlang         144
+
+
+Feedbacks are welcome. Как хотите так и будет.
+TAGS (EDIT) adm, kvs, synrc
+

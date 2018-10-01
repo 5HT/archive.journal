@@ -1,0 +1,9 @@
+N2O Binary File Transfer Protocol
+
+Вот пример бинарного File Upload без всяких XML, jQuery, Base64, XHR, MIME, miltipart, используя только WebSocket канал. Скорость 22МБ/s при загрузке CPU 40% без буферов, поддерживает докачку при обрывах соединения с обоих сторон: N2O Binary File Transfer Protocol. Описание технологии тут: http://5ht.co/ftp.htm Цена вопроса 100 строк кода, код не зависит особо от N2O и может быть перенесен на чистый ковбой.
+https://www.youtube.com/watch?v=6894J2If78c
+
+http://websockets.erlang.one
+
+TAGS (EDIT) bert, erlang, ftp, n2o, synrc
+

@@ -1,0 +1,48 @@
+Новости кодогенерации Exe
+
+%   data Bool: * :=
+%        (True: Bool)
+%        (False: Bool)
+
+% record Prod: * :=
+%        (pr1: *)
+%        (pr2: *)
+
+%   data Ret: * :=
+%        (Ok: * → Ret)
+%        (Error: * → Ret)
+%        (Io: * → * → Ret)
+
+%  data Nat: * :=
+%       (Zero: () → Nat)
+%       (Succ: Nat → Nat)
+
+%  data List: (A:*) → * :=
+%       (Nil: () → List A)
+%       (Cons: A → List A → List A)
+
+
+> om_extract:scan().
+Active: module loaded: {reloaded,'Bool'}
+Active: module loaded: {reloaded,'List'}
+Active: module loaded: {reloaded,'Nat'}
+Active: module loaded: {reloaded,'Prod'}
+Active: module loaded: {reloaded,'Ret'}
+
+> ch:unlist(ch:ap('List':'Cons'(),['Key',ch:ap('List':'Cons'(),['Value','List':'Nil'()])])).
+
+['Key','Value']
+
+> ls("ebin").
+Bool.beam           List.beam           Nat.beam
+Prod.beam           Ret.beam            ch.beam
+dump.beam           om.app              om.beam
+om_check.beam       om_extract.beam     om_parse.beam
+om_tok.beam
+ok
+
+
+
+Индуктивные обертки вокруг OTP экспериментальные тоже работают.
+TAGS (EDIT) cs, erlang, exe, om
+

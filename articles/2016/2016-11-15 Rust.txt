@@ -1,0 +1,32 @@
+Rust
+
+После Erlang, Rust освежает мир новыми красками:
+
+$ sysctl -n machdep.cpu.brand_string
+Intel(R) Core(TM) i7-4650U CPU @ 1.70GHz
+
+$ time ./ensob
+sent 10000000 msgs in 263968684ns. 26ns/msg
+cons 3 recved 10000000 msgs in 268955189ns. 26ns/msg
+cons 2 recved 10000000 msgs in 275892687ns. 27ns/msg
+cons 0 recved 10000000 msgs in 286069265ns. 28ns/msg
+cons 1 recved 10000000 msgs in 286355085ns. 28ns/msg
+Done!
+
+real    0m0.292s
+user    0m1.071s
+sys     0m0.012s
+
+    #[bench]
+    fn fac(b: &mut Bencher) {
+        let i = interpreter::new("cps");
+        let src = "(define (fac x) (if (= x 1) 1 (* x (fac (- x 1)))))";
+        i.execute(src).unwrap();
+        let f = "(fac 5)";
+
+        b.iter(|| {
+            i.execute(f).unwrap();
+        })
+    }
+
+test tests::fac ... bench:      24,657 ns/iter (+/- 10,337)

@@ -1,0 +1,43 @@
+DOS Path Normalization
+
+Когда задание дает Лев Валкин, его нужно выполнить обязательно :-)
+
+$ cat path.rs
+#![feature(test)]
+extern crate test;
+use test::Bencher;
+
+fn main() {
+    println!("{:?}", norm(&"/foo/bar/./baz/"));
+}
+
+// MBA Haswell
+
+// test bench1 ... bench:         151 ns/iter (+/- 141)
+// test bench2 ... bench:         158 ns/iter (+/- 103)
+// test bench3 ... bench:         175 ns/iter (+/- 138)
+// test bench4 ... bench:         228 ns/iter (+/- 213)
+// test bench5 ... bench:         163 ns/iter (+/- 142)
+
+#[bench] fn bench1(b: &mut Bencher) { b.iter(|| test1()) }
+#[bench] fn bench2(b: &mut Bencher) { b.iter(|| test2()) }
+#[bench] fn bench3(b: &mut Bencher) { b.iter(|| test3()) }
+#[bench] fn bench4(b: &mut Bencher) { b.iter(|| test4()) }
+#[bench] fn bench5(b: &mut Bencher) { b.iter(|| test5()) }
+
+#[test] fn test1() { assert!(norm(&"../bar")   == "/bar"); }
+#[test] fn test2() { assert!(norm(&"/foo/bar") == "/foo/bar"); }
+#[test] fn test3() { assert!(norm(&"/foo/bar/../baz") == "/foo/baz"); }
+#[test] fn test4() { assert!(norm(&"/foo/bar/./baz/") == "/foo/bar/baz/"); }
+#[test] fn test5() { assert!(norm(&"/foo/../../baz")  == "/baz"); }
+
+fn coda(x: &str) -> &str { if let Some('/') = x.chars().last() {&"/"} else {&""} }
+fn norm(x: &str) -> String {
+    "/".to_string() + &x.split('/').fold(vec![],
+    |mut a,x| if ""==x{a} else
+             if "."==x{a} else
+            if ".."==x{a.pop();a} else
+                      {a.push(x);a}).join("/") + coda(x) }
+
+// $ rustc -C opt-level=3 path.rs
+

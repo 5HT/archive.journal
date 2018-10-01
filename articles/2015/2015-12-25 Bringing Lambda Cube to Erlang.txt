@@ -1,0 +1,15 @@
+Bringing Lambda Cube to Erlang
+
+TL;DR: The compiler pipeline of modern functional language with pure type system core.
+
+As you know compilers pipeline can consist of up to 30 [Erlang] AST passes and transformations, however obviously the idea of having compact and simple compiler foundation leads us to understanding and simple reasoning of its implementation. Erlang shows us that even having such a long pipeline you still could gain the positives of untyped lambda calculus, namely compilation speed. The speed is what we want to see in the final prototype. Our pipeline from the first approximation could be seen as three layers:
+
+* The general purpose high level language with kinds, recursive types, first class modules, easy portable from Erlang, pi types for having proper signatures for all types. This language could compile to Morte or to others, more enriched ASTs. Also this language should have records that should be easy translated over all three layers of pipeline up to Erlang records. That means first class dependable polymorphic records should be takes as a root concept not like type classes (see 1ML implementation as a good candidate for language syntax selection that uses Church encoding for recursive types and first class modules). It is also well known how to implement type classes using polymorphic structures. Also this language should include minimal basis of pi-calculus with typed receive (suspend-able case arrow), send and spawn axioms.
+
+* The calculus of construction core, based on Morte with limited language: only arrows that leads to Church-encoding for everything, but other encodings like Scott's are also OK) and applications. No recursion, no type inference (speed for languages with explicit typing), only type checking and term normalization thanks to lacking of recursion (i.e. only basic beta and eta conversions). All structures like Lists, Streams, Monads, Free Monads, etc, compiles to Morte core already properly annotated with types. It means type inferring already happened before Morte layer. The minimal Morte base library is already available at http://sigil.place/talk/1/
+
+* The Erlang AST untyped lambda language that is robust platform which already as two implementations: BEAM and LING. Languages like Elixir, LFE and Synrc's Brice and Lol shows us how to implement new languages on top of Erlang compiler foundation sharing the same AST tree all over the languages (not only at byte-code level as in JVM and CLR) and being compatible with both BEAM and LING VMs. We erase all types before final transformation and compile directly to Erlang AST, then general procedure of Erlang compilation is applied.
+
+Note that only AST transformations are applied, no code generation is involved as we totally rely on Erlang compiler foundation. The Idris idea of having the one language for both reasoning and general programming is present in our pipeline. Code extraction is just type erasure and holes (typed Effects in a form of Free Monad) fulfilling.
+TAGS (EDIT) cs, erlang, lambda, pi
+

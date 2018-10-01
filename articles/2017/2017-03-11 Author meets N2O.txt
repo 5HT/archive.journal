@@ -1,0 +1,83 @@
+Author meets N2O
+
+Вчера наш Unicorn попросил меня сделать ему WebSocket сервер, чтобы поиграться с реальными данными. Всем бы таких дизайнеров. Ну я решил взять N2O — скажу чесно не притрагивался к нему ровно год! Т.е. от меня не только не было комитов, но я вообще ничего связанного с Web разработкой не делал.
+
+Алкотрейдинговый TIC пока интегрирует стримы с двух бирж, и должен в результате, кроме всего прочего, рисовать такие страницы:
+
+
+
+Создание кастомного N2O протокола
+
+Я решил, что стримить будем в WAMP флейворе, т.е. JSON массивах, иными словами не используя фигурные скобки, а только квадратные (привет, M-expressions). Посколько проект слишком маленький, чтобы использовать N2O на полную катушку, решил ограничиться одним файлом в котором и роутер и обработчик путей и сам протокол.
+
+-module(protocol).
+-description('TIC WebSocket Protocol').
+-include_lib("n2o/include/wf.hrl").
+-compile(export_all).
+
+finish(State,Ctx) -> {ok,State,Ctx}.
+init(State,Ctx)   -> wf:reg(route(wf:path(Ctx#cx.req))), {ok,State,Ctx#cx{module=protocol}}.
+event(Event)      -> ok.
+
+info({text,<<"book">>}=Message, Req, State) ->
+    {X,Y} = route(wf:path(Req)),
+    {A,B,C} = book:print0(X:name(Y)),
+    {reply, iolist_to_binary(B), Req, State};
+
+info({text,Text}=Message, Req, State) -> {reply, Text, Req, State};
+
+info(Message, Req, State) -> {unknown,Message, Req, State}.
+
+route(<<>>)                         -> {tic,zero};
+route(<<"/gdax/",Symbol/binary>>)   -> {gdax,wf:to_atom(Symbol)};
+route(<<"/bitmex/",Symbol/binary>>) -> {bitmex,wf:to_atom(Symbol)};
+route(_)                            -> {tic,unknown}.
+
+
+В протоколе у нас есть finish/init — это штуки которые вызываются для query/session/route хендлеров. Поскольку у нас минимализм то мы включаем одну и ту же имплементацию для всех трех типов хендлеров. В init регистрируемся в шине с помощью wf:reg (это типа subscribe в pub/sub).
+
+Сами сообщения падают в info как {text, Binary}. Осталось написать одну строчку для публикации этих самых сообщений. Вот она:
+
+wf:send({Venue,wf:to_atom(Sym)},{text,list_to_binary(Order)}),
+
+
+То, что писали в файл — теперь отдаем по вебсокетам. В конфиге этот файл protocol выглядит так:
+
+  {n2o, [{protocols,[protocol]},
+         {query,protocol},
+         {session,protocol},
+         {route,protocol}]}
+
+
+Т.е. он и роутер и сессии обслуживает и пути парсает. И он один, без хартбитов, без N2O-шного стека, чистый вебсокет транспорт. Если хотите хартбиты, просто поставьте {protocols,[protocol,n2o_heart]} в конфиге, или подключайте свои кастомные протоколы.
+
+$ wscat -c ws://127.0.0.1:9000/gdax/ETH-BTC
+connected (press CTRL+C to quit)
+< ['05:32:45.094',-2927,0]
+< ['05:32:45.109',-2750,0]
+< ['05:32:45.110',-2926,0]
+< ['05:32:45.233',-2750,0.0166,24.64]
+< ['05:32:45.979',-3141,0]
+> book
+< 10000000.0 -0.01
+   9.99999 -317.078
+       1.0 -5.010673
+       0.5 -5.01
+       0.3 -0.011
+      0.25 -9.877214
+       0.2 -0.011
+
+
+Настройка ковбоя
+
+spec()   -> ranch:child_spec(http, 1, ranch_tcp, port(), cowboy_protocol, env()).
+env()    -> [ { env, [ { dispatch, points() } ] } ].
+port()   -> [ { port, 9000  } ].
+points() -> cowboy_router:compile([{'_', [ {"/[...]", n2o_stream, []} ]}]).
+
+
+Все-таки охуенно, что я когда-то написал N2O. Счас бы тыкался по говнолапше джаваскриптовой или на расте писал вебсокет сервер где-то пол года. Кстати на таком (10 LOC) уровне вполне может работать Haskell IoT версия N2O.hs, где только один HEART протокол.
+
+А в это время, конкуренты N2O, формат агностик протокол WAMP уже есть на сайте IETF. Может создать драфт и себе, man pages, вот это все?
+TAGS (EDIT) #cx, n2o, synrc
+

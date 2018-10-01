@@ -1,0 +1,87 @@
+ev.il
+
+Вообщем я себе представил как бы выглядело если бы я проходил собеседование по C#. Я себе сразу представляю как меня спрашивают про box/unbox, или про то сколькими способами можно начать сборку мусора, или с каких корней начинается маркировка при сборке мусора, или как можно завалить сборку мусора вставив нерэлайебл код, или можно ли компактифицировать LOH, или с какого размера начинается LOH, или какой латенси у 0-генерации GC. Ну и самый конечно хит как текут IDisposable и ивенты. И мне стало грустно.
+
+Я немного понял, и решил что это все читать мне впадло и я решил подумать что же такое можно подготовить на собеседование по C#, ну что бы сразу поняли, что я написал 3 компилятора под CLR, и мне не пришлось верить на слово или идти читать мой гитхаб. На собеседованиях это не канает, я раз так послал на свой гитхаб, ну и меня тоже послали. Поэтому такой ошибки я больше не допущу и если мне скажут писать задачки на собеседовании я возьму не C#, а IL.
+
+Что можно написать на IL, ну во первых компилятор C# кучу ограничений накладывает, от мультикаст делегатов не наследуйся, конструкторы вызывай развесисто, вообще весь C# -- это такой набор макросов над IL. Это все большая найобка, нет никаких пропертей, нет никаких событий, инструкций таких даже нет в виртуальной машине. Напишем список чего нет в CLR:
+
+Синтаксический сахар
+
+1. static class: abstract class sealed
+2. enum/struct: System.ValueType
+3. delegate: System.MulticastDelegate, BeginInvoke/EndInvoke, Invoke
+4. event: Delegate.Combine/Remove
+5. yield: IEnumerator
+6. async: CompilerServices.AsyncStateMachine
+...
+
+еще много чего нет, но вот это первое в голову пришло. yield пример разбивает секции методов на точки входа, так же приблизительно работает и async, используя стейт машину. Вообще CompilerService это такой набор тулов, которые используются для генерации кода фиксированым наборов макросов (синтаксического сахара) языка C#. У F# этот движек (FSharp.Core) еще богаче. И тут очень глубокая тема для раскрытия.
+
+В даном посте я хочу написать как выглядит, например, написанная на ассемблере иллюстрация работы с событиями:
+
+.assembly extern mscorlib { }
+.assembly ev { }
+
+.class public Server {
+    .field public class Bus bus
+    .method public specialname void .ctor() {
+        ldarg.0 newobj instance void Bus::.ctor()
+        stfld class Bus Server::bus ret }
+    .method public static void Main() { 
+        .entrypoint
+        .locals init (class Server server)
+        ldstr "Event Application"
+        call void [mscorlib] System.Console::WriteLine(string)  
+        newobj void Server::.ctor()
+        dup dup stloc.0 dup ldfld class Bus Server::bus 
+        call instance void Server::Subscribe(class Bus) 
+        ldloc.0 ldfld class Bus Server::bus ldstr "Message"
+        call instance void Bus::Publish(string) ret }
+    .method public void Consume(string Msg) {
+        ldarg.1 call void [mscorlib] System.Console::WriteLine(string) ret }
+    .method private void Subscribe(class Bus publisher) {
+        ldarg.1 ldarg.0
+        ldftn instance void Server::Consume(string)
+        newobj void Event::.ctor(object, native int)
+        call instance void Bus::Subscribe(class Event)
+        ret }
+}
+
+.typedef class [mscorlib] System.Delegate as delegate
+.class public sealed Event extends [mscorlib] System.MulticastDelegate {
+    .method public specialname void .ctor(object 'object', native int 'method') runtime { }
+    .method public virtual void Invoke(string Msg) runtime { }
+}
+
+.class public Bus {
+    .field public class Event ev
+    .method public specialname void .ctor() { 
+        ldarg.0 ldnull stfld class Event Bus::ev ret }
+    .method public void Subscribe(class Event ehandler) {
+        ldarg.0 dup ldfld class Event Bus::ev ldarg.1
+        call delegate Event::Combine(delegate, delegate)
+        stfld class Event Bus::ev 
+        ret }
+    .method public void Unsubscribe(class Event ehandler) {
+        ldarg.0 dup ldfld class Event Bus::ev ldarg.1
+        call delegate Event::Remove(delegate, delegate)
+        stfld class Event Bus::ev ret }
+    .method public void Publish(string Msg) {
+        ldarg.0 ldfld class Event Bus::ev ldarg.1
+        callvirt void Event::Invoke(string) ret }
+}
+
+
+Это полная программа которую можно скомпилировать ilasm ev.il. Если вы попробуете ее посмотреть Reflector, ILSpy или dotPeak вы увидете в некоторых местах странные вещи, или вообще ничего не увидете. Как тут правильно подсказывают лучше в таких случаях использовать утилиту peverify для отыскания явных ошибок в стеке. Чесно признаюсь я написал это не с первого раза. Но для собеседования вполне подойдет.
+
+Как видим тут мы можем наследовать от классов от который С# нам запрещает наследоваться, код мы можем сделать очень компактным. Получается ничуть не хуже С#, а даже и лучше.
+
+_______________
+[1]. Компилятор языка Io — http://iolanguage.com (ссылка на мою CLR версию внизу)
+[2]. Компилятор PL/1 — https://github.com/devaspot/pl (мой курсач в институте)
+[3]. Компилятор Lisp — https://github.com/devaspot/lisp (писали в 2003 году, еще до DLR)
+
+Ну так на синьйора думаю покатит :)
+TAGS (EDIT) windows
+

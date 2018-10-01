@@ -1,0 +1,53 @@
+Работа по CR идет: RAFTER is on
+
+Марафон длится уже три дня. В первый день я взял riak_ensemble, бекенд совершенно примитивный, ни на одно событие так и не отреагировал, очень неудобвный интерфейс, так и не смог отдать ему конфигурацию. Чувствовал себя полным дибилом, потом понял, что не могу я быть такой тупой, может быть просто хуйово сделано. В истории лежит cr_ensemble, кто хочет глянуть как кастомно работать с riak_ensemble можете глянуть. Выглядит все неплохо, но время потраченое на это не окупается.
+
+Потом начал писать из гавна и палок свой пинговщик cr_heart и LE на gen_tcp пингах и отдельном порту. Быстро меня отговрили это делать, и попросили прееключится на какую-то известную имплементацию. Я переключился на rafter. Очень доволен, я взял оттуда только два файла cr_rafter.erl и cr_log.erl (лог персистентный нужн заменить в процессе работы на KVS, сейчас он что-то падает, непонятно чего, там прямая запись в файл и байтойобство какое-то). А так все подняло с первого раза. Запустил локально на ноде все рафтеры и они быстро нашли лидера. Так как нам нужно только найти лидера и только список нод в бекенде держать то считай задача сделана.
+
+Начал писать статейку для этого CR проекта https://synrc.com/apps/cr/doc/cr.htm Пока немного, но самое главное, картинки нарисованы. Теперь можно будет переключится собственн на 
+
+:> supervisor:which_children(cr_sup).
+[{'cr3@127.0.0.1',<0.122.0>,worker,[cr_rafter]},
+ {'cr2@127.0.0.1',<0.121.0>,worker,[cr_rafter]},
+ {'cr@127.0.0.1',<0.119.0>,worker,[cr_rafter]},
+ {'log:cr3@127.0.0.1',<0.118.0>,worker,[cr_log]},
+ {'log:cr2@127.0.0.1',<0.117.0>,worker,[cr_log]},
+ {'log:cr@127.0.0.1',<0.116.0>,worker,[cr_log]},
+ {vnode_sup,<0.114.0>,supervisor,[]},
+ {client_sup,<0.113.0>,supervisor,[]},
+ {client,<0.112.0>,worker,[cr_tcp]},
+ {ping_sup,<0.111.0>,supervisor,[]},
+ {ping,<0.110.0>,worker,[cr_tcp]},
+ {interconnect_sup,<0.109.0>,supervisor,[]},
+ {interconnect,<0.108.0>,worker,[cr_tcp]}]
+
+LOG start_link 'cr@127.0.0.1'
+RAFTER LOG 'cr@127.0.0.1'
+LOG start_link 'cr2@127.0.0.1'
+RAFTER LOG 'cr2@127.0.0.1'
+LOG start_link 'cr3@127.0.0.1'
+RAFTER LOG 'cr3@127.0.0.1'
+RAFTER start_link {0,'cr@127.0.0.1'}
+RAFTER GET METADATA 'cr@127.0.0.1'
+RAFTER BACK INIT 'cr@127.0.0.1'
+RAFTER INIT Me: 'cr@127.0.0.1'
+RAFTER INIT Nodes: ['cr@127.0.0.1','cr2@127.0.0.1','cr3@127.0.0.1']
+RAFTER start_link {0,'cr2@127.0.0.1'}
+RAFTER GET METADATA 'cr2@127.0.0.1'
+RAFTER BACK INIT 'cr2@127.0.0.1'
+RAFTER INIT Me: 'cr2@127.0.0.1'
+RAFTER INIT Nodes: ['cr@127.0.0.1','cr2@127.0.0.1','cr3@127.0.0.1']
+RAFTER start_link {0,'cr3@127.0.0.1'}
+RAFTER GET METADATA 'cr3@127.0.0.1'
+RAFTER BACK INIT 'cr3@127.0.0.1'
+RAFTER INIT Me: 'cr3@127.0.0.1'
+RAFTER INIT Nodes: ['cr@127.0.0.1','cr2@127.0.0.1','cr3@127.0.0.1']
+RAFTER FOLLOWER #req_vote
+RAFTER FOLLOWER #req_vote
+RAFTER CANDIDATE #vote
+RAFTER LEADER #vote
+
+
+Напоминаю ссылку: https://github.com/spawnproc/cr
+TAGS (EDIT) #req_vote, #vote, cr, cs, erlang, spawnproc, synrc
+

@@ -1,0 +1,10 @@
+Safe and Static Methods for Memory Management
+
+https://github.com/critiqjo/seminar-report/files/280495/report.pdf
+
+Dirty Notes: MIR has Linear Type System, as drop is exposed explicitly. While Rust has Affine Type System, while must_use is not enforcing to consume values. Linear type systems are the internal language of closed symmetric monoidal categories
+
+Addition: http://pauillac.inria.fr/~fpottier/slides/fpottier-2007-05-linear-bestiary.pdf
+Categorical Semantic of Linear Type Systems: https://www.irif.fr/~mellies/papers/panorama.pdf
+TAGS (EDIT) cs
+

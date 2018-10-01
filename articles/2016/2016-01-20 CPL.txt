@@ -1,0 +1,78 @@
+CPL
+
+Я только сейчас начинаю понимать задвиги Хагино и его концепт. Удобный в принципе теоретический инструмент для исследования категорий. В порядке актуальности: SECD, CAM, CPL, OM :-) Надо построить такую же машину для LCCC и инфинити топоса.
+
+Бутстреп Декартово Замкнутой Категории и NNO:
+cpl>
+right object 1 with !
+end object;
+right object 1 defined
+cpl>edit
+right object prod(a,b) with pair is 
+      pi1: prod -> a
+      pi2: prod -> b
+end object;
+right object prod(+,+) defined 
+cpl>edit
+right object exp(a,b) with curry is 
+      eval: prod(exp,a) -> b
+end object;
+right object exp(-,+) defined 
+cpl>edit
+left object nat with pr is 
+     0:1->nat
+     s: nat -> nat
+end object;
+left object nat defined 
+cpl>edit
+left object coprod(a,b) with case is 
+     in1: a -> coprod
+     in2: b -> coprod
+end object;
+left object coprod(+,+) defined
+cpl>
+
+
+cpl>set trace on
+cpl>simp eval.pair(pr(curry(pi2),curry(s.eval)).pi1,pi2).pair(s.0,s.0) 
+0:eval.pair(pr(curry(pi2),curry(s.eval)).pi1,pi2).pair(s.0,s.0)* 
+1:eval.pair(pr(curry(pi2),curry(s.eval)).pi1,pi2)*pair(s.0,s.0) 
+2:eval*pair(pr(curry(pi2),curry(s.eval)).pi1,pi2).pair(s.0,s.0) 
+3[1]:pr(curry(pi2),curry(s.eval)).pi1*pair(s.0,s.0) 
+4[1]:pr(curry(pi2),curry(s.eval)).s.0*id 
+5[1]:pr(curry(pi2),curry(s.eval)).s*0 
+6[1]:pr(curry(pi2),curry(s.eval))*s.0 
+7[1]:curry(s.eval).pr(curry(pi2),curry(s.eval))*0 
+8[1]:curry(s.eval).curry(pi2).!*
+9[1]:curry(s.eval).curry(pi2)*!
+10[1]:curry(s.eval)*curry(pi2).! 
+11[1]:*curry(s.eval).curry(pi2).!
+12:s.eval*pair(curry(pi2).!,pi2.pair(s.0,s.0)) 
+13[1]:curry(pi2).!*
+14[1]:curry(pi2)*!
+15[1]:*curry(pi2).!
+16:s.pi2*pair(!,pi2.pair(s.0,s.0))
+17:s.pi2.pair(s.0,s.0)*id
+18:s.pi2*pair(s.0,s.0)
+19:s.s.0*id
+20:s.s*0
+21:s*s.0
+22:*s.s.0
+s.s.0
+:1 -> nat 
+cpl>
+
+Факториальчик:
+cpl>let mult=eval.prod(pr(curry(0.!),curry(add.pair(eval,pi2))),id) 
+    mult : prod(nat,nat) -> nat defined
+cpl>let fact=pi1.pr(pair(s.0,0),pair(mult.pair(s.pi2,pi1),s.pi2))
+    fact : nat -> nat defined
+cpl>simp mult.pair(s.s.0,s.s.s.0) 
+    s.s.s.s.s.s.0
+:1 -> nat
+cpl>simp fact.s.s.s.s.0 
+    s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.0.!
+:1 -> nat
+cpl>
+TAGS (EDIT) cs
+

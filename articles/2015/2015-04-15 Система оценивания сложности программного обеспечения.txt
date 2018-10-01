@@ -1,0 +1,90 @@
+Система оценивания сложности программного обеспечения
+
+Моя методика в оценивании сложности довольно простая но эффективная и рабочая. В оценку сложности входит несколько интуитивно-понятных критериев:
+
+1) количество сущностей;
+2) размер ПО;
+3) скорость запуска.
+
+При этом количество данных которые обрабатывает система не особо важно, так как система на одной дискете может обслуживать колосальные истории транзакций. Скорость запуска самый странный критерий, но его хочется иметь, потому что по моему мнению скорость разработки очень важный психологический фактор. Можно пожертвовать подсветкой и функциями, но снижение скорости разработки кажется прямо снижает продуктивность. Быстрая скорость запуска как правило говорит о простоте системы, если не принимать к сведению возможные специальные оптимизации запуска.
+
+Самый главный момент здесь проектно-конструкторский. У кого больше сущностей? У кого система наиболее эффективна? Наиболее оптимизированна? Графики производительности? Статистика по операциям? Выбор оптимальных параметров системы? Область применения системы? Вообщем-то в основе как правило лежат перечисления сущностей на карточках-доменах или приложениях программах, каких-то конкретных системах типов.
+
+Вот например в CORBA основопологающими сущностями есть объекты-интерфейсы-классы и их поля. И объекты прикладной области и сервисы представлены здесь в виде объектного протокола. Мы будем считать что это кортеж. Таким образом наш основной объект занимает 20 полей.
+
+interface Object {
+      InterfaceDef get_interface ();
+      boolean is_nil();
+      Object duplicate ();
+      void release ();
+      boolean is_a (in RepositoryId);
+      boolean non_existent();
+      boolean is_equivalent ( in Object);
+      unsigned long hash( in unsigned long);
+      void create_request ( in Context,in Identifier, in NVList, inout NamedValue, out Request,in Flags);
+      Policy get_policy ( in PolicyType);
+      DomainManagersList get_domain_managers ();
+      Object set_policy_overrides(in PolicyList,in SetOverrideType) raises (InvalidPolicies);
+      Policy get_client_policy( in PolicyType type);
+      boolean validate_connection(out PolicyList);
+      Object get_component ();
+      string respository_id();
+      ORB get_orb();
+};
+
+
+В Java этот список несколько сузили до 11 методов.
+
+     clone()
+     boolean equals(Object obj)
+     protected void  finalize()
+     Class    getClass()
+     int hashCode()
+     void    notify()
+     void    notifyAll()
+     String  toString()
+     void    wait()
+     void    wait(long timeout)
+     void    wait(long timeout, int nanos)
+
+
+Вот количество объектов в результирующей программе и ее полей если посчитать и померять, то эти числа в своих измерениях показывают сложность системы очень наглядно. Почему в функциональном мире все с высокой горы наблюдают за ООП, потому что в ФП намного компактнее получаются эти системы если декомпозицию проводить самому не пользуясь навязанными иерархиями из ООП мира. Вот у нас например все типы, которые хранятся в базе данных имеют такие сигнатуры.
+
+#container{id,top,count}
+#iterator{id,version,container,feed_id,prev,next,feeds,guard,etc}
+
+
+Для подсчета нам не важно каких типов эти поля у объектов, потому что в объективной реальности программы работают с удаленной информацией о типах, поэтому в расход при подсчете сложности мы эту информацию в расход не берем. В Java JPA это вот этот список:
+
+public @interface Entity {
+   boolean dynamicInsert 
+   boolean      dynamicUpdate 
+   boolean      mutable 
+   OptimisticLockType   optimisticLock 
+   String       persister 
+   PolymorphismType     polymorphism 
+   boolean      selectBeforeUpdate 
+}
+
+
+Там еще вот такие штуки есть незнаю как их классифицировать, но подсчитать точно нужно:
+
+@Entity
+@Column
+@Id
+@Transient
+@OneToOne, @OneToMany, @ManyToOne, @ManyToMany
+@GeneratedValue
+
+
+KVS
+2 records
+12 fields
+
+JPA
+2 objects
+27 specifiers
+
+Как-то так, вообщем.
+TAGS (EDIT) cs, jpa, kvs
+

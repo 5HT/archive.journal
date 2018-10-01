@@ -1,0 +1,39 @@
+UPL Derivatives
+
+Решил проверить свой язык на деривативах, вот что получилось: 
+
+instrument 'Stub_Amort_Swap'
+parties name DB id PARTYAUS33 trade DB-0001
+        name Barclays id BARCGB2L trade SW2000
+
+stream pay Barclays rate 'EUR-LIBOR-BBA' monthly 6 of
+       notional range 06/14/1995 50000000
+                      12/14/1995 40000000
+                      12/14/1996 30000000
+                      12/14/1997 20000000
+                      12/14/1998 10000000
+       from 01/16/1995 to 12/14/1999 adjust NONE, MODFOLLOWING
+       starting 06/14/1995
+       recalculate monthly 6 roll 14
+       reset 2 business days before monthly 6 adjust MODFOLLOWING
+       initial stub interpolate rate from 4 months to 5 months
+       fraction 'ACT/360'
+       calendar GBLO
+
+stream pay DB rate 6% annual of
+       notional range 06/14/1995 50000000
+                      12/14/1995 40000000
+                      12/14/1996 30000000
+                      12/14/1997 20000000
+                      12/14/1998 10000000
+       starting 12/14/1995
+       recalculate annual roll 14
+       calendar DEFR
+       fraction '30E/360'
+
+
+Сравните пожалуйста с тем как сейчас представляется амортизационный стаб своп в современных информационных системах: 
+http://www.fpml.org/spec/fpml-5-0-8-rec-1/html/confirmation/xml/products/interest-rate-derivatives/ird-ex02-stub-amort-swap.xml А это вы еще текстового SDOS не видели :-) Проблема FpML не только в том, что это XML, но еще и в том, что там множество дублирований и избыточной информации. Работать с этим просто невыносимо. Кроме того пакаджи которые есть в Haskell просто копируют пространство тегов FpML, а это полная лажа.
+
+У меня идея создать бибилиотеку конвертации FpML<->UPL и продавать ее частично по продуктам и направлению конвертации. Сработает?
+TAGS (EDIT) banking, cs, derivatives, investment, upl

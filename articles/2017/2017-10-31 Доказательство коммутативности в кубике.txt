@@ -1,0 +1,37 @@
+Доказательство коммутативности в кубике
+
+Если кратно, то индукция, индуктивные типы с приходом гомотопических пруверов кажутся уж не таким и сильными инструментами. Покажем на примере коммутативности сложения для двух и трех аргументов.
+
+Доказательство коммутативности сложения курильщика
+
+Theorem plus_comm : forall n m : nat, n + m = m + n.
+Proof.
+  intros n m.
+  induction n as [| n' Sn' ].
+  - simpl. rewrite <- plus_n_0. reflexivity.
+  - simpl. rewrite <- plus_n_Sm. rewrite <- Sn'. reflexivity.
+Qed.
+
+Theorem plus_assoc : forall n m p : nat, n + (m + p) = (n + m) + p.
+Proof.
+  intros n m p.
+  induction n as [| n' Sn' ].
+  - simpl. reflexivity.
+  - simpl. rewrite <- Sn'. reflexivity.
+Qed.
+
+
+Доказательство коммутативностит сложения нормального человека
+
+add_comm (a : nat) : (n : nat) -> Path nat (add a n) (add n a) = split
+  zero  -> <i> add_zero a @ -i
+  suc m -> <i> comp (<_> nat) (suc (add_comm a m @ i))
+                    [ (i = 0) -> <j> suc (add a m)
+                    , (i = 1) -> <j> add_suc m a @ -j ]
+
+add_comm3 (a b c : nat) : Path nat (add a (add b c)) (add c (add b a)) =
+ let r: Path nat (add a (add b c)) (add a (add c b)) = <i> add a (add_comm b c @ i)
+  in <i> comp (<_> nat) ((add_comm a (add c b)) @ i)
+              [ (i = 0) -> <j> r @ -j,
+                (i = 1) -> (<z> assocAdd c b a @ -z) ]
+TAGS (EDIT) cs

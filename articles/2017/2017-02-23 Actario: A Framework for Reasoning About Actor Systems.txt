@@ -1,0 +1,21 @@
+Actario: A Framework for Reasoning About Actor Systems
+
+Shohei Yasutake, Takuo Watanabe
+
+Coq:
+CoFixpoint behvA := receive (fun msg ⇒
+match msg with
+| name_msg sender ⇒ me ← self; sender ! name_msg me; become behvA
+|_⇒ child ← new behvB; child ! msg; become behvA
+end)
+
+Erlang:
+behvA() → receive Msg → case Msg of
+{name_msg, Sender} → Me = self(), Sender ! {name_msg, Me}, behvA()
+     _ → Child = spawn(fun() → behvB() end), Child ! Msg behvA()
+end.
+
+_______________
+[1] http://amutake.github.io/actario/AGERE2015.pdf
+TAGS (EDIT) cofixpoint, cs, groupoid infinity
+

@@ -1,0 +1,13 @@
+Кто-то рассказывал, что Standard ML мертв
+
+https://github.com/IntelLabs/flrc
+
+Примитивы и Рантайм:
+https://github.com/IntelLabs/flrc/blob/master/compiler/as-to-mil/ghc-prim.sml#L2246-L2658
+https://github.com/IntelLabs/flrc/tree/master/runtime
+
+Векторизатор:
+https://github.com/IntelLabs/flrc/blob/master/compiler/common/vector-instruction.sml
+https://github.com/IntelLabs/flrc/blob/master/compiler/mil/optimise/vectorize.sml
+https://github.com/IntelLabs/flrc/blob/master/runtime/include/hrc/plsr-prims-vector-avx.h
+TAGS (EDIT) cs

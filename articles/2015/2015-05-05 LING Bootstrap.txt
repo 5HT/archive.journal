@@ -1,0 +1,161 @@
+LING Bootstrap
+
+Попробовать LING с приложениями SYNRC лучше всего с помощью MAD.
+
+Например вы хотите чтобы ваше приложение и его зависимости было скомпилировано с вшитой виртуальной машиной и чтобы все было в виде исполняемого Mach-O DWARF-3 имаджа. Нет ничего проще! В rebar.config вам нужно указать зависимость от LING. Например вот rebar.config от нашего приложения MAD:
+
+{deps_dir,"deps"}.
+{deps, [{ling, ".*", {git, "git://github.com/proger/ling", {tag, "osx-again"}}},
+        {sh, ".*",   {git, "git://github.com/synrc/sh",       {tag, "1.4"}}}]}.
+
+
+Пока Влад не смержился с master нужно указывать его ветку и tag osx-again. 
+
+С LING идут два приложения ling (конветация байткода и другие внутренние функции ling) и et (шаблонизатор написанный Yariv Sadan). Шаблоны нужны при компилялции, для mad плагина нам понадобится только ling_code, ling_disasm, ling_bifs и ling_lib модули.
+Как выглядят инструкции виртуальной машины LING (сконвертированный BEAM байткод в байткод LING):
+
+
+5> element(2,ling_code:beam_to_ling(element(2,mad_repl:load_file("mad.beam")))).
+
+{m,mad,
+   [{label,[1],[]},
+    {line,[1],[]},
+    {func_info,[{a,mad},{a,main},1],[]},
+    {label,[2],[]},
+    {is_nil,[{f,3},{x,0}],[]},
+    {l_call_only,[{f,57}],[]},
+    {label,[3],[]},
+    {l_allocate_zero,[3],[]},
+    {line,[2],[]},
+    {l_call_ext,[{e,{mad_utils,fold_params,1}}],[]},
+    {is_tuple_of_arity,[{f,5},{x,0},2],[]},
+    {extract_next_element,[{x,1}],[]},
+    {get_tuple_element,[{x,0},1,{y,2}],[]},
+    {l_is_ne_exact_immed,[{f,4},{x,1},nil],[]},
+    {test_heap,[2,2],[]},
+    {put_list,[{x,1},nil,{x,1}],[]},
+    {line,[3],[]},
+    {l_move_call_ext,[{literal,"Unknown Command or Parameter ~p~n\r"},
+                      {e,{io,format,...}}],
+                     []},
+    ...
+
+
+Также в LING идут оверлеи некоторых OTP модулей для приложений kernel, stdlib, crypto и os_mon. Они собираются автоматически при сборке LING. Не забывайте указывать ARCH=posix_x86. Сборку LING нужно осуществить после того как вы вытащили зависимости с помощью mad.
+
+    $ git clone https://github.com/synrc/mad
+    $ ./mad dep
+    $ cd deps/ling
+    $ ARCH=posix_x86 make
+
+
+Так у нас появится собраный LING, его оверлеи для некоторых OTP приложений а так же ling и et приложения которые пока робко прячут свои бинарники в kernel приложении, чтобы не плодить приложений.
+
+Теперь можно собвстенно попытаться собрать MAD'ом ваше приложение (в нашем случае мы будем собирать LING версию MAD :). 
+
+$ mad lin
+Ling Params: []
+ARCH: posix_x86
+Bundle Name: mad
+System: [compiler,syntax_tools,sasl,tools,mnesia,reltool,xmerl,crypto,kernel,
+         stdlib,wx,webtool,ssl,runtime_tools,public_key,observer,inets,asn1,
+         et,eunit,hipe,os_mon]
+Apps: [kernel,stdlib,sh,mad]
+Overlay: ["crypto.beam","9p.beam","9p_auth.beam","9p_info.beam",
+          "9p_mounter.beam","9p_server.beam","9p_tcp.beam","9p_zero.beam",
+          "disk.beam","disk_server.beam","embedded_export.beam",
+          "goo_export.beam","goofs.beam","hipe_unified_loader.beam",
+          "inet_config.beam","kernel.beam","ling_bifs.beam","ling_code.beam",
+          "ling_disasm.beam","ling_iops.beam","ling_iopvars.beam",
+          "ling_lib.beam","net_vif.beam","os.beam","prim_file.beam",
+          "user_drv.beam","os_mon.beam","dets.beam","filename.beam",
+          "maps.beam","unicode.beam","zlib.beam"]
+Bucks: [{boot,"/boot",2},
+        {os_mon,"/erlang/lib/os_mon/ebin",1},
+        {crypto,"/erlang/lib/crypto/ebin",1},
+        {kernel,"/erlang/lib/kernel/ebin",90},
+        {stdlib,"/erlang/lib/stdlib/ebin",85},
+        {sh,"/erlang/lib/sh/ebin",6},
+        {mad,"/erlang/lib/mad/ebin",43}]
+Initializing EMBED.FS:
+Mount View:
+ /boot /boot
+/erlang/lib/os_mon/ebin /os_mon
+/erlang/lib/crypto/ebin /crypto
+/erlang/lib/kernel/ebin /kernel
+/erlang/lib/stdlib/ebin /stdlib
+/erlang/lib/sh/ebin /sh
+/erlang/lib/mad/ebin /mad
+Creating EMBED.FS C file: ...ok
+Compilation of Filesystem object: ...ok
+Linking Image: ok
+
+
+Mount View показывает таблицу mount для приложений которые прилинкованы внутри EMBED.FS вшитой в образ. Получить ее можно запустив LING на маке и выполнив следующие команды:
+
+$ rlwrap ./mad.img
+Erlang [ling-0.3.2]
+
+Eshell V6.3  (abort with ^G)
+1> io:format("~s",[binary_to_list(element(2,file:read_file("/boot/local.map")))]).
+/boot /boot
+/erlang/lib/os_mon/ebin /os_mon
+/erlang/lib/crypto/ebin /crypto
+/erlang/lib/kernel/ebin /kernel
+/erlang/lib/stdlib/ebin /stdlib
+/erlang/lib/sh/ebin /sh
+/erlang/lib/mad/ebin /mad
+ok
+
+
+Также можно посмотреть на загрузчик:
+
+Boot Code: {script,
+               {"Erlang/OTP","17"},
+               [{preLoaded,[...]},
+                {progress,preloaded},
+                {path,["$ROOT/lib/kernel-3.0.3/ebin","$ROOT/lib/stdlib-2.2/ebin"]},
+                {primLoad,[error_handler]},
+                {kernel_load_completed},
+                {progress,kernel_load_completed},
+                {path,["$ROOT/lib/kernel-3.0.3/ebin"]},
+                {primLoad,[...]},
+                {path,["$ROOT/lib/stdlib-2.2/ebin"]},
+                {primLoad,[...]},
+                {progress,modules_loaded},
+                {path,["$ROOT/lib/kernel-3.0.3/ebin","$ROOT/lib/stdlib-2.2/ebin"]},
+                {kernelProcess,heart,{heart,start,[]}},
+                {kernelProcess,error_logger,{error_logger,start_link,[]}},
+                {kernelProcess,application_controller,{application_controller,start,[...]}},
+                {progress,init_kernel_started},
+                {apply,{application,load,[...]}},
+                {progress,applications_loaded},
+                {apply,{application,start_boot,[kernel,permanent]}},
+                {apply,{application,start_boot,[stdlib,permanent]}},
+                {apply,{c,erlangrc,[]}},
+                {progress,started},
+                {apply,{application,start,[kernel]}},
+                {apply,{application,start,[stdlib]}},
+                {apply,{application,start,[sh]}},
+                {apply,{application,start,[mad]}}]}
+
+
+
+Как видите в бутлоадер MAD вставил определенные приложения на файловой системе. Все эти приложения появились из rebar.config когда вы вытащили приложения. MAD LING плагин тесно интегрирован в MAD, поэтому занимает меньше чем оригинальный сборщик LING образов, который называется railing. По крайней мере я уже престал собирать им образы, полностью перешел на MAD. Ведь весь MAD вместе с поддержкой LING занимает всего 890 LOC, в то время как railing 990 LOC.
+
+Парсер этого Boot Loader находится в preload/init.erl, именно он и выполняет инструкции Erlang OTP Boot Loader'а и запускает приложения при запуске виртуальнрй машины LING:
+
+$ ./mad.img
+Erlang [ling-0.3.2]
+
+Eshell V6.3  (abort with ^G)
+1> application:which_applications().
+[{mad,"MAD VXZ Build Tool","2.2"},
+ {sh,"VXZ SH Executor","0.9"},
+ {stdlib,"ERTS  CXC 138 10","2.2"},
+ {kernel,"ERTS  CXC 138 10","3.0.3"}]
+
+
+OM A HUM
+TAGS (EDIT) cs, fprog, ling, posix, synrc
+
