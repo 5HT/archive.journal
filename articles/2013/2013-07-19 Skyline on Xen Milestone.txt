@@ -1,0 +1,28 @@
+Skyline on Xen Milestone
+
+kvs (mnesia), mqs (amqp_client), n2o (cowboy), etc...
+
+https://imgprx.livejournal.net/12472944ca219b5a3929f87bb06866b56d72f8f1/k5VUFephETgytpS1BWbQQgrR7ZqNVQkcXUitMH5jNKgSm1FjZLr1mAdhQXGZJZIvJzo64AZf9xYUEOiEi1GpCg
+
+In EOX VM LING:
+
+2> application:which_applications().
+[{web,"Synrc Web Site","1"},
+ {oauth,"An Erlang OAuth 1.0 implementation","1.3.0"},
+ {xmerl,"XML parser","1.3.3"},
+ {inets,"INETS  CXC 138 49","5.9.5"},
+ {public_key,"Public key infrastructure","0.19"},
+ {asn1,"The Erlang ASN1 compiler version 2.0.2","2.0.2"},
+ {kvs,"Distributed Persistance","1"},
+ {mnesia,"MNESIA  CXC 138 12","4.9"},
+ {mqs,"Messages Queue","0.0.1"},
+ {amqp_client,"RabbitMQ Erlang Client Library","2.8.2"},
+ {n2o,"N2O SXC","3.0"},
+ {cowboy,"Small, fast, modular HTTP server.","0.8.2"},
+ {ranch,"Socket acceptor pool for TCP protocols.","0.6.2"},
+ {crypto,"CRYPTO version 2","3.0"},
+ {sasl,"SASL  CXC 138 11","2.3.2"},
+ {stdlib,"ERTS  CXC 138 10","1.18.3"},
+ {kernel,"ERTS  CXC 138 10","2.15.3"}]
+TAGS (EDIT) cs
+

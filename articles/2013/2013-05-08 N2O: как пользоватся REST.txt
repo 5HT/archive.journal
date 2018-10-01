@@ -1,0 +1,64 @@
+N2O: как пользоватся REST
+
+Дело в том, что N2O -- это не только Nitrogen совместимый фремворк который поддерживает DTL темлейты. Это еще и микро-фреймвоорк для создания REST сервисов. Зацените как в N2O сделать например серсив доступа к пользователям. Скажем мы хотим, что бы работали операции GET PUT DELETE по таким ссылкам
+
+/rest/users/ -- получить список всех пользоватлеей GET
+/rest/users/maxim -- получить пользователя "maxim" GET DELETE
+
+Все что вам нужно сделать -- это создать файл user.erl
+
+-module(users).
+-compile(export_all).
+-include("users.hrl").
+
+% This is REST callbacks module for bucket USERS
+
+-define(USERS, [#user{id="masha",name="Mariya Korobetska"},
+                #user{id="doxtop",email="doxtop@synrc.com"},
+                #user{id="roman"}]).
+
+init() -> ets:new(users, [named_table,{keypos,#user.id}]), ets:insert(users, ?USERS).
+get([]) -> ets:foldl(fun(C,Acc) -> [C|Acc] end,[],users);
+get(Id) -> ets:lookup(users,Id).
+delete(Id) -> ets:delete(users,Id).
+put(User=#user{}) -> ets:insert(users,User).
+exists(Id) -> ets:member(users,Id).
+to_html(User=#user{}) -> [<<"<tr><td>">>,coalesce(User#user.id),<<"</td><td>">>,
+                                         coalesce(User#user.email),<<"</td><td>">>,
+                                         coalesce(User#user.name),<<"</td>>].
+
+coalesce(Name) -> case Name of undefined -> <<>>; A -> list_to_binary(A) end.
+
+
+И в настойках N2O прописать роутинг:
+
+dispatch_rules() ->
+    cowboy_router:compile(
+        [{'_', [
+            {["/static/[...]"], cowboy_static, [{directory, {priv_dir, ?APP, [<<"static">>]}},
+                                                {mimetypes, {mimetypes, path_to_mimes}, default}]},
+            {["/rest/:bucket"], n2o_rest, []},
+            {["/rest/:bucket/:key"], n2o_rest, []},
+            {["/rest/:bucket/:key/[...]"], n2o_rest, []},
+            {["/websocket/[...]"], n2o_websocket, []},
+            {'_', n2o_cowboy, []}
+    ]}]).
+
+
+N2O REST handler n2o_rest сам будет перенаправлять все запросы в нужный модуль бакета. Так можно сделать свой например REST интерфейс к riak, который использует до сих пор легаси вебмашину. REST интерфейс к риаку и наши риак хелперы мы пока публиковать не будем.
+
+curl -GET http://localhost:8000/rest/users
+
+<table><tr><td>masha</td><td></td><td>
+Mariya Korobetska</td></tr<tr><td>doxtop</td><td>
+doxtop@synrc.com</td><td></td></tr<tr><td>
+roman</td><td>
+
+curl -GET http://localhost:8000/rest/users/doxtop
+
+<tr><td>doxtop</td><td>doxtop@synrc.com</td>
+<td></td></tr>
+
+Смотрите примеры на https://github.com/synrc/n2o
+TAGS (EDIT) #user, cs
+

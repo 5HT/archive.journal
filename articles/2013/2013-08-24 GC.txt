@@ -1,0 +1,30 @@
+GC
+
+collect() ->
+    mark()
+    sweep()
+
+mark() ->
+    for Field in Roots do
+        Object = *Field
+        if Object != null do
+            push(LiveObjects, Object)
+            push(WorkList, Object)
+
+    while !empty(WorkList) do
+          Object = pop(WorkList)
+          for Field in Object do
+              ReferencedObject = *Field
+              if ReferencedObject != null and
+                 !contains(LiveObjects, ReferencedObject) do
+                 push(LiveObjects, ReferencedObject)
+                 push(WorkList, ReferencedObject)
+
+sweep() ->
+    DeadObjects = complement(LiveObjects, AllObjects)
+    while !empty(DeadObjects) do
+          Object = pop(DeadObjects)
+          free(Object)
+    AllObjects = LiveObjects
+TAGS (EDIT) cs
+

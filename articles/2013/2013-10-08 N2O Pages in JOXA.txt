@@ -1,0 +1,36 @@
+N2O Pages in JOXA
+
+Joxa -- это такая недокложа для BEAM. Ну шо я написал биндинги к N2O для JOXA. Поскольку Erlang JavaScript компилятор работает с Erlang AST, а Joxa на Core Erlang, то фокуса что пишем нан лиспе и получаем джавакрипт я сразу не продемонстрирую. Нужно переписывать Joxa что бы она компилилась из Abstract Format. Кроме того я базовую библиотеку построил бы по дргому намного компактнее и ближе к BEAM. Чего только стоят рекорды, которые разрешаются один на модуль, ну и другие штуки избыточные тоже. Макросы вроде есть они немного спасают, но вот для того что бы реализовать полиморфные рекорды и наследование рекордов которые есть в N2O пришлось немного повспоминать лисп.
+
+Ну и собственно лисповый чатик под N2O на Joxa:
+
+(ns lispchat (require erlang joxa-core n2o wf))
+
+(defn+ body() [(n2o/panel   {:id :history})
+               (n2o/textbox {:id :message})
+               (n2o/button  {:id :send}
+                            {:body "Chat"}
+                            {:postback :chat}
+                            {:source [:message]}) ])
+
+(defn+ main() [(n2o/dtl {:app :n2o_sample}
+                        {:file "index"}
+                        {:bindings [{:title "Title"} {:body (body)}]})])
+
+(defn+ speak(m) (wf/insert_bottom :history (n2o/span {:body m})))
+
+(defn+ event(body)
+    (case body
+        (:init (speak ["Hello" (n2o/br)]))
+        (:chat (speak [(wf/q :message) (n2o/br)]))))
+
+(defn+ test() (do 
+                (event :init)
+                (wf/info "hello ~p~n" [(main)])))
+
+
+Посвящаю это Пиле, который мне показал Лисп в 2003 году.
+______________
+[1]. https://github.com/synrc/n2o_sample/blob/master/src/lispchat.jxa
+TAGS (EDIT) cs, joxa, lisp, n2o
+

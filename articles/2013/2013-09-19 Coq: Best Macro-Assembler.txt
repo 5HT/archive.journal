@@ -1,0 +1,34 @@
+Coq: Best Macro-Assembler
+
+Factorial on Coq:
+
+Definition call_cdecl3 f arg1 arg2 arg3 :=
+    PUSH arg3;; PUSH arg2;; PUSH arg1;;
+    CALL f;; ADD ESP, 12.
+Definition main (printfSlot: DWORD) :=
+    (* Argument in EBX *)
+    letproc fact :=
+      MOV EAX, 1;;
+      MOV ECX, 1;;
+      (* while ECX <= EBX *)
+        while (CMP ECX, EBX) CC_LE true (
+            MUL ECX;; (* Multiply EAX by ECX *)
+            INC ECX
+        )
+    in
+      LOCAL format;
+        MOV EBX, 10;; callproc fact;;
+        MOV EDI, printfSlot;;
+        call_cdecl3 [EDI] format EBX EAX;;
+        MOV EBX, 12;; callproc fact;;
+        MOV EDI, printfSlot;;
+        call_cdecl3 [EDI] format EBX EAX;;
+        RET 0;;
+    format:;;
+        ds "Factorial of %d is %d";; db #10;; db #0.
+Compute bytesToHex
+    (assemble #x"C0000004" (main #x"C0000000")).
+
+______________
+[1]. https://www.dropbox.com/s/2dxitkgukmijvfu/coqasm.pdf
+TAGS (EDIT) #0, #10, #x, cs, typesystems

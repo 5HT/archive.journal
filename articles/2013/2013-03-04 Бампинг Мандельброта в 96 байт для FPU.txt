@@ -1,0 +1,51 @@
+Бампинг Мандельброта в 96 байт для FPU
+
+start:          mov     al,13h
+        int     10h
+        mov     bh,0a0h
+        fninit  ;db     0DBh,0e3h
+        fld1
+        fld1
+        fldl2t
+        fldpi
+        fidiv   word ptr tudy+1
+        mov     ds,bx
+        mov     bh,0fah
+tudy:           mov     dx,320
+paint:          fld     st(2)
+        fld     st(4)
+        mov     cl,100
+cikl:           fld     st(1)
+        fsub    st,st(1)
+        fld     st(1)
+        fadd    st,st(3)
+        fmulp   st(1),st
+        fadd    st,st(5)
+        fld     st(2)
+        fmul    st,st(2)
+        fadd    st,st
+        fadd    st,st(7)
+        fst     st(2)
+        fabs
+        fcomp   st(5)
+        fnstsw  ax              ;DB     0dfh,0e0h
+        fstp    st(2)
+        sahf
+        jnc     End_Calc
+        loop    cikl
+End_Calc:       fcompp  st(1)
+        mov     [bx],cl
+        dec     bx
+        jz      vse
+snova:          fsub    st(2),st
+        dec     dx
+        jnz     paint
+newstring:      fld1
+        fstp    st(3)
+        fsub    st(3),st
+        jmp     short tudy
+vse:            int     21h
+        mov     ax,3
+        int     10h
+        
+        

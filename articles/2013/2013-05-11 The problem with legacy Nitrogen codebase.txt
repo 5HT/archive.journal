@@ -1,0 +1,12 @@
+The problem with legacy Nitrogen codebase
+
+The main problem which leads to code growing in wf_core is an assumption that XHR calls would be made to the same URL as a page, i.e. each page has its own XHR binding endpoints same as a page endpoint. Due to that page state was introduced:
+
+first_request -> that blows the initial page
+postback_request -> that talks over XHR
+
+and for unknown reason static_file state. I removed all this stuff and redirected all postbacks to single endpoint let's say /websockets. Anyway in postback we have all pickled information needed to call Module:event(Args). From the other side websocket handler nature is that you should do all operation inside callbacks, its not like you do just websocket:send() from erlang.
+
+So this refactoring not only means to purify codebase but also opens a way to implement any transport under nitrogen. Thats why websocket port of nitrogen comes so easy and later XHR fallback with Bullet implemented in couple minutes. Doing that within previous wf_core codebase would be impossible. And doing this in cowboy and bullet callbacks makes N2O aware of any transports.
+TAGS (EDIT) n2o
+

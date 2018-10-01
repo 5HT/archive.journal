@@ -1,0 +1,129 @@
+Erlang Metaprogramming Real Practice
+
+... Erlang JavaScript compiler in 30 minutes :)
+
+Не случайно ходит мнение среди ML пацанов, что хорошую вещь макросом не назовут :) LISP пацаны однако пишут на макросах и горя не знают. Есть еще такое мнение, что раз нужно метапрограммирование или макросы, значит стоит задача поддержания гавнокода. У нас же мы опускаемся к метапрораммированию только если сталкиваемся с реальным ужасным кодом. Сегодня мы будем говорит о JavaScript.
+
+Поскольку у меня все для демонстрации 4 августа готово: Erlang PaaS работает, контейнеры создаются, приложения на Xen выполняются, мне DOXTOP разрешил побаловаться и написать JavaScript компилятор из Эрланге.
+
+Все знают, что каждый уважающий себя человек, когда ему нужно написать что-то на джаваскрипте, он пишет компилятор своего любимого языка в джаваскрипт http://altjs.org/ Однако если в Haskell долине есть вменяемый клиентский язык Elm, то в Эрланг мире почему у всех свернуло голову. Browserl (эмулятор Эрланга), ErlyJS (JavaScript to Erlang WTF?), erljs (Run Erlang in JavaScript) -- это все чудовища рожденные соном разума. Почему-то люди решили что BEAM машина это святой грааль и которую обязательно нужно каждому реализовать в JavaScript. Поэтому все работает медленно, ужасно развесисто и вообще уродливо. После общения с автором Erlang on Xen я окончательно убедился, что виртуальная машина Эриксона то еще легаси с конвертацией байт кода из старого в новый формат про который мало кто знает. Зато приемственность версий чуть ли не от самого рождения c другой стороны. 
+
+У нас стоит абсолютно конкретная задача: страницы N2O, которые у нас на сервер-сайде сделать выполняемыми на клиенте, что бы можно было писать на Эрланге на стороне клиента, используя веб-браузерные воркеры как эмуляцию элланг процессов и все fun чтобы разворачивались в JavaScript function. Ну а для паттерн мачинга и тейл рекурсии мы возьмем библиотеки matches.js и tailrec.js.
+
+Попытаемся скомпилировать такую функцию fac.erl:
+start() ->
+    J = 5,
+    N = fac(J),
+    console:log("factorial ~p", [J, N]).
+
+fac(0) -> 1;
+fac(N) -> N * fac(N-1).
+
+
+Для этого нам нужно построить AST дерево Эрланговское -- это мы делаем несколькими строчками:
+parse(File) ->
+    {ok,Content} = file:read_file(File),
+    {ok,Tokens,X} = erl_scan:string(binary_to_list(Content)),
+    tokens(Tokens,[]).
+
+tokens([],Res) -> Res;
+tokens(Tokens,Res) ->
+    Fun = fun(X)-> case X of {dot,_} ->false; _  -> true end end,
+    Cut = lists:takewhile(Fun,Tokens),
+    case Cut of
+        [] -> tokens([],Res);
+        _ -> [H|T] = lists:dropwhile(Fun,Tokens),
+             tokens(T,Res ++ [Cut ++ [H]]) end.
+
+forms(File) -> Forms = [ begin {ok,Form} = erl_parse:parse_form(Line),
+                       Form end || Line <- parse(File)], io:format("Forms: ~p",[Forms]).
+
+
+Получается такое дерево из эрланг кортежей и списков:
+164> shen:forms("fac.erl").
+Forms: [{function,1,start,0,
+            [{clause,1,[],[],
+                 [{match,2,{var,2,'J'},{integer,2,5}},
+                  {match,3,{var,3,'N'},{call,3,{atom,3,fac},[{var,3,'J'}]}},
+                  {call,4,
+                      {remote,4,{atom,4,console},{atom,4,log}},
+                      [{string,4,"factorial ~p"},
+                       {cons,4,{var,4,'J'},{cons,4,{var,4,'N'},{nil,4}}}]}]}]},
+        {function,6,fac,1,
+            [{clause,6,[{integer,6,0}],[],[{integer,6,1}]},
+             {clause,7,
+                 [{var,7,'N'}],
+                 [],
+                 [{op,7,'*',
+                      {var,7,'N'},
+                      {call,7,
+                          {atom,7,fac},
+                          [{op,7,'-',{var,7,'N'},{integer,7,1}}]}}]}]}]
+
+
+Которе прекрасно парсается эрлангом:
+function(Name,Args,Clauses) ->
+  [ io_lib:format("var ~s = pattern({~n", [ Name ]),
+    string:join([ clause(Args,C) || C <- Clauses ],",\n"),
+    io_lib:format("~s~n",["});"]) ].
+
+clause(Argc,{clause,X,Argv,Guard,Expressions}) ->
+    Match = string:join([ exp(Arg) || Arg <- Argv ],","),
+    Args = string:join([ arg(Arg,N) || {Arg,N} <- lists:zip(Argv,lists:seq(1,Argc))],","),
+  [ io_lib:format("\t'~s': function(~s) {~n", [Match,Args]),
+    ["\t\t"++case N == length(Expressions) of true -> "return "; _ -> "" end ++ exp(E)++";\n"
+       || {E,N} <- lists:zip(Expressions,lists:seq(1,length(Expressions)))],
+    io_lib:format("~s",["\t}"]) ].
+
+arg({integer,X,Value},N) ->           io_lib:format("x~s",[integer_to_list(N)]);
+arg({var,X,Value},N) ->               io_lib:format("~s",[string:to_lower(atom_to_list(Value))]).
+par(List) ->                          io_lib:format("~s",[lists:flatten(string:join([exp(V)||V<-List],","))]).
+exp({nil,X}) -> "[]";
+exp({integer,X,Value}) ->             io_lib:format("~s",[integer_to_list(Value)]);
+exp({string,X,Value}) ->              io_lib:format("'~s'",[Value]);
+exp({cons,X,Left,Right}) ->           io_lib:format("[~s,~s]",[exp(Left),exp(Right)]);
+exp({var,X,Value}) ->                 io_lib:format("~s",[string:to_lower(atom_to_list(Value))]);
+exp({op,X,'-',Left,Right}) ->         io_lib:format("~s - ~s",[exp(Left),exp(Right)]);
+exp({op,X,'*',Left,Right}) ->         io_lib:format("~s * ~s",[exp(Left),exp(Right)]);
+exp({call,X,{atom,Y,Name},Params}) -> io_lib:format("~s(~s)",[Name,par(Params)]);
+exp({match,X,Left,Right}) ->          io_lib:format("~s = ~s",[exp(Left),exp(Right)]);
+exp({call,X,{remote,XX,{atom,Y,Module},{atom,Z,Name}},Params}) -> 
+    io_lib:format("~s.~s(~s)",[Module,Name,par(Params)]);
+exp(X) -> X.
+
+Обернем все в пролог и эпилог:
+prelude() -> io_lib:format("~n~s~n",["var pattern = require(\"matches\").pattern;"]).
+intermezzo(Forms) -> [ compile(F) || F <- Forms ].
+coda() -> io_lib:format("~s~n",["start();"]).
+
+main() ->
+    Forms = forms("fac.erl"),
+    io:format("Forms: ~p",[Forms]),
+    io:format("~s",[lists:flatten([prelude(),intermezzo(Forms),coda()])]).
+
+
+Получаем на выходе fac.js:
+var pattern = require("matches").pattern;
+var start = pattern({
+        '': function() {
+                j = 5;
+                n = fac(j);
+                return console.log('factorial ~p',[j,[n,[]]]);
+        }});
+var fac = pattern({
+        '0': function(x1) {
+                return 1;
+        },
+        'n': function(n) {
+                return n * fac(n - 1);
+        }});
+start();
+
+
+Запускаем node fac.js:
+factorial ~p [ 5, [ 120, [] ] ]
+
+
+Факториал посчитан :) https://github.com/5HT/shen
+TAGS (EDIT) cs, erlang, javascript
+
