@@ -15,5 +15,7 @@ Iso(Path,Equiv), Equiv(Path,Iso), ...т.е. флипы аргументов, в 
 стрелки, и в разном порядке все равенства.
 
 ___________________
-[1]. https://github.com/groupoid/groupoid.space/blob/master/tex/slides/equality/equ.pdf
+[1].
+https://github.com/groupoid/groupoid.space/blob/master/tex/slides/equality/equ.p
+df
 TAGS (EDIT) cs, groupoid infinity

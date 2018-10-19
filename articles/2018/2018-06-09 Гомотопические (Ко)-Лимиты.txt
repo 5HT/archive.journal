@@ -59,7 +59,8 @@ completePullback (A B C: U) (f: A -> C) (g: B -> C)
     = ...
 
 ________________________
-[1]. https://web.math.rochester.edu/people/faculty/doug/otherpapers/munson-volic.pdf
+[1].
+https://web.math.rochester.edu/people/faculty/doug/otherpapers/munson-volic.pdf
 [2]. http://www.home.uni-osnabrueck.de/mfrankland/Math527/Math527_0308.pdf
 [3]. https://groupoid.space/mltt/types/pullback/
 TAGS (EDIT) cs, groupoid infinity

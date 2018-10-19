@@ -16,7 +16,8 @@
 пропозишинал транкешины ||-|| (лендинг в Prop) и даже HIT (лендинг в Groupoid,
 например, для окружности):
 
-1) Truncation ||A|| parametrized by (A:U) type = (X: U) -> isProp X -> (A -> X) -> X
+1) Truncation ||A|| parametrized by (A:U) type = (X: U) -> isProp X -> (A -> X)
+-> X
 2) S^1 = (X:U) -> isGroupoid X -> ((x:X) -> Path X x x) -> X
 3) Arbitrary (A:U) type = (X: U) -> isSet X -> (A -> X) -> X
 
@@ -56,7 +57,8 @@ Unit_Encoding = (one: Unit)
               * ((X Y: U) (x: isSet X) (y:isSet Y) (f:X->Y)
              -> naturality X Y f (one X x) (one Y y))
 
-Truncation ||A|| parametrized by (A:U) type = (X: U) -> isProp X -> (A -> X) -> X
+Truncation ||A|| parametrized by (A:U) type = (X: U) -> isProp X -> (A -> X) ->
+X
 S^1 = (X:U) -> isGroupoid X -> (x:X) -> Path X x x -> X
 Arbitrary (A:U) type = (X: U) -> isSet X -> (A -> X) -> X
 
@@ -94,6 +96,8 @@ unitEncCondition (n: unitEnc'): isProp (isUnitEnc n)
 
 _________________
 [1]. https://github.com/sspeight93/Papers/
-[2]. https://homotopytypetheory.org/2017/10/11/impredicative-encodings-of-inductive-types-in-hott/
+[2].
+https://homotopytypetheory.org/2017/10/11/impredicative-encodings-of-inductive-t
+ypes-in-hott/
 [3]. https://www.newton.ac.uk/files/seminar/20170711090010001-1009680.pdf
 TAGS (EDIT) cs, groupoid infinity

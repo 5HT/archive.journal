@@ -15,7 +15,8 @@ glue — V-типы (в yacct две иерархии вселенных: пре
 основные унивалентные теоремы гораздо компактнее.
 
 ___________________
-[1]. Презентация Мортберга http://www.cs.cmu.edu/~amoertbe/slides/Mortberg-MURI18.pdf
+[1]. Презентация Мортберга
+http://www.cs.cmu.edu/~amoertbe/slides/Mortberg-MURI18.pdf
 [2]. Тайпчекер https://github.com/mortberg/yacctt
 [4]. Статья https://arxiv.org/pdf/1712.01800.pdf
 
