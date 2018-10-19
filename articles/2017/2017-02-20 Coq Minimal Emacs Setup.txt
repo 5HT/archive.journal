@@ -11,10 +11,12 @@ $ cat ~/.emacs
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
 (add-hook 'coq-mode-hook #'company-coq-mode)
-(custom-set-variables '(package-selected-packages (quote (company-coq company))))
+(custom-set-variables '(package-selected-packages (quote (company-coq 
+company))))
 (custom-set-faces)
 
-Coq is best to be installed from opam, as opam coq deps found as requires in coq files.
+Coq is best to be installed from opam, as opam coq deps found as requires in 
+coq files.
 Coq codebase is maybe second after HOL/Isabell.
 $ opam search coq | wc -l
      241

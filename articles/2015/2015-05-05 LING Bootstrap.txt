@@ -2,7 +2,10 @@ LING Bootstrap
 
 Попробовать LING с приложениями SYNRC лучше всего с помощью MAD.
 
-Например вы хотите чтобы ваше приложение и его зависимости было скомпилировано с вшитой виртуальной машиной и чтобы все было в виде исполняемого Mach-O DWARF-3 имаджа. Нет ничего проще! В rebar.config вам нужно указать зависимость от LING. Например вот rebar.config от нашего приложения MAD:
+Например вы хотите чтобы ваше приложение и его зависимости было скомпилировано 
+с вшитой виртуальной машиной и чтобы все было в виде исполняемого Mach-O 
+DWARF-3 имаджа. Нет ничего проще! В rebar.config вам нужно указать зависимость 
+от LING. Например вот rebar.config от нашего приложения MAD:
 
 {deps_dir,"deps"}.
 {deps, [{ling, ".*", {git, "git://github.com/proger/ling", {tag, "osx-again"}}},
@@ -11,8 +14,12 @@ LING Bootstrap
 
 Пока Влад не смержился с master нужно указывать его ветку и tag osx-again. 
 
-С LING идут два приложения ling (конветация байткода и другие внутренние функции ling) и et (шаблонизатор написанный Yariv Sadan). Шаблоны нужны при компилялции, для mad плагина нам понадобится только ling_code, ling_disasm, ling_bifs и ling_lib модули.
-Как выглядят инструкции виртуальной машины LING (сконвертированный BEAM байткод в байткод LING):
+С LING идут два приложения ling (конветация байткода и другие внутренние 
+функции ling) и et (шаблонизатор написанный Yariv Sadan). Шаблоны нужны при 
+компилялции, для mad плагина нам понадобится только ling_code, ling_disasm, 
+ling_bifs и ling_lib модули.
+Как выглядят инструкции виртуальной машины LING (сконвертированный BEAM байткод 
+в байткод LING):
 
 
 5> element(2,ling_code:beam_to_ling(element(2,mad_repl:load_file("mad.beam")))).
@@ -41,7 +48,10 @@ LING Bootstrap
     ...
 
 
-Также в LING идут оверлеи некоторых OTP модулей для приложений kernel, stdlib, crypto и os_mon. Они собираются автоматически при сборке LING. Не забывайте указывать ARCH=posix_x86. Сборку LING нужно осуществить после того как вы вытащили зависимости с помощью mad.
+Также в LING идут оверлеи некоторых OTP модулей для приложений kernel, stdlib, 
+crypto и os_mon. Они собираются автоматически при сборке LING. Не забывайте 
+указывать ARCH=posix_x86. Сборку LING нужно осуществить после того как вы 
+вытащили зависимости с помощью mad.
 
     $ git clone https://github.com/synrc/mad
     $ ./mad dep
@@ -49,9 +59,12 @@ LING Bootstrap
     $ ARCH=posix_x86 make
 
 
-Так у нас появится собраный LING, его оверлеи для некоторых OTP приложений а так же ling и et приложения которые пока робко прячут свои бинарники в kernel приложении, чтобы не плодить приложений.
+Так у нас появится собраный LING, его оверлеи для некоторых OTP приложений а 
+так же ling и et приложения которые пока робко прячут свои бинарники в kernel 
+приложении, чтобы не плодить приложений.
 
-Теперь можно собвстенно попытаться собрать MAD'ом ваше приложение (в нашем случае мы будем собирать LING версию MAD :). 
+Теперь можно собвстенно попытаться собрать MAD'ом ваше приложение (в нашем 
+случае мы будем собирать LING версию MAD :). 
 
 $ mad lin
 Ling Params: []
@@ -91,13 +104,16 @@ Compilation of Filesystem object: ...ok
 Linking Image: ok
 
 
-Mount View показывает таблицу mount для приложений которые прилинкованы внутри EMBED.FS вшитой в образ. Получить ее можно запустив LING на маке и выполнив следующие команды:
+Mount View показывает таблицу mount для приложений которые прилинкованы внутри 
+EMBED.FS вшитой в образ. Получить ее можно запустив LING на маке и выполнив 
+следующие команды:
 
 $ rlwrap ./mad.img
 Erlang [ling-0.3.2]
 
 Eshell V6.3  (abort with ^G)
-1> io:format("~s",[binary_to_list(element(2,file:read_file("/boot/local.map")))]).
+1> 
+io:format("~s",[binary_to_list(element(2,file:read_file("/boot/local.map")))]).
 /boot /boot
 /erlang/lib/os_mon/ebin /os_mon
 /erlang/lib/crypto/ebin /crypto
@@ -114,7 +130,8 @@ Boot Code: {script,
                {"Erlang/OTP","17"},
                [{preLoaded,[...]},
                 {progress,preloaded},
-                {path,["$ROOT/lib/kernel-3.0.3/ebin","$ROOT/lib/stdlib-2.2/ebin"]},
+                
+{path,["$ROOT/lib/kernel-3.0.3/ebin","$ROOT/lib/stdlib-2.2/ebin"]},
                 {primLoad,[error_handler]},
                 {kernel_load_completed},
                 {progress,kernel_load_completed},
@@ -123,10 +140,12 @@ Boot Code: {script,
                 {path,["$ROOT/lib/stdlib-2.2/ebin"]},
                 {primLoad,[...]},
                 {progress,modules_loaded},
-                {path,["$ROOT/lib/kernel-3.0.3/ebin","$ROOT/lib/stdlib-2.2/ebin"]},
+                
+{path,["$ROOT/lib/kernel-3.0.3/ebin","$ROOT/lib/stdlib-2.2/ebin"]},
                 {kernelProcess,heart,{heart,start,[]}},
                 {kernelProcess,error_logger,{error_logger,start_link,[]}},
-                {kernelProcess,application_controller,{application_controller,start,[...]}},
+                
+{kernelProcess,application_controller,{application_controller,start,[...]}},
                 {progress,init_kernel_started},
                 {apply,{application,load,[...]}},
                 {progress,applications_loaded},
@@ -141,9 +160,16 @@ Boot Code: {script,
 
 
 
-Как видите в бутлоадер MAD вставил определенные приложения на файловой системе. Все эти приложения появились из rebar.config когда вы вытащили приложения. MAD LING плагин тесно интегрирован в MAD, поэтому занимает меньше чем оригинальный сборщик LING образов, который называется railing. По крайней мере я уже престал собирать им образы, полностью перешел на MAD. Ведь весь MAD вместе с поддержкой LING занимает всего 890 LOC, в то время как railing 990 LOC.
+Как видите в бутлоадер MAD вставил определенные приложения на файловой системе. 
+Все эти приложения появились из rebar.config когда вы вытащили приложения. MAD 
+LING плагин тесно интегрирован в MAD, поэтому занимает меньше чем оригинальный 
+сборщик LING образов, который называется railing. По крайней мере я уже престал 
+собирать им образы, полностью перешел на MAD. Ведь весь MAD вместе с поддержкой 
+LING занимает всего 890 LOC, в то время как railing 990 LOC.
 
-Парсер этого Boot Loader находится в preload/init.erl, именно он и выполняет инструкции Erlang OTP Boot Loader'а и запускает приложения при запуске виртуальнрй машины LING:
+Парсер этого Boot Loader находится в preload/init.erl, именно он и выполняет 
+инструкции Erlang OTP Boot Loader'а и запускает приложения при запуске 
+виртуальнрй машины LING:
 
 $ ./mad.img
 Erlang [ling-0.3.2]

@@ -52,11 +52,13 @@ However when you put macro inside the guards:
 
 is_alpha_cow(X) when ?IS_ALPHA(X) -> true;
 is_alpha_cow(X) -> false.
-is_alpha_bull(X) when (X >= $a andalso X =< $z) orelse (X >= $A andalso X =< $Z) -> true;
+is_alpha_bull(X) when (X >= $a andalso X =< $z) orelse (X >= $A andalso X =< 
+$Z) -> true;
 is_alpha_bull(X) -> false.
 
 
-you receive not only better result than in body, but also the best result of [{guard,body}x{cow,bull}] measurement:
+you receive not only better result than in body, but also the best result of 
+[{guard,body}x{cow,bull}] measurement:
 
 3> sample:mbull().
 {104,<<>>}

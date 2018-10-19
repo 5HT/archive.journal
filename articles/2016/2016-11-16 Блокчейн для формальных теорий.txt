@@ -4,9 +4,12 @@ http://qeditas.org
 
 Bitcoin is for money, Ethereum is for computation, Qeditas is for deduction
 
-Qeditas is a project to apply block chain technology to support the construction of a library of formalized mathematics. 
-It is intended to be a realization (or possibly revival) of the QED project, as described in the QED Manifesto.
+Qeditas is a project to apply block chain technology to support the 
+construction of a library of formalized mathematics. 
+It is intended to be a realization (or possibly revival) of the QED project, as 
+described in the QED Manifesto.
 
-Со ссылкой на манифест из универсистета Немийгена. Дожили до метаверификации :-) Чтобы паленые свои теоремы не распространяли направо на лево!
+Со ссылкой на манифест из универсистета Немийгена. Дожили до метаверификации 
+:-) Чтобы паленые свои теоремы не распространяли направо на лево!
 TAGS (EDIT) cs, formal methods
 

@@ -1,6 +1,7 @@
 Первый официальный Hello World на OM
 
-Не считая того, что мы понаписывали на нем кучу логик. Сегодня будет демонстрация эффектов ОМ, т.е. копать будем не глубже System F:
+Не считая того, что мы понаписывали на нем кучу логик. Сегодня будет 
+демонстрация эффектов ОМ, т.е. копать будем не глубже System F:
 
 $ cat Morte/recursive
 #IO/replicateM #Nat/Five
@@ -9,7 +10,8 @@ $ cat Morte/recursive
                           #IO/putLine)
 
 
-Напоминаю что такое IO и [>>=] (в Хаскель эквиваленте), поставляется с базовой библиотекой ОМ:
+Напоминаю что такое IO и [>>=] (в Хаскель эквиваленте), поставляется с базовой 
+библиотекой ОМ:
 
       #IO/data : #String = #List #Nat
 
@@ -29,12 +31,15 @@ data IO r = PutStrLn String (IO r)
 
 
 
-Для запуска этой монадки нам нужны индуктивные биндинги, т.е. внешние эффекты в виде функций. Ну и передать их как параметры в скомпилированный терм:
+Для запуска этой монадки нам нужны индуктивные биндинги, т.е. внешние эффекты в 
+виде функций. Ну и передать их как параметры в скомпилированный терм:
 
 
 pure() -> fun(IO) -> IO end.
-getLine() -> fun(IO) -> fun(_) -> L = ch:list(io:get_line("> ")), ch:ap(IO,[L]) end end.
-putLine() -> fun(S) -> fun(IO) -> io:format(": "), io:put_chars(ch:unlist(S)), ch:ap(IO,[S]) end end.
+getLine() -> fun(IO) -> fun(_) -> L = ch:list(io:get_line("> ")), ch:ap(IO,[L]) 
+end end.
+putLine() -> fun(S) -> fun(IO) -> io:format(": "), io:put_chars(ch:unlist(S)), 
+ch:ap(IO,[S]) end end.
 
 ma() -> ap('Morte':recursive(),[getLine(),putLine(),pure(),ch:nil()]).
 

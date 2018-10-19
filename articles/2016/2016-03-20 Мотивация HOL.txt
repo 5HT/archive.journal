@@ -1,8 +1,27 @@
 Мотивация HOL
 
-The logic supported by Cambridge LCF has the usual formula structure of pred- icate calculus, and the term structure of the typed λ-calculus. The type system, due to Milner, is essentially Church’s original one [4], but with type variables moved from the meta-language to the object language (in Church’s system, a term with type variables is actually a meta-notation – a term-schema – denot- ing a family of terms, whereas in LCF it is a single polymorphic term). LCF’s interpretation of terms as denoting members of Scott domains is overkill for hardware verification where the recursion that arises is normally just primitive recursion. For hardware verification, there is rarely the need for the extra so- phistication of fixed-point (Scott) induction; ordinary mathematical induction suffices. The HOL system retains the syntax of LCF, but reinterprets types as ordinary sets, rather than Scott domains.
+The logic supported by Cambridge LCF has the usual formula structure of pred- 
+icate calculus, and the term structure of the typed λ-calculus. The type 
+system, due to Milner, is essentially Church’s original one [4], but with type 
+variables moved from the meta-language to the object language (in Church’s 
+system, a term with type variables is actually a meta-notation – a term-schema 
+– denot- ing a family of terms, whereas in LCF it is a single polymorphic 
+term). LCF’s interpretation of terms as denoting members of Scott domains is 
+overkill for hardware verification where the recursion that arises is normally 
+just primitive recursion. For hardware verification, there is rarely the need 
+for the extra so- phistication of fixed-point (Scott) induction; ordinary 
+mathematical induction suffices. The HOL system retains the syntax of LCF, but 
+reinterprets types as ordinary sets, rather than Scott domains.
 
-To enable existing LCF code to be reused, the axioms and rules of inference of HOL were not taken to be the standard ones due to Church. For example, the LCF logic has parallel substitution as a primitive rule of inference (a decision taken after experimentation when Edinburgh LCF was designed), but Church’s logic has a different primitive. HOL employs the LCF substitution because I wanted to use the existing efficient code. As a result the HOL logic ended up with a rather ad hoc formal basis. Another inheritance from LCF is the use of a natural deduction logic (Church used a Hilbert-style formal system). However, this inheritance is, in my opinion, entirely good.
+To enable existing LCF code to be reused, the axioms and rules of inference of 
+HOL were not taken to be the standard ones due to Church. For example, the LCF 
+logic has parallel substitution as a primitive rule of inference (a decision 
+taken after experimentation when Edinburgh LCF was designed), but Church’s 
+logic has a different primitive. HOL employs the LCF substitution because I 
+wanted to use the existing efficient code. As a result the HOL logic ended up 
+with a rather ad hoc formal basis. Another inheritance from LCF is the use of a 
+natural deduction logic (Church used a Hilbert-style formal system). However, 
+this inheritance is, in my opinion, entirely good.
 
 https://www.cl.cam.ac.uk/~mjcg/papers/HolHistory.pdf
 TAGS (EDIT) cs

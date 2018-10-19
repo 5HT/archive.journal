@@ -2,7 +2,8 @@ Skyline on Xen Milestone
 
 kvs (mnesia), mqs (amqp_client), n2o (cowboy), etc...
 
-https://imgprx.livejournal.net/12472944ca219b5a3929f87bb06866b56d72f8f1/k5VUFephETgytpS1BWbQQgrR7ZqNVQkcXUitMH5jNKgSm1FjZLr1mAdhQXGZJZIvJzo64AZf9xYUEOiEi1GpCg
+https://imgprx.livejournal.net/12472944ca219b5a3929f87bb06866b56d72f8f1/k5VUFeph
+ETgytpS1BWbQQgrR7ZqNVQkcXUitMH5jNKgSm1FjZLr1mAdhQXGZJZIvJzo64AZf9xYUEOiEi1GpCg
 
 In EOX VM LING:
 

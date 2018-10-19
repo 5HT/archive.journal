@@ -1,6 +1,8 @@
 N2O: поддержка кастомных темплейтеров
 
-В N2O вы можете использовать любой темплейт движок, причем вы можете комбинировать их как хотите. Например чтобы добавить поддержку DTL темплейтов мы просто пишет Nitrogen Element:
+В N2O вы можете использовать любой темплейт движок, причем вы можете 
+комбинировать их как хотите. Например чтобы добавить поддержку DTL темплейтов 
+мы просто пишет Nitrogen Element:
 
 -module (element_dtl).
 -include_lib ("n2o/include/wf.hrl").
@@ -10,7 +12,8 @@ reflect() -> record_info(fields, dtl).
 
 render_element(Record) ->
     File = wf:to_list(Record#dtl.file),
-    render_template(code:priv_dir(web) ++ "/templates/" ++ File, File, Record#dtl.bindings).
+    render_template(code:priv_dir(web) ++ "/templates/" ++ File, File, 
+Record#dtl.bindings).
 
 render_template(FullPathToFile,ViewFile,Data) ->
     Pieces = string:tokens(ViewFile,"/"),
@@ -32,6 +35,7 @@ render_template(FullPathToFile,ViewFile,Data) ->
 #dtl{file=code:priv_dir(web) ++ "/templates/dtl_template.html"}
 
 
-Вот и все собственно, паника по поводу того что в нитрогене плохой темлейтор прекращена.
+Вот и все собственно, паника по поводу того что в нитрогене плохой темлейтор 
+прекращена.
 TAGS (EDIT) #dtl, cs
 

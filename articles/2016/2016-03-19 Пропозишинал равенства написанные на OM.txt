@@ -1,6 +1,7 @@
 Пропозишинал равенства написанные на OM
 
-Как выглядит классическое пропозициональное равенство закодировраное с помощью Черч кодировки, где кериером выступает 1-тапл:
+Как выглядит классическое пропозициональное равенство закодировраное с помощью 
+Черч кодировки, где кериером выступает 1-тапл:
 
 $ cat Equ/@
    \  (T: *)
@@ -20,7 +21,8 @@ $ cat Equ/theorem
 
 Если попытаться прочекать 0 и 1:
 
-$ om type a "(\ (x : #Equ/@ #Nat/@ #Nat/Zero (#Nat/Succ #Nat/Zero)) -> x) (#Equ/refl #Nat/@ #Nat/Zero)"
+$ om type a "(\ (x : #Equ/@ #Nat/@ #Nat/Zero (#Nat/Succ #Nat/Zero)) -> x) 
+(#Equ/refl #Nat/@ #Nat/Zero)"
 escript: exception error: ["==",
                   {app,{{var,{'Succ',0}},{var,{'Zero',0}}}},
                   {var,{'Zero',0}}]
@@ -28,7 +30,8 @@ escript: exception error: ["==",
 
 В то время как тип сравнения 0 и 0 населен:
 
-$ om fst erase a "(\ (x : #Equ/@ #Nat/@ #Nat/Zero #Nat/Zero) -> x) (#Equ/refl #Nat/@ #Nat/Zero)"
+$ om fst erase a "(\ (x : #Equ/@ #Nat/@ #Nat/Zero #Nat/Zero) -> x) (#Equ/refl 
+#Nat/@ #Nat/Zero)"
 {app,{{{"λ",{x,0}},{any,{var,{x,0}}}},
       {app,{{{"λ",{a,0}},
              {any,{{"λ",{refl,0}},{any,{app,{{var,{refl,0}},{var,{a,0}}}}}}}},

@@ -13,11 +13,13 @@
 Манджушри (DI): OM A RA PA TSA NA DI
 Авалокитешвара: OM MA NI PAD ME HUM
 Очищение 6 лок: A SU NRI TRI PRE DU
-Будда Медецины: TA YA THA OM BHE GHAN DZE BHE GHAN DZE MA HA BHEGHANDZE BHEGHANDZE RADZA SAMUDGATE SVA HA
+Будда Медецины: TA YA THA OM BHE GHAN DZE BHE GHAN DZE MA HA 
+BHEGHANDZE BHEGHANDZE RADZA SAMUDGATE SVA HA
 Зеленая Тара: OM TA RE TU TA RE TU RE SVA HA
 Кситигарбха: OM KSHI TE GAR BHA THA LEM HUM
 Мантра пустоты: OM SHU NYA TA JNYA NA VA JRA SVA BHA VA A TMA KO HAM
-Мантра умножения заслуг х7->x100000: OM SAM BA RA SAM BA RA BE MA NA SA RA MA HA ZA VA HUNG OM MA RA MA RA BE MA NA KA RAM AHA ZA VA HUNG
+Мантра умножения заслуг х7->x100000: OM SAM BA RA SAM BA RA BE MA NA 
+SA RA MA HA ZA VA HUNG OM MA RA MA RA BE MA NA KA RAM AHA ZA VA HUNG
 
 вместе с ваджрной песней и разложить на слоги то получится вот такое:
 
@@ -43,7 +45,9 @@ MO   NTA   PHAT  RAM  SHU  TMA        GHAM
                       SI
                       SPA
 
-При этом тут исключены тибетские произношения типа BEN, ZA, DZA, DZE в мантрах. Потому что в тибетском нету звуков ВА и ДЖРА и ВАДЖРА записывается как badzra (BEN DZA, BEN DZA RA).
+При этом тут исключены тибетские произношения типа BEN, ZA, DZA, DZE 
+в мантрах. Потому что в тибетском нету звуков ВА и ДЖРА и ВАДЖРА 
+записывается как badzra (BEN DZA, BEN DZA RA).
 
 С годовщиной badzra gu ru вас, дорогие друзья :)
 TAGS (EDIT) dharma

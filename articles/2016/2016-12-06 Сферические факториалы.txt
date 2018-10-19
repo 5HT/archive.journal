@@ -42,14 +42,16 @@ Fac: 3ns
 
 
 rustc 1.14.0-nightly (cae6ab1c4 2016-11-05)
-На расте вообще zero-cost факториал получился :-) Даже factoria 20 не выходит из 0 наносекунд.
+На расте вообще zero-cost факториал получился :-) Даже factoria 20 не выходит 
+из 0 наносекунд.
 #[bench]
 fn fac_rust(b: &mut Bencher) {
     let mut x: i64 = 0;
     b.iter(|| { x = factorial(5); });
 }
 
-fn factorial(value: i64) -> i64 { if value==1 { 1 } else { return value * factorial(value-1); } }
+fn factorial(value: i64) -> i64 { if value==1 { 1 } else { return value * 
+factorial(value-1); } }
 
 test fac_rust ... bench:           0 ns/iter (+/- 0)
 
@@ -85,7 +87,8 @@ $ luajit fac.lua
 Erlang/OTP 19 [erts-8.1] [64-bit] [smp:8:8]
 > Fac = fun Factorial(X) -> case X of 1 -> 1; _ -> X * Factorial(X-1) end end.
 #Fun
-> lists:sum([element(1,timer:tc(fun() -> Fac(5) end))||_<-lists:seq(1,1000000)])/1000000.
+> lists:sum([element(1,timer:tc(fun() -> Fac(5) 
+end))||_<-lists:seq(1,1000000)])/1000000.
 10.699388
 
 10us
@@ -96,7 +99,8 @@ fac(I,N) -> fac(I-1,N*I).
 fac(N) -> fac(N-1,N).
 test(F) ->
     A = list_to_integer(os:getenv("FAC")),
-    lists:sum([element(1,timer:tc(fun() -> fac(A) end))||_<-lists:seq(1,1000000)])/1000000.
+    lists:sum([element(1,timer:tc(fun() -> fac(A) 
+end))||_<-lists:seq(1,1000000)])/1000000.
 
 $ FAC=5 erl
 > c(fac), l(fac).
@@ -107,7 +111,8 @@ $ FAC=5 erl
 
 test(F) ->
     A = list_to_integer(os:getenv("FAC")),
-    lists:sum([element(1,timer:tc(fun() -> fac2(A) end))||_<-lists:seq(1,1000000)])/1000000.
+    lists:sum([element(1,timer:tc(fun() -> fac2(A) 
+end))||_<-lists:seq(1,1000000)])/1000000.
 > fac:test().
 0.436004
 
@@ -117,7 +122,8 @@ test() ->
     F = fun Fac(1,N) -> N;
             Fac(I,N) -> Fac(I-1,N*I) end,
     A = list_to_integer(os:getenv("FAC")),
-    lists:sum([element(1,timer:tc(fun() -> F(A-1,A) end))||_<-lists:seq(1,1000000)])/1000000.
+    lists:sum([element(1,timer:tc(fun() -> F(A-1,A) 
+end))||_<-lists:seq(1,1000000)])/1000000.
 1.806826
 
 1806ns

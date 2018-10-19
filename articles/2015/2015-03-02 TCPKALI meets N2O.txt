@@ -2,7 +2,8 @@ TCPKALI meets N2O
 
 Local
 
-$ tcpkali -m "PING" --latency-marker "PONG" -r1000 -c10 --ws 127.0.0.1:8877/ws/static/app/open.htm
+$ tcpkali -m "PING" --latency-marker "PONG" -r1000 -c10 --ws 
+127.0.0.1:8877/ws/static/app/open.htm
 
 Ramped up to 10 connections.
 Total data sent: 1.0 MiB (1010560 bytes)
@@ -24,7 +25,8 @@ Test duration: 10.0075 s.
 
 AWS
 
-$ tcpkali -m "PING" --latency-marker "PONG" -r 1000 -c 4 --ws 54.171.70.13:8877/ws/static/app/open.htm
+$ tcpkali -m "PING" --latency-marker "PONG" -r 1000 -c 4 --ws 
+54.171.70.13:8877/ws/static/app/open.htm
 
 Ramped up to 4 connections.
 Total data sent: 392.2 KiB (401612 bytes)
@@ -35,7 +37,8 @@ Latency at percentiles: 788.3/1041.5/1114.3 (95/99/99.5%)
 Mean and max latencies: 341.5/1294.3 (mean/max)
 Test duration: 10.0097 s.
 
-$ tcpkali -T10s -r 10000 -c 50 -m PING --ws 54.171.70.13:8877/ws/static/app/open.htm
+$ tcpkali -T10s -r 10000 -c 50 -m PING --ws 
+54.171.70.13:8877/ws/static/app/open.htm
 
 Ramped up to 50 connections.
 Total data sent: 10.2 MiB (10691888 bytes)

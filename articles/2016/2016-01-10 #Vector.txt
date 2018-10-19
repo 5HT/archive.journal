@@ -4,13 +4,24 @@ $ cat Vector/@
 \(n : #Nat ) ->
 \(a : *) ->
 \/ (Vector : #Nat -> * -> *) ->
-\/ (Cons : \/ (m : #Nat ) -> \/ (b : *) -> b -> Vector m b -> Vector (#Nat/Succ m) b) ->
+\/ (Cons : \/ (m : #Nat ) -> \/ (b : *) -> b -> Vector m b -> Vector (#Nat/Succ 
+m) b) ->
 \/ (Nil : \/ (b : *) -> Vector #Nat/Zero b) -> Vector n a
 
 $ ./morte < Vector/@
-λ(n : ∀(Nat : *) → ∀(Succ : Nat → Nat) → ∀(Zero : Nat) → Nat) → λ(a : *) → ∀(Vector : (∀(Nat : *) → ∀(Succ : Nat → Nat) → ∀(Zero : Nat) → Nat) → * → *) → ∀(Cons : ∀(m : ∀(Nat : *) → ∀(Succ : Nat → Nat) → ∀(Zero : Nat) → Nat) → ∀(b : *) → b → Vector m b → Vector (λ(Nat : *) → λ(Succ : Nat → Nat) → λ(Zero : Nat) → Succ (m Nat Succ Zero)) b) → ∀(Nil : ∀(b : *) → Vector (λ(Nat : *) → λ(Succ : Nat → Nat) → λ(Zero : Nat) → Zero) b) → Vector n a
+λ(n : ∀(Nat : *) → ∀(Succ : Nat → Nat) → ∀(Zero : Nat) → Nat) → λ(a : *) → 
+∀(Vector : (∀(Nat : *) → ∀(Succ : Nat → Nat) → ∀(Zero : Nat) → Nat) → * → *) → 
+∀(Cons : ∀(m : ∀(Nat : *) → ∀(Succ : Nat → Nat) → ∀(Zero : Nat) → Nat) → ∀(b : 
+*) → b → Vector m b → Vector (λ(Nat : *) → λ(Succ : Nat → Nat) → λ(Zero : Nat) 
+→ Succ (m Nat Succ Zero)) b) → ∀(Nil : ∀(b : *) → Vector (λ(Nat : *) → λ(Succ : 
+Nat → Nat) → λ(Zero : Nat) → Zero) b) → Vector n a
 ∀(n : ∀(Nat : *) → ∀(Succ : Nat → Nat) → ∀(Zero : Nat) → Nat) → ∀(a : *) → *
 
-λ(n : ∀(Nat : *) → ∀(Succ : Nat → Nat) → ∀(Zero : Nat) → Nat) → λ(a : *) → ∀(Vector : (∀(Nat : *) → ∀(Succ : Nat → Nat) → ∀(Zero : Nat) → Nat) → * → *) → ∀(Cons : ∀(m : ∀(Nat : *) → ∀(Succ : Nat → Nat) → ∀(Zero : Nat) → Nat) → ∀(b : *) → b → Vector m b → Vector (λ(Nat : *) → λ(Succ : Nat → Nat) → λ(Zero : Nat) → Succ (m Nat Succ Zero)) b) → ∀(Nil : ∀(b : *) → Vector (λ(Nat : *) → λ(Succ : Nat → Nat) → λ(Zero : Nat) → Zero) b) → Vector n a
+λ(n : ∀(Nat : *) → ∀(Succ : Nat → Nat) → ∀(Zero : Nat) → Nat) → λ(a : *) → 
+∀(Vector : (∀(Nat : *) → ∀(Succ : Nat → Nat) → ∀(Zero : Nat) → Nat) → * → *) → 
+∀(Cons : ∀(m : ∀(Nat : *) → ∀(Succ : Nat → Nat) → ∀(Zero : Nat) → Nat) → ∀(b : 
+*) → b → Vector m b → Vector (λ(Nat : *) → λ(Succ : Nat → Nat) → λ(Zero : Nat) 
+→ Succ (m Nat Succ Zero)) b) → ∀(Nil : ∀(b : *) → Vector (λ(Nat : *) → λ(Succ : 
+Nat → Nat) → λ(Zero : Nat) → Zero) b) → Vector n a
 TAGS (EDIT) #nat, coc, morte, om
 

@@ -2,30 +2,55 @@ N2O over MQTT + KVS
 
 https://n2o.space
 
-Пришла пора завернуть весь стек протоколов N2O в какой транспорт, который поддерживает, что-то более сложное чем ACK, такой транспорт — MQTT, он легковеснее AMQP, который, давайте без обид, порос кольцами уже, как и riak. Вообщем, пока emqtt.io еще позволяет, нужно быстро форкануться и повыбрасывать оттуда половину либ.
+Пришла пора завернуть весь стек протоколов N2O в какой транспорт, который 
+поддерживает, что-то более сложное чем ACK, такой транспорт — MQTT, он 
+легковеснее AMQP, который, давайте без обид, порос кольцами уже, как и riak. 
+Вообщем, пока emqtt.io еще позволяет, нужно быстро форкануться и повыбрасывать 
+оттуда половину либ.
 
-Из чего состоит EMQ — компания производитель EMQ Enterprise, Inc, автор Feng Lee. В основе лежит esockd — очередной неблокирующий сервер (типа ranch), в качестве веб сервера используется mochiweb, его же и вебсокеты.
+Из чего состоит EMQ — компания производитель EMQ Enterprise, Inc, автор Feng 
+Lee. В основе лежит esockd — очередной неблокирующий сервер (типа ranch), в 
+качестве веб сервера используется mochiweb, его же и вебсокеты.
 
-emqtt.io — это пример как нужно писать приложения, минимальная документация, отпидерашеный код, приятно работать. Только там все на lager завязали и в итоге, чтобы залогировать нужно lager, lager_syslog, gen_logger, goldrush, syslog. Поэтому пришлось форкануть это все. Или просто выброосить, но lager в продакшине любят, так как проверен. Ладно не буду пока удалять.
+emqtt.io — это пример как нужно писать приложения, минимальная документация, 
+отпидерашеный код, приятно работать. Только там все на lager завязали и в 
+итоге, чтобы залогировать нужно lager, lager_syslog, gen_logger, goldrush, 
+syslog. Поэтому пришлось форкануть это все. Или просто выброосить, но lager в 
+продакшине любят, так как проверен. Ладно не буду пока удалять.
 
-Теперь о рекомендациях по общей архитектуре. Стек протоколов N2O я вижу как федерацию, аналогичную CORBA/OASIS/XMPP поверх различных транспортов. До этого — это был BERT/JSON кодировка over WS/WSS транспорт, теперь качество и количество транспортов расширилось до MQTT over WS/WSS, TCP/TLS. Т.е. появился базовый посредник, с ack+pubsub+presence+ping протоколом, соответственно N2O HEART ["PING","N2O,"] протокол уже не нужен. Такая версия N2O расширит области применения. С другой стороны дополнительное кодирование MQTT и его заголовки будут потреблять больше ресурсов.
+Теперь о рекомендациях по общей архитектуре. Стек протоколов N2O я вижу как 
+федерацию, аналогичную CORBA/OASIS/XMPP поверх различных транспортов. До этого 
+— это был BERT/JSON кодировка over WS/WSS транспорт, теперь качество и 
+количество транспортов расширилось до MQTT over WS/WSS, TCP/TLS. Т.е. появился 
+базовый посредник, с ack+pubsub+presence+ping протоколом, соответственно N2O 
+HEART ["PING","N2O,"] протокол уже не нужен. Такая версия N2O расширит области 
+применения. С другой стороны дополнительное кодирование MQTT и его заголовки 
+будут потреблять больше ресурсов.
 
-Официальный MQTT JavaScript клиент от IBM: https://github.com/voxoz/mq/blob/master/apps/emq_dashboard/priv/www/assets/js/mqttws31.js Будем его резать и интегрировать в N2O. Есть альтернативный mqtt.js — но там как-то слишком адово как по нашим меркам. Для джаваскриптеров такое в порядке вещей считается.
+Официальный MQTT JavaScript клиент от IBM: 
+https://github.com/voxoz/mq/blob/master/apps/emq_dashboard/priv/www/assets/js/mq
+ttws31.js Будем его резать и интегрировать в N2O. Есть альтернативный mqtt.js — 
+но там как-то слишком адово как по нашим меркам. Для джаваскриптеров такое в 
+порядке вещей считается.
 
-MQTT как сервер приложений. Ну какие могут быть приложения у MQTT — коннектить устройства IoT. Чтобы реализовать перситенс — нужно имплементировать публичные хуки MQTT протокола:
+MQTT как сервер приложений. Ну какие могут быть приложения у MQTT — коннектить 
+устройства IoT. Чтобы реализовать перситенс — нужно имплементировать публичные 
+хуки MQTT протокола:
 
 load(Env) ->
     emqttd:hook('client.connected', fun ?MODULE:on_connected/3, [Env]),
     emqttd:hook('client.disconnected', fun ?MODULE:on_disconnected/3, [Env]),
     emqttd:hook('client.subscribe', fun ?MODULE:on_subscribe/3, [Env]),
-    emqttd:hook('client.subscribe.after', fun ?MODULE:on_subscribe_after/3, [Env]),
+    emqttd:hook('client.subscribe.after', fun ?MODULE:on_subscribe_after/3, 
+[Env]),
     emqttd:hook('client.unsubscribe', fun ?MODULE:on_unsubscribe/3, [Env]),
     emqttd:hook('message.publish', fun ?MODULE:on_publish/2, [Env]),
     emqttd:hook('message.delivered', fun ?MODULE:on_delivered/3, [Env]),
     emqttd:hook('message.acked', fun ?MODULE:on_acked/3, [Env]).
 
 
-Вообщем-то это все, что нужно знать людям, которые принимают решения. Инструкция для mad хипстеров не признающих rebar, mix и hex:
+Вообщем-то это все, что нужно знать людям, которые принимают решения. 
+Инструкция для mad хипстеров не признающих rebar, mix и hex:
 
 $ brew install erlang
 $ curl -fsSL https://raw.github.com/synrc/mad/master/mad > mad \
@@ -76,7 +101,8 @@ Configuration: [{emq_dashboard,
 Applications:  [kernel,stdlib,gproc,lager_syslog,pbkdf2,asn1,gen_logger,
                 mnesia,compiler,inets,crypto,syntax_tools,xmerl,kvs,esockd,
                 goldrush,public_key,lager,ssl,mochiweb,emqttd,mad,sh,syslog]
-Erlang/OTP 19 [erts-8.2] [source] [64-bit] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false] [dtrace]
+Erlang/OTP 19 [erts-8.2] [source] [64-bit] [smp:4:4] [async-threads:10] [hipe] 
+[kernel-poll:false] [dtrace]
 
 Eshell V8.2  (abort with ^G)
 1> 19:17:23.670 [info] Application lager started on node nonode@nohost
@@ -133,5 +159,7 @@ emqttd 2.1.1 is running now
 19:17:26.043 [info] Application syslog started on node nonode@nohost
 
 
-Open http://127.0.0.1:18083/#/websocket with admin:public credentials, Press Connect, Subscribe, Send and observe statistics http://127.0.0.1:18083/#/overview.
+Open http://127.0.0.1:18083/#/websocket with admin:public credentials, Press 
+Connect, Subscribe, Send and observe statistics 
+http://127.0.0.1:18083/#/overview.
 TAGS (EDIT) mq, voxoz

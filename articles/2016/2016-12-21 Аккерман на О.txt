@@ -7,7 +7,8 @@ Welcome to O-CPS Interpreter v0.12.0!
 
 fn ackerman_k(b: &mut Bencher) {
     let mut i = Interpreter::new().unwrap();
-    let ack = i.parse(&"f:{[x;y]$[0=x;1+y;$[0=y;f[x-1;1];f[x-1;f[x;y-1]]]]}".to_string());
+    let ack = 
+i.parse(&"f:{[x;y]$[0=x;1+y;$[0=y;f[x-1;1];f[x-1;f[x;y-1]]]]}".to_string());
     i.run(ack).unwrap();
     let call = i.parse(&"f[3;4]".to_string());
     b.iter(|| {

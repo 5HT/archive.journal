@@ -1,6 +1,9 @@
 N2O: как пользоватся REST
 
-Дело в том, что N2O -- это не только Nitrogen совместимый фремворк который поддерживает DTL темлейты. Это еще и микро-фреймвоорк для создания REST сервисов. Зацените как в N2O сделать например серсив доступа к пользователям. Скажем мы хотим, что бы работали операции GET PUT DELETE по таким ссылкам
+Дело в том, что N2O -- это не только Nitrogen совместимый фремворк который 
+поддерживает DTL темлейты. Это еще и микро-фреймвоорк для создания REST 
+сервисов. Зацените как в N2O сделать например серсив доступа к пользователям. 
+Скажем мы хотим, что бы работали операции GET PUT DELETE по таким ссылкам
 
 /rest/users/ -- получить список всех пользоватлеей GET
 /rest/users/maxim -- получить пользователя "maxim" GET DELETE
@@ -17,14 +20,16 @@ N2O: как пользоватся REST
                 #user{id="doxtop",email="doxtop@synrc.com"},
                 #user{id="roman"}]).
 
-init() -> ets:new(users, [named_table,{keypos,#user.id}]), ets:insert(users, ?USERS).
+init() -> ets:new(users, [named_table,{keypos,#user.id}]), ets:insert(users, 
+?USERS).
 get([]) -> ets:foldl(fun(C,Acc) -> [C|Acc] end,[],users);
 get(Id) -> ets:lookup(users,Id).
 delete(Id) -> ets:delete(users,Id).
 put(User=#user{}) -> ets:insert(users,User).
 exists(Id) -> ets:member(users,Id).
 to_html(User=#user{}) -> [<<"<tr><td>">>,coalesce(User#user.id),<<"</td><td>">>,
-                                         coalesce(User#user.email),<<"</td><td>">>,
+                                         
+coalesce(User#user.email),<<"</td><td>">>,
                                          coalesce(User#user.name),<<"</td>>].
 
 coalesce(Name) -> case Name of undefined -> <<>>; A -> list_to_binary(A) end.
@@ -35,8 +40,10 @@ coalesce(Name) -> case Name of undefined -> <<>>; A -> list_to_binary(A) end.
 dispatch_rules() ->
     cowboy_router:compile(
         [{'_', [
-            {["/static/[...]"], cowboy_static, [{directory, {priv_dir, ?APP, [<<"static">>]}},
-                                                {mimetypes, {mimetypes, path_to_mimes}, default}]},
+            {["/static/[...]"], cowboy_static, [{directory, {priv_dir, ?APP, 
+[<<"static">>]}},
+                                                {mimetypes, {mimetypes, 
+path_to_mimes}, default}]},
             {["/rest/:bucket"], n2o_rest, []},
             {["/rest/:bucket/:key"], n2o_rest, []},
             {["/rest/:bucket/:key/[...]"], n2o_rest, []},
@@ -45,7 +52,10 @@ dispatch_rules() ->
     ]}]).
 
 
-N2O REST handler n2o_rest сам будет перенаправлять все запросы в нужный модуль бакета. Так можно сделать свой например REST интерфейс к riak, который использует до сих пор легаси вебмашину. REST интерфейс к риаку и наши риак хелперы мы пока публиковать не будем.
+N2O REST handler n2o_rest сам будет перенаправлять все запросы в нужный модуль 
+бакета. Так можно сделать свой например REST интерфейс к riak, который 
+использует до сих пор легаси вебмашину. REST интерфейс к риаку и наши риак 
+хелперы мы пока публиковать не будем.
 
 curl -GET http://localhost:8000/rest/users
 
