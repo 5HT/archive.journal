@@ -1,6 +1,6 @@
 HKT in Rust
 
-Компилирующийся код! А в этом журнале — это редкость, полноценные монадки на 
+Компилирующийся код! А в этом журнале — это редкость, полноценные монадки на
 расте:
 
 
@@ -24,8 +24,8 @@ pub trait Functor<U>: HKT<U> {
 
 pub trait Applicative<U>: Functor<U> {
     fn pure_(value: U) -> Self::T where Self: HKT<U, C=U>;
-    fn seq<F>(&self, <Self as HKT<F>>::T) -> 
-       <Self as HKT<U>>::T where Self: HKT<F>, 
+    fn seq<F>(&self, <Self as HKT<F>>::T) ->
+       <Self as HKT<U>>::T where Self: HKT<F>,
           F: Fn(&<Self as HKT<F>>::C) -> U;
 }
 
@@ -54,7 +54,7 @@ impl<T, U> Functor<U> for Vec<T> {
 impl<T, U> Applicative<U> for Vec<T> {
     fn pure_(value: U) -> <Self as HKT<U>>::T { vec![value] }
 
-    fn seq<F>(&self, fs: <Self as HKT<F>>::T) -> 
+    fn seq<F>(&self, fs: <Self as HKT<F>>::T) ->
       <Self as HKT<U>>::T where F: Fn(&<Self as HKT<F>>::C) -> U {
         let mut result = vec![];
         for (i, f) in fs.into_iter().enumerate() {

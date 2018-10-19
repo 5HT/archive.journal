@@ -13,13 +13,13 @@ GDE>
 %GDE-I-GDCREATE, Creating Global Directory file
     /home/maxim/.fis-gtm/V6.0-003_x86_64/g/gtm.gld
 Created file /home/maxim/.fis-gtm/V6.0-003_x86_64/g/gtm.dat
-%GTM-I-JNLCREATE, Journal file /home/maxim/.fis-gtm/V6.0-003_x86_64/g/gtm.mjl 
+%GTM-I-JNLCREATE, Journal file /home/maxim/.fis-gtm/V6.0-003_x86_64/g/gtm.mjl
 created for region DEFAULT with BEFORE_IMAGES
 %GTM-I-JNLSTATE, Journaling state for region DEFAULT is now ON
 
 GTM>
 
 
-Так шо как тут проверить сколько йобильйонов транзакций в наносекунду оно 
+Так шо как тут проверить сколько йобильйонов транзакций в наносекунду оно
 перемолит?
 

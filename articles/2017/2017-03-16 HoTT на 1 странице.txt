@@ -8,8 +8,7 @@ HoTT на 1 странице
    inc : (A : U) -> A -> inh A
    squash : (A : U) -> prop (inh A)
    inhrec : (A : U) (B : U) (p : prop B) (f : A -> B) (a : inh A) -> B
-   contrSingl : (A : U) (a b : A) (p : Id A a b) -> Id (singl A a) (a, refl A 
-a) (b, p)
+   contrSingl : (A : U) (a b : A) (p : Id A a b) -> Id (singl A a) (a, refl Aa) (b, p)
    equivEq : (A B : U) (f : A -> B) (s : (y : B) -> fiber A B f y)
              (t : (y : B) -> (v : fiber A B f y) ->
              Id (fiber A B f y) (s y) v) -> Id U A B
@@ -21,19 +20,14 @@ a) (b, p)
                 Id (pathTo A y) (s y) v) ->
                 Id (Id U A A) (refl U A) (equivEq A A (id A) s t)
    transpEquivEq : (A B : U) -> (f : A -> B) (s : (y : B) -> fiber A B f y) ->
-                   (t : (y : B) -> (v : fiber A B f y) -> Id (fiber A B f y) (s 
-y) v) ->
+                   (t : (y : B) -> (v : fiber A B f y) -> Id (fiber A B f y) (sy) v) ->
                    (a : A) -> Id B (f a) (transport A B (equivEq A B f s t) a)
-   appOnPathD :  (A : U) (F : A -> U) (f g : (x : A) -> F x) -> Id ((x : A) -> 
-F x) f g ->
+   appOnPathD :  (A : U) (F : A -> U) (f g : (x : A) -> F x) -> Id ((x : A) ->F x) f g ->
                  (a0 a1 : A) (p : Id A a0 a1) -> IdS A F a0 a1 p  (f a0) (g a1)
-   mapOnPath : (A B : U) (f : A -> B) (a b : A) (p : Id A a b) -> Id B (f a) (f 
-b)
-   appOnPath : (A B : U) (f g : A -> B) (a b : A) (q : Id (A -> B) f g) (p : Id 
-A a b) -> Id B (f a) (g b)
+   mapOnPath : (A B : U) (f : A -> B) (a b : A) (p : Id A a b) -> Id B (f a) (fb)
+   appOnPath : (A B : U) (f g : A -> B) (a b : A) (q : Id (A -> B) f g) (p : IdA a b) -> Id B (f a) (g b)
    IdP : (A B : U) -> Id U A B -> A -> B -> U
-   mapOnPathD : (A:U) (F: A -> U) (f: (x:A) -> F x) (a0 a1: A) (p: Id A a0 a1) 
--> IdS A F a0 a1 p  (f a0) (f a1)
+   mapOnPathD : (A:U) (F: A -> U) (f: (x:A) -> F x) (a0 a1: A) (p: Id A a0 a1)-> IdS A F a0 a1 p  (f a0) (f a1)
    mapOnPathS : (A:U) (F: A -> U) (C: U) (f: (x:A) -> F x -> C)
                 (a0 a1 : A) (p : Id A a0 a1) (b0 : F a0) (b1 : F a1)
                 (q : IdS A F a0 a1 p b0 b1) -> Id C (f a0 b0) (f a1 b1)
@@ -43,14 +37,12 @@ A a b) -> Id B (f a) (g b)
    S1 : U
    base : S1
    loop : Id S1 base base
-   S1rec : (F : S1 -> U) (b : F base) (l : IdS S1 F base base loop b b) (x : 
-S1) -> F x
+   S1rec : (F : S1 -> U) (b : F base) (l : IdS S1 F base base loop b b) (x :S1) -> F x
    I : U
    I0 : I
    I1 : I
    line : Id I I0 I1
-   intrec : (F : I -> U) (s : F I0) (e : F I1) (l : IdS I F I0 I1 line s e) (x 
-: I) -> F x
+   intrec : (F : I -> U) (s : F I0) (e : F I1) (l : IdS I F I0 I1 line s e) (x: I) -> F x
 
    prop : U -> U
    prop A = (a b : A) -> Id A a b

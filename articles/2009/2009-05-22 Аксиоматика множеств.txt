@@ -37,8 +37,8 @@
 6. Regularity (Foundation)
 7. Replacement Schema
 
-Все движения здесь вокруг последней аксиомы выбора. Если ее заменить 
-на противоположную, система будет оставаться непротиворечивой. 
+Все движения здесь вокруг последней аксиомы выбора. Если ее заменить
+на противоположную, система будет оставаться непротиворечивой.
 Существуют варианты замены аксиомы выбора:
 1. WO (гипотеза слабее чем AC)
 2. Opposite to AC (противоположная к AC)
@@ -58,15 +58,15 @@
 7. Limitation of Size
 8. Class Comprehension Schema (с конечным количество классов)
 
-Замечания: 1. Regularity, Pairing, Separation Schema и Replacement 
-Schema выводятся одна их другой. 2. В аксиоматике ZF аксиомы 
-Separation и Pairing выводимы из Replacement Schema. 3. Теорема 
-Adjunction в Z в теориях ST, GST принимается за аксиому. 4. Empty Set 
-выводима из Separation Schema и других аксиом Z. 5. Replacement 
-Schema требует начилися Empty Set, выводимого в Separation Schema 
-теориях. 6. MK allows the bound variables in the schematic formula 
-appearing in the axiom schema of Class Comprehension to range over 
-proper classes as well as sets. NBG restricts these bound variables 
+Замечания: 1. Regularity, Pairing, Separation Schema и Replacement
+Schema выводятся одна их другой. 2. В аксиоматике ZF аксиомы
+Separation и Pairing выводимы из Replacement Schema. 3. Теорема
+Adjunction в Z в теориях ST, GST принимается за аксиому. 4. Empty Set
+выводима из Separation Schema и других аксиом Z. 5. Replacement
+Schema требует начилися Empty Set, выводимого в Separation Schema
+теориях. 6. MK allows the bound variables in the schematic formula
+appearing in the axiom schema of Class Comprehension to range over
+proper classes as well as sets. NBG restricts these bound variables
 to sets alone.
 TAGS (EDIT) modeling
 

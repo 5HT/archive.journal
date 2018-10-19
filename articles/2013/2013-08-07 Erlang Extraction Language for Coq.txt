@@ -1,8 +1,8 @@
 Erlang Extraction Language for Coq
 
-Свершилось, то что завещал великий Лямбдагарбха. Некто @tcarstens зарелизил на 
-гитхабе 2 дня назад рабочий прототип экстрактора Core Erlang для Coq: 
-https://github.com/tcarstens/verlang. В Сoq экстракция программ происходит в 
+Свершилось, то что завещал великий Лямбдагарбха. Некто @tcarstens зарелизил на
+гитхабе 2 дня назад рабочий прототип экстрактора Core Erlang для Coq:
+https://github.com/tcarstens/verlang. В Сoq экстракция программ происходит в
 MiniML, который уже потом транслируется в Core Erlang. Поэтому есть ньюансы:
 
 - Erlang не поддерживается модули в модулях (генерируется имя)
@@ -19,12 +19,12 @@ JavaScript -- https://bitbucket.org/yoshihiro503/coq2javascript
 SML/NJ -- https://bitbucket.org/yoshihiro503/coq2sml
 Scala -- https://bitbucket.org/yoshihiro503/coqincoq_scala
 
-Напомнить для неискушенных читателей что экстракторы Scheme, Haskell и OCaml 
+Напомнить для неискушенных читателей что экстракторы Scheme, Haskell и OCaml
 являются дефаултными в Сoq.
 
 И совершенно няшное комюнити http://www.proofcafe.org/
 
-P.S. 
+P.S.
 http://sole.dimi.uniud.it/~marino.miculan/wordpress/downloads/erlang-coq-synthes
 izer
 TAGS (EDIT) cs, deptypes, typesystems

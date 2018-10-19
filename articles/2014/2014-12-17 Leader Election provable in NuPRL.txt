@@ -2,43 +2,43 @@ Leader Election provable in NuPRL
 
 Угадайте как язык называется :-)
 
-specification leader_ring 
+specification leader_ring
 
-parameter nodes  : Loc Bag 
-parameter client : Loc 
-parameter uid    : Loc → Int 
- 
-import imax 
-type Epoch = Int 
-input    config  : Epoch * Loc (* To inform a node of its Epoch and neighbor *) 
-output   leader  : Epoch * Loc (* Location of the leader    *) 
-input    choose  : Epoch       (* Start the leader election *) 
-internal propose : Epoch * Int (* Propose a node as the leader of the ring *) 
-let dumEpoch = 0 ;; 
- 
-class Nbr = 
-  let F _ (epoch, succ) (epoch’, succ’) = 
-    if epoch > epoch’ 
-    then {(epoch, succ)} 
-    else {(epoch’, succ’)} 
-  in F o (config’base,Prior(self)?(\l.{(dumEpoch,l)})) ;; 
-class PrNbr = Prior(Nbr)?(\l.{(dumEpoch,l)}) ;; 
- 
-class ProposeReply = 
-  let F loc (epoch, succ) (epoch’, ldr) = 
-    if epoch = epoch’ 
-    then if ldr = uid loc 
-         then {leader’send client (epoch, loc)} 
-         else {propose’send succ (epoch, imax ldr (uid loc))} 
-    else {} 
-  in F o (PrNbr,propose’base) ;; 
- 
-class ChooseReply = 
-  let F loc (epoch, succ) epoch’ = 
-    if epoch = epoch’ 
-    then {propose’send succ (epoch, uid loc)} 
-    else {} 
-  in F o (PrNbr,choose’base) ;; 
+parameter nodes  : Loc Bag
+parameter client : Loc
+parameter uid    : Loc → Int
+
+import imax
+type Epoch = Int
+input    config  : Epoch * Loc (* To inform a node of its Epoch and neighbor *)
+output   leader  : Epoch * Loc (* Location of the leader    *)
+input    choose  : Epoch       (* Start the leader election *)
+internal propose : Epoch * Int (* Propose a node as the leader of the ring *)
+let dumEpoch = 0 ;;
+
+class Nbr =
+  let F _ (epoch, succ) (epoch’, succ’) =
+    if epoch > epoch’
+    then {(epoch, succ)}
+    else {(epoch’, succ’)}
+  in F o (config’base,Prior(self)?(\l.{(dumEpoch,l)})) ;;
+class PrNbr = Prior(Nbr)?(\l.{(dumEpoch,l)}) ;;
+
+class ProposeReply =
+  let F loc (epoch, succ) (epoch’, ldr) =
+    if epoch = epoch’
+    then if ldr = uid loc
+         then {leader’send client (epoch, loc)}
+         else {propose’send succ (epoch, imax ldr (uid loc))}
+    else {}
+  in F o (PrNbr,propose’base) ;;
+
+class ChooseReply =
+  let F loc (epoch, succ) epoch’ =
+    if epoch = epoch’
+    then {propose’send succ (epoch, uid loc)}
+    else {}
+  in F o (PrNbr,choose’base) ;;
 
 main (ProposeReply || ChooseReply)  @ nodes
 TAGS (EDIT) cs, nuprl

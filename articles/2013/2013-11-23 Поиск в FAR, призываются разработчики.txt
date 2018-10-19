@@ -1,16 +1,16 @@
 Поиск в FAR, призываются разработчики
 
-Наиболее печально, как мне кажется, в области юзер интерфейса и обычных аппов и 
+Наиболее печально, как мне кажется, в области юзер интерфейса и обычных аппов и
 сайтов. О хай-теке беспокоиться не надо, он сам справится.
 
-Ассумпшены 10-летней давности о соотношении производительности разных 
+Ассумпшены 10-летней давности о соотношении производительности разных
 компонентов системы не соответствуют действительности.
 
-IO и CPU внезапно столько, хоть обожрись, а количество приложений, которые в 
-состоянии их утилизировать - нулевое. Всё пишется, как будто у нас 1980-е на 
+IO и CPU внезапно столько, хоть обожрись, а количество приложений, которые в
+состоянии их утилизировать - нулевое. Всё пишется, как будто у нас 1980-е на
 дворе, я хуею, дорогая редакция.
 
-Какой-нибудь файловый серч в фаре запустить - плакать хочется. Я заранее знал 
+Какой-нибудь файловый серч в фаре запустить - плакать хочется. Я заранее знал
 что там говно, но сейчас специально посмотрел
 
 http://farmanager.googlecode.com/svn/trunk/unicode_far/findfile.cpp
@@ -18,7 +18,7 @@ http://farmanager.googlecode.com/svn/trunk/unicode_far/findfile.cpp
 // Открываем файл
 
 if(!file.Open(Name, FILE_READ_DATA, FILE_SHARE_READ|
-                    FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 
+                    FILE_SHARE_WRITE, nullptr, OPEN_EXISTING,
 FILE_FLAG_SEQUENTIAL_SCAN))
 {
     return false;
@@ -26,15 +26,15 @@ FILE_FLAG_SEQUENTIAL_SCAN))
 ...
 
     // Основной цикл чтения из файла
-    while (!StopEvent.Signaled() 
-                && file.Read(readBufferA, (!SearchInFirst || alreadyRead + 
+    while (!StopEvent.Signaled()
+                && file.Read(readBufferA, (!SearchInFirst || alreadyRead +
 readBufferSize <= SearchInFirst)
-                      ? readBufferSize 
-                      : static_cast(SearchInFirst - alreadyRead), 
+                      ? readBufferSize
+                      : static_cast(SearchInFirst - alreadyRead),
 readBlockSize))
 
 
-И это всё вызывается из однопоточного и синхронного же FindFiles::DoScanTree, 
+И это всё вызывается из однопоточного и синхронного же FindFiles::DoScanTree,
 первый класс вторая четверть, турбо паскаль под дос, чтение 1.44" на 286.
 
 И такое везде, везде блядь.

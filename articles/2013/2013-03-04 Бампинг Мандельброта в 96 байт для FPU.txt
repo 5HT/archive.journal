@@ -47,5 +47,5 @@ newstring:      fld1
 vse:            int     21h
         mov     ax,3
         int     10h
-        
-        
+
+

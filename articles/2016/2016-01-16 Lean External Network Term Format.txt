@@ -19,7 +19,7 @@ with tree_list : Type.{max 1 l} :=
 2 #US 0         // следующая вселенная после 1
 3 #UM 2 1       // максимум 2 и 1
 1 #ES 3         // sort терма 3
-2 #EP #D 4 0 1  // Пи-тип 
+2 #EP #D 4 0 1  // Пи-тип
 5 #NS 3 node
 6 #NS 0 a
 7 #NS 0 tree_list
@@ -29,13 +29,13 @@ with tree_list : Type.{max 1 l} :=
 6 #EC 3 1
 7 #EV 1
 8 #EA 6 7
-9 #EP #BD 6 5 8     // Пи-тип 
-10 #EP #BI 4 0 9    // Пи-тип 
+9 #EP #BD 6 5 8     // Пи-тип
+10 #EP #BI 4 0 9    // Пи-тип
 8 #NS 3 empty
 11 #EA 6 4
-12 #EP #BD 4 0 11   // Пи-тип 
+12 #EP #BD 4 0 11   // Пи-тип
 9 #NS 7 nil
-13 #EP #BD 4 0 5    // Пи-тип 
+13 #EP #BD 4 0 5    // Пи-тип
 10 #NS 7 cons
 14 #EA 3 7
 15 #EV 2

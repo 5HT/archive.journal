@@ -1,16 +1,16 @@
 N2O + PHP = ♡
 
-TL;DR -- Теперь вы можете использовать WebSockets из PHP и других веб стеков, 
-где есть поддержка FCGI, т.е. вы шлете запрос на сервер к N2O по WebSocket, а 
+TL;DR -- Теперь вы можете использовать WebSockets из PHP и других веб стеков,
+где есть поддержка FCGI, т.е. вы шлете запрос на сервер к N2O по WebSocket, а
 PHP обрабатывает запрос как полученный по ajax.
 
-Причем использовать не просто так, а с самым быстрым Erlang веб фреймворком 
-(который работает без gen_server, исключительно в процессах ковбоя, в отличии 
-от PhoenixFramework и его gen_server каналов) -- N2O. Вот примеры для 
-испльзования из PHP: 
+Причем использовать не просто так, а с самым быстрым Erlang веб фреймворком
+(который работает без gen_server, исключительно в процессах ковбоя, в отличии
+от PhoenixFramework и его gen_server каналов) -- N2O. Вот примеры для
+испльзования из PHP:
 https://github.com/AstRonin/sgi/tree/master/samples/fcgi-scripts
 
-NGINX vs Cowboy+N2O+FCGI (Тестировал не я, я то знаю, что PHP сдыхает при -c 
+NGINX vs Cowboy+N2O+FCGI (Тестировал не я, я то знаю, что PHP сдыхает при -c
 1000 или выше).
 
 $ ab -n 20000 -c 40 http://localhost:8000/site.php
@@ -36,7 +36,7 @@ nginx: 14c
 sgi: 24c (16с without fcgi) ~19c
 
 
-Тут и vhosts и вроде даже полная имплементация FCGI. Мы думаем о PHP 
+Тут и vhosts и вроде даже полная имплементация FCGI. Мы думаем о PHP
 программистах!
 Автор проекта: http://github.com/AstRonin
 TAGS (EDIT) n2o, php

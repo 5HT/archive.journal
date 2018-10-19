@@ -26,9 +26,9 @@ COPY   = input ? c -> output -> c,
     PLUS   = lambda x. lambda y. lambda s. lambda z. x s (y s z),
     TIMES  = lambda x. lambda y. x (PLUS y) ZERO,
     PP     = lambda n. PRED (PRED n),
-    PRED   = lambda n. lambda f. lambda x. n (lambda g. lambda h.h (g f)) 
+    PRED   = lambda n. lambda f. lambda x. n (lambda g. lambda h.h (g f))
 (lambda u.x) (lambda u.u),
-    SUCC   = lambda n. lambda f. lambda x. n (lambda g. lambda h.h (g f)) 
+    SUCC   = lambda n. lambda f. lambda x. n (lambda g. lambda h.h (g f))
 (lambda u.x) (lambda u.u),
     ISZERO = lambda n. n (lambda x. ZERO) TRUE,
     IF     = lambda p. lambda a. lambda b. p a b,
@@ -39,7 +39,7 @@ COPY   = input ? c -> output -> c,
     HD     = lambda L. L (lambda h. lambda t. h),
     TL     = lambda L. L (lambda h. lambda t. t),
     Y = lambda G. (lambda g. G(g g)) (lambda g. G(g g)),
-    FIB    = lambda f. lambda n. IF (ISZERO (PRED n)) ONE IF (ISZERO (PP n)) 
+    FIB    = lambda f. lambda n. IF (ISZERO (PRED n)) ONE IF (ISZERO (PP n))
 ONE (PLUS (f(PRED n))(f(PP n))),
     THREE  = PLUS ONE TWO,
     FOUR   = MINUS (TIMES THREE TWO) (PLUS ONE ONE),

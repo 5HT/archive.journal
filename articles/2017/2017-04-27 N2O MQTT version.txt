@@ -14,6 +14,5 @@ N2O MQTT version
 $ cloc .
 580
 
-
 https://github.com/synrc/mqtt
 TAGS (EDIT) mqtt, n2o, synrc

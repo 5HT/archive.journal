@@ -1,16 +1,16 @@
 Respect Proper Proof of Setoid Cat
 
-Нас спрашивают, как выглядит код на EXE. Здесь записана модель Категории, на 
+Нас спрашивают, как выглядит код на EXE. Здесь записана модель Категории, на
 языке, у которого нет встроеного равенства (кроме definitional конечно):
 
 define Respect (A,B: Type) (C: A → Type) (D: B → Type) (R: A → B → Prop)
-       (Ro: ∀ (x: A) (y: B) → C x → D y → Prop) : 
+       (Ro: ∀ (x: A) (y: B) → C x → D y → Prop) :
        (∀ (x: A) → C x) → (∀ (x: B) → D x) → Prop :=
        λ (f g: Type → Type) → (∀ (x y) → R x y) → Ro x y (f x) (g y).
 
 record Proper (A: Type) (R: A → A → Prop) (m: A): Prop :=
        (Proof: R m m)
-       
+
 record Setoid: Type :=
        (Carrier: Type)
        (Equ: Carrier → Carrier → Prop)
@@ -23,16 +23,16 @@ record Cat: Type :=
        (Hom: ∀ (dom,cod: Ob) → Setoid)
        (Id: ∀ (x: Ob) → Hom x x)
        (Comp: ∀ (x,y,z: Ob) → Hom x y → Hom y z → Hom x z)
-       (Dom1◦: ∀ (x,y: Ob) (f: Hom x y) → (Hom.Equ x y (Comp x x y id f) f)) 
-       (Cod1◦: ∀ (x,y: Ob) (f: Hom x y) → (Hom.Equ x y (Comp x y y f id) f)) 
-       (Subst◦: ∀ (x,y,z: Ob) → Proper (Respect Equ (Respect Equ Equ)) (Comp x 
+       (Dom1◦: ∀ (x,y: Ob) (f: Hom x y) → (Hom.Equ x y (Comp x x y id f) f))
+       (Cod1◦: ∀ (x,y: Ob) (f: Hom x y) → (Hom.Equ x y (Comp x y y f id) f))
+       (Subst◦: ∀ (x,y,z: Ob) → Proper (Respect Equ (Respect Equ Equ)) (Comp x
 y z))
        (Assoc◦: ∀ (x,y,z,w: Ob) (f: Hom x y) (g: Hom y z) (h: Hom z w)
-                → (Hom.Equ x w (Comp x y w f (Comp y z w g h)) 
+                → (Hom.Equ x w (Comp x y w f (Comp y z w g h))
                                (Comp x z w (Comp x y z f g) h)))
 
 
-Вроде компактнее уже нельзя. Не нашел ни одной библиотеки на Agda на github, 
-где по компакности хоть кто-то приблизился бы. Достигнут новый золотой стандарт 
+Вроде компактнее уже нельзя. Не нашел ни одной библиотеки на Agda на github,
+где по компакности хоть кто-то приблизился бы. Достигнут новый золотой стандарт
 лямбда-йобства!
 TAGS (EDIT) cs, exe

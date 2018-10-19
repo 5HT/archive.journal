@@ -1,14 +1,14 @@
 Extended Wylie Tibetan Script EWTS UTF-8 Converter
 
-Транлитерация Wylie позволяет двухстороннюю конвертацию транлитерации, в 
-отличии от других тибетских транлитераций с потерями. Нужно ли говорить, что 
-все реализации, которые я видел не укладываются в один экран. Решил исправить 
+Транлитерация Wylie позволяет двухстороннюю конвертацию транлитерации, в
+отличии от других тибетских транлитераций с потерями. Нужно ли говорить, что
+все реализации, которые я видел не укладываются в один экран. Решил исправить
 это. Так как я не хочу брать perl транслитерацию, написал свою с нуля:
 
-t(0,String,Dictionary,Letters,P) -> 
+t(0,String,Dictionary,Letters,P) ->
 t(4,tl(String),Dictionary,[hd(String)|Letters],0);
 t(_,[],_,L,_) -> L;
-t(N,String,Dictionary,Letters,P) when P > 4 -> 
+t(N,String,Dictionary,Letters,P) when P > 4 ->
 t(N,String,Dictionary,Letters,0); % clear stack
 t(N,String,Dictionary,Letters,P) ->
     R = lists:keyfind(lists:sublist(String,N),1,Dictionary),
@@ -22,7 +22,7 @@ t(N,String,Dictionary,Letters,P) ->
                     0 -> {[A],P+1};
                     _ -> {[B],P+1}
                 end;
-                Value when Vowel andalso is_integer(Value) andalso P == 0 -> 
+                Value when Vowel andalso is_integer(Value) andalso P == 0 ->
 {[16#0F68,Value],P+1};
                 Value when is_list(Value) -> {Value,P+1};
                 Value when is_integer(Value) -> case Key of
@@ -39,7 +39,7 @@ t(N,String,Dictionary,Letters,P) ->
 
 transcode({wylie,Text}) ->
     Table = lists:flatten([
-        
+
 constants(),vowels(),sanskrit_vowels(),complex_vowels(),final(),other()]),
     Res = lists:reverse(t(4,Text,Table,[],0)),
     lists:flatten(Res).
@@ -53,7 +53,7 @@ tests() ->
     "ཨོཾ་ཨཱཿ་ཧཱུྃ" = tibetan("oM AH hU~M"),
     "ཀློང་ཆེན་སྙིང་ཐིག" = tibetan("klong chen snying thig"),
     "རྣམ་དག་སྟོན་པ" = tibetan("rnam dag ston pa"),
-    "ཨོཾ་ཨཨཿ་ཧཱུྃ་བཛྲ་གུ་རུ་པདྨ་སིདྡྷི་ཧཱུྂ༔" = tibetan("oM aH hU~M badz+ra gu 
+    "ཨོཾ་ཨཨཿ་ཧཱུྃ་བཛྲ་གུ་རུ་པདྨ་སིདྡྷི་ཧཱུྂ༔" = tibetan("oM aH hU~M badz+ra gu
 ru pad+ma sid+dhi hU~M`:"),
     ok.
 

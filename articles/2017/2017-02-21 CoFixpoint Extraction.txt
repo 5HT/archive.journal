@@ -8,7 +8,7 @@ Extraction "extraction/co" fs.
 
 ML Extraction:
 type nat = | O | S of nat
-let rec add n m = 
+let rec add n m =
     match n with
     | O -> m
     | S p -> S (add p m)

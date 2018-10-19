@@ -2,34 +2,34 @@ Erlang Metaprogramming Real Practice
 
 ... Erlang JavaScript compiler in 30 minutes :)
 
-Не случайно ходит мнение среди ML пацанов, что хорошую вещь макросом не назовут 
-:) LISP пацаны однако пишут на макросах и горя не знают. Есть еще такое мнение, 
-что раз нужно метапрограммирование или макросы, значит стоит задача поддержания 
-гавнокода. У нас же мы опускаемся к метапрораммированию только если 
+Не случайно ходит мнение среди ML пацанов, что хорошую вещь макросом не назовут
+:) LISP пацаны однако пишут на макросах и горя не знают. Есть еще такое мнение,
+что раз нужно метапрограммирование или макросы, значит стоит задача поддержания
+гавнокода. У нас же мы опускаемся к метапрораммированию только если
 сталкиваемся с реальным ужасным кодом. Сегодня мы будем говорит о JavaScript.
 
-Поскольку у меня все для демонстрации 4 августа готово: Erlang PaaS работает, 
-контейнеры создаются, приложения на Xen выполняются, мне DOXTOP разрешил 
+Поскольку у меня все для демонстрации 4 августа готово: Erlang PaaS работает,
+контейнеры создаются, приложения на Xen выполняются, мне DOXTOP разрешил
 побаловаться и написать JavaScript компилятор из Эрланге.
 
-Все знают, что каждый уважающий себя человек, когда ему нужно написать что-то 
-на джаваскрипте, он пишет компилятор своего любимого языка в джаваскрипт 
-http://altjs.org/ Однако если в Haskell долине есть вменяемый клиентский язык 
-Elm, то в Эрланг мире почему у всех свернуло голову. Browserl (эмулятор 
-Эрланга), ErlyJS (JavaScript to Erlang WTF?), erljs (Run Erlang in JavaScript) 
--- это все чудовища рожденные соном разума. Почему-то люди решили что BEAM 
-машина это святой грааль и которую обязательно нужно каждому реализовать в 
-JavaScript. Поэтому все работает медленно, ужасно развесисто и вообще уродливо. 
-После общения с автором Erlang on Xen я окончательно убедился, что виртуальная 
-машина Эриксона то еще легаси с конвертацией байт кода из старого в новый 
-формат про который мало кто знает. Зато приемственность версий чуть ли не от 
-самого рождения c другой стороны. 
+Все знают, что каждый уважающий себя человек, когда ему нужно написать что-то
+на джаваскрипте, он пишет компилятор своего любимого языка в джаваскрипт
+http://altjs.org/ Однако если в Haskell долине есть вменяемый клиентский язык
+Elm, то в Эрланг мире почему у всех свернуло голову. Browserl (эмулятор
+Эрланга), ErlyJS (JavaScript to Erlang WTF?), erljs (Run Erlang in JavaScript)
+-- это все чудовища рожденные соном разума. Почему-то люди решили что BEAM
+машина это святой грааль и которую обязательно нужно каждому реализовать в
+JavaScript. Поэтому все работает медленно, ужасно развесисто и вообще уродливо.
+После общения с автором Erlang on Xen я окончательно убедился, что виртуальная
+машина Эриксона то еще легаси с конвертацией байт кода из старого в новый
+формат про который мало кто знает. Зато приемственность версий чуть ли не от
+самого рождения c другой стороны.
 
-У нас стоит абсолютно конкретная задача: страницы N2O, которые у нас на 
-сервер-сайде сделать выполняемыми на клиенте, что бы можно было писать на 
-Эрланге на стороне клиента, используя веб-браузерные воркеры как эмуляцию 
-элланг процессов и все fun чтобы разворачивались в JavaScript function. Ну а 
-для паттерн мачинга и тейл рекурсии мы возьмем библиотеки matches.js и 
+У нас стоит абсолютно конкретная задача: страницы N2O, которые у нас на
+сервер-сайде сделать выполняемыми на клиенте, что бы можно было писать на
+Эрланге на стороне клиента, используя веб-браузерные воркеры как эмуляцию
+элланг процессов и все fun чтобы разворачивались в JavaScript function. Ну а
+для паттерн мачинга и тейл рекурсии мы возьмем библиотеки matches.js и
 tailrec.js.
 
 Попытаемся скомпилировать такую функцию fac.erl:
@@ -42,7 +42,7 @@ fac(0) -> 1;
 fac(N) -> N * fac(N-1).
 
 
-Для этого нам нужно построить AST дерево Эрланговское -- это мы делаем 
+Для этого нам нужно построить AST дерево Эрланговское -- это мы делаем
 несколькими строчками:
 parse(File) ->
     {ok,Content} = file:read_file(File),
@@ -59,7 +59,7 @@ tokens(Tokens,Res) ->
              tokens(T,Res ++ [Cut ++ [H]]) end.
 
 forms(File) -> Forms = [ begin {ok,Form} = erl_parse:parse_form(Line),
-                       Form end || Line <- parse(File)], io:format("Forms: 
+                       Form end || Line <- parse(File)], io:format("Forms:
 ~p",[Forms]).
 
 
@@ -93,41 +93,41 @@ function(Name,Args,Clauses) ->
 
 clause(Argc,{clause,X,Argv,Guard,Expressions}) ->
     Match = string:join([ exp(Arg) || Arg <- Argv ],","),
-    Args = string:join([ arg(Arg,N) || {Arg,N} <- 
+    Args = string:join([ arg(Arg,N) || {Arg,N} <-
 lists:zip(Argv,lists:seq(1,Argc))],","),
   [ io_lib:format("\t'~s': function(~s) {~n", [Match,Args]),
-    ["\t\t"++case N == length(Expressions) of true -> "return "; _ -> "" end ++ 
+    ["\t\t"++case N == length(Expressions) of true -> "return "; _ -> "" end ++
 exp(E)++";\n"
        || {E,N} <- lists:zip(Expressions,lists:seq(1,length(Expressions)))],
     io_lib:format("~s",["\t}"]) ].
 
 arg({integer,X,Value},N) ->           io_lib:format("x~s",[integer_to_list(N)]);
-arg({var,X,Value},N) ->               
+arg({var,X,Value},N) ->
 io_lib:format("~s",[string:to_lower(atom_to_list(Value))]).
-par(List) ->                          
+par(List) ->
 io_lib:format("~s",[lists:flatten(string:join([exp(V)||V<-List],","))]).
 exp({nil,X}) -> "[]";
-exp({integer,X,Value}) ->             
+exp({integer,X,Value}) ->
 io_lib:format("~s",[integer_to_list(Value)]);
 exp({string,X,Value}) ->              io_lib:format("'~s'",[Value]);
-exp({cons,X,Left,Right}) ->           
+exp({cons,X,Left,Right}) ->
 io_lib:format("[~s,~s]",[exp(Left),exp(Right)]);
-exp({var,X,Value}) ->                 
+exp({var,X,Value}) ->
 io_lib:format("~s",[string:to_lower(atom_to_list(Value))]);
-exp({op,X,'-',Left,Right}) ->         io_lib:format("~s - 
+exp({op,X,'-',Left,Right}) ->         io_lib:format("~s -
 ~s",[exp(Left),exp(Right)]);
-exp({op,X,'*',Left,Right}) ->         io_lib:format("~s * 
+exp({op,X,'*',Left,Right}) ->         io_lib:format("~s *
 ~s",[exp(Left),exp(Right)]);
-exp({call,X,{atom,Y,Name},Params}) -> 
+exp({call,X,{atom,Y,Name},Params}) ->
 io_lib:format("~s(~s)",[Name,par(Params)]);
-exp({match,X,Left,Right}) ->          io_lib:format("~s = 
+exp({match,X,Left,Right}) ->          io_lib:format("~s =
 ~s",[exp(Left),exp(Right)]);
-exp({call,X,{remote,XX,{atom,Y,Module},{atom,Z,Name}},Params}) -> 
+exp({call,X,{remote,XX,{atom,Y,Module},{atom,Z,Name}},Params}) ->
     io_lib:format("~s.~s(~s)",[Module,Name,par(Params)]);
 exp(X) -> X.
 
 Обернем все в пролог и эпилог:
-prelude() -> io_lib:format("~n~s~n",["var pattern = 
+prelude() -> io_lib:format("~n~s~n",["var pattern =
 require(\"matches\").pattern;"]).
 intermezzo(Forms) -> [ compile(F) || F <- Forms ].
 coda() -> io_lib:format("~s~n",["start();"]).

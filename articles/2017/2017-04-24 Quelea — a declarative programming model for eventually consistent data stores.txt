@@ -1,30 +1,30 @@
 Quelea — a declarative programming model for eventually consistent data stores
 
-The store is a collection of replicas, each storing a set of objects (x, y, . . 
-.) of a replicated data type. For the sake of an example, let x and y represent 
-objects of an increment-only counter replicated data type (RDT) that admits inc 
+The store is a collection of replicas, each storing a set of objects (x, y, . .
+.) of a replicated data type. For the sake of an example, let x and y represent
+objects of an increment-only counter replicated data type (RDT) that admits inc
 and read operations.
 
-We say that the effects inc1x and inc2x are visible to the effect (inc4x) of 
+We say that the effects inc1x and inc2x are visible to the effect (inc4x) of
 x.inc, written logically as vis(inc1x, inc4x) ∧ vis(inc2x, inc4x).
 
-To capture happens-before, we define an irreflexive transitive session order 
-relation that relates the effects of operations arising from the same session. 
-For example, in Fig. 1, inc4x and inc5x are in session order (written logically 
+To capture happens-before, we define an irreflexive transitive session order
+relation that relates the effects of operations arising from the same session.
+For example, in Fig. 1, inc4x and inc5x are in session order (written logically
 as so(inc4x, inc5x)).
 
 same object session order (soo = so ∩ sameobj)
 same object happens-before order (hbo = (soo ∪ vis)+)
 happens-before order (hb = (so ∪ vis)+)
 
-Causal Visibility (CV) ::= ∀a, b, c. hbo(a, b) ∧ vis(b, c) ⇒ vis(a, c) 
+Causal Visibility (CV) ::= ∀a, b, c. hbo(a, b) ∧ vis(b, c) ⇒ vis(a, c)
 Causal Consistency (CC) ::= ∀a, b, c. hbo(a, b) ⇒ vis(a, b)
 Strong Consistency (SC) ::= ∀a, b. sameobj(a, b) ⇒ vis(a, b) ∨ vis(b, c)
 
 Read Your Writes (RYW) ::= ∀a,b. soo(a, b) ⇒ vis(a, b)
 Monotonic Reads (MR) ::= ∀a,b,c. vis(a, b) ∧ soo(b, c) ⇒ vis(a, c)
 Monotonic Writes (MW) ::= ∀a,b,c. soo(a, b) ∧ vis(b, c) ⇒ vis(a, c)
-Writes Follow Reads (WFR) ::= ∀a,b,c,d. vis(a,b)∧vis(c,d)∧(soo ∪ =)(b,c) ⇒ 
+Writes Follow Reads (WFR) ::= ∀a,b,c,d. vis(a,b)∧vis(c,d)∧(soo ∪ =)(b,c) ⇒
 vis(a,d)
 
 ∀a,b,c.txn{a,b}{c} ∧ sameobj(a,b) ∧ vis(a,c)⇒vis(b,c)

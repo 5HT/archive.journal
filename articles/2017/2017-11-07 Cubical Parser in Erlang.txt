@@ -1,11 +1,11 @@
 Cubical Parser in Erlang
 
-Сделано все, кроме гомотопических прититивов <> @ []. Вернулись на 
-позапрошлогодний уровень EXE. Пришлось сделать case аналисис в стиле ML языков 
-(с палками), так как, говорят 2D синтаксис голым эрланговским LALR не возьмешь. 
-С where тоже проблемы, пришлось делать карированую версию where. Оно и логично 
-— в минималистичных ядрах должно быть все карированое. YECC файл занимает ровно 
-50 строчек, в отличие от 261 строки для EXE. В примере показан Хрономирфизм и 
+Сделано все, кроме гомотопических прититивов <> @ []. Вернулись на
+позапрошлогодний уровень EXE. Пришлось сделать case аналисис в стиле ML языков
+(с палками), так как, говорят 2D синтаксис голым эрланговским LALR не возьмешь.
+С where тоже проблемы, пришлось делать карированую версию where. Оно и логично
+— в минималистичных ядрах должно быть все карированое. YECC файл занимает ровно
+50 строчек, в отличие от 261 строки для EXE. В примере показан Хрономирфизм и
 Категорная Семантика односвязного списка
 
 module lam1 where
@@ -13,8 +13,7 @@ module lam1 where
 listCategory (A: U) (o: listObject A): U = undefined
 
 histo (A:U) (F: U -> U) (X: functor F) (f: F (cofree F A) -> A) (z: fix F): A
-  = extract A F ((cata (cofree F A) F X (\(x: F (cofree F A)) -> CoFree (Fix 
-(CoBindF (f x) ((X.1 (cofree F A) (fix (cofreeF F A)) (uncofree A F) x)))))) z) 
+  = extract A F ((cata (cofree F A) F X (\(x: F (cofree F A)) -> CoFree (Fix (CoBindF (f x) ((X.1 (cofree F A) (fix (cofreeF F A)) (uncofree A F) x)))))) z)
 where
   extract (A: U) (F: U -> U): cofree F A -> A = split
     | CoFree f -> unpack_fix f where
@@ -29,8 +28,7 @@ futu (A: U) (F: U -> U) (X: functor F) (f: A -> F (free F A)) (a: A): fix F
     | Free x -> unpack x where
   unpack_free: freeF F A (fix (freeF F A)) -> fix F = split
     | ReturnF x -> futu A F X f x
-    | BindF g -> Fix (X.1 (fix (freeF F A)) (fix F) (\(x: fix (freeF F A)) -> w 
-(Free x)) g) where
+    | BindF g -> Fix (X.1 (fix (freeF F A)) (fix F) (\(x: fix (freeF F A)) -> w (Free x)) g) where
   unpack: fix (freeF F A) -> fix F = split
     | Fix x -> unpack_free x
 
@@ -48,7 +46,7 @@ listAlg (A : U) : U
 listMor (A: U) (x1 x2: listAlg A) : U
     = (map: x1.1 -> x2.1)
     * (mapNil: Path x2.1 (map (x1.2.1)) (x2.2.1))
-    * (mapCons: (a:A) (x: x1.1) -> Path x2.1 (map (x1.2.2.1 a x)) (x2.2.2.1 a 
+    * (mapCons: (a:A) (x: x1.1) -> Path x2.1 (map (x1.2.2.1 a x)) (x2.2.2.1 a
 (map x)))
     * Unit
 
@@ -66,7 +64,7 @@ listObject (A: U) : U
         [{def,{id,5,"listCategory"},
               {tele,[{id,5,"A"}],
                     {id,5,"U"},
-                    
+
 {tele,[{id,5,"o"}],{app,{id,5,"listObject"},{id,5,"A"}},[]}},
               {id,5,"U"},
               {id,5,"undefined"}},
@@ -85,7 +83,7 @@ listObject (A: U) : U
                    {app,{app,{app,{app,{app,{id,8,[...]},{app,{...},...}},
                                        {id,8,"F"}},
                                   {id,8,"X"}},
-                             
+
 {app,{lam,{tele,[{id,...}],{app,...},[]},{id,8,[...]}},
                                   {app,{id,8,[...]},{app,{...},...}}}},
                         {id,8,"z"}}},
@@ -109,7 +107,7 @@ listObject (A: U) : U
                           {pi,{id,16,"U"},{id,16,"U"}},
                           {tele,[{id,16,"X"}],
                                 {app,{id,16,"functor"},{id,16,[...]}},
-                                
+
 {tele,[{id,16,...}],{app,{...},...},{tele,...}}}}},
               {app,{id,16,"fix"},{id,16,"F"}},
               {app,{id,17,"Fix"},
@@ -166,7 +164,7 @@ listObject (A: U) : U
                      {sigma,{tele,[{id,39,"mapNil"}],
                                   {app,{app,{...},...},{fst,...}},
                                   []},
-                            
+
 {sigma,{tele,[{id,...}],{app,...},[]},{id,41,[...]}}}}},
          {def,{id,43,"listObject"},
               {tele,[{id,43,"A"}],{id,43,"U"},[]},

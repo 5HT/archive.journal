@@ -2,16 +2,16 @@
 
 TL;DR: По мотивам Issue: https://github.com/groupoid/exe/issues/7
 
-Как вы знаете ленивость является фундаментальным свойтсвом всех (!) без 
-исключения языков программирования, которые хотят или стремятся к тому, чтобы 
-быть внутренними языками декартово замкнутой категории, или как говорят 
+Как вы знаете ленивость является фундаментальным свойтсвом всех (!) без
+исключения языков программирования, которые хотят или стремятся к тому, чтобы
+быть внутренними языками декартово замкнутой категории, или как говорят
 механизаторы — лямбда исчислением.
 
-Почему так? Чтобы закодировать условный оператор if без которого не обходится 
-ни один язык программирования, в чистом лямбда ичсислении нам не обойтись без 
-ленивости. Напишем энергичный оператор if для Bool типа (который как мы знаем 
-совпадает со всеми кодировками, Church, Scott, Parigot, CPS и другими 
-возможными, так как у его все конструкторы без параматеров, а кодировки обычно 
+Почему так? Чтобы закодировать условный оператор if без которого не обходится
+ни один язык программирования, в чистом лямбда ичсислении нам не обойтись без
+ленивости. Напишем энергичный оператор if для Bool типа (который как мы знаем
+совпадает со всеми кодировками, Church, Scott, Parigot, CPS и другими
+возможными, так как у его все конструкторы без параматеров, а кодировки обычно
 с параметрами работают).
 
 Вот наш тип Bool записаный на языке OM:
@@ -38,23 +38,23 @@ $ cat eif
 
 
 
-Если мы скомпилируем его (т.е. сотрем информацию о типах), заэкстрактим в 
-эрланг код, вытащим эрланг код и вставим в одну ветку оператор printf 
-(io:format в эрланге), то при вызове этой функции eif у нас выполнятся обеи эти 
+Если мы скомпилируем его (т.е. сотрем информацию о типах), заэкстрактим в
+эрланг код, вытащим эрланг код и вставим в одну ветку оператор printf
+(io:format в эрланге), то при вызове этой функции eif у нас выполнятся обеи эти
 ветки. Вот пример использования оператора eif:
 
 $ cat eiff
     \ (X: #Bool/@)
 ->  \ (Y: #Nat/@)
 -> #Bool/eif #Nat/@ X
-   (#Nat/[+] Y (#Nat/Succ (#Nat/Succ (#Nat/Succ (#Nat/Succ (#Nat/Succ 
+   (#Nat/[+] Y (#Nat/Succ (#Nat/Succ (#Nat/Succ (#Nat/Succ (#Nat/Succ
 #Nat/Zero))))))
    (Y)
 
 
 
-Тут мы вызываем условие eiff x y = if x then y + 5 else y. Так вот если 
-вытащить ненормализированый эрланг терм и вставить в ветку с Succ printf, то 
+Тут мы вызываем условие eiff x y = if x then y + 5 else y. Так вот если
+вытащить ненормализированый эрланг терм и вставить в ветку с Succ printf, то
 при вызове eiff c True и False будет печататься этот printf:
 
 > ch:unnat(ch:ap(eiff:eiff(),['Bool':'False'(),'Nat':'Zero'()])).
@@ -108,7 +108,7 @@ $ cat iff
 
 
 
-который соотвествует iff x y = if x then list.length [0,0,0,0,0,0,1|y] else 
+который соотвествует iff x y = if x then list.length [0,0,0,0,0,0,1|y] else
 lists.length y.
 
 Скомпилируем это в эрланг:
@@ -122,14 +122,14 @@ ok
 
 > l('Bool').
 {module,'Bool'}
-> {ok,{_,[{abstract_code,{_,AC9}}]}} = 
+> {ok,{_,[{abstract_code,{_,AC9}}]}} =
 beam_lib:chunks("ebin/Bool.beam",[abstract_code]).
 ok
 > io:fwrite("~s~n", [erl_prettypr:format(erl_syntax:form_list(AC9))]).
 
 
 
-Находит там функцию iff и сохраняем в файл iff.erl. Вставляем в ветке с Cons 
+Находит там функцию iff и сохраняем в файл iff.erl. Вставляем в ветке с Cons
 io:format("IFF!~n"), и проверяем:
 
 > ch:unnat(ch:ap(iff:iff(),['Bool':'True'(),'List':'Nil'()])).
@@ -152,7 +152,7 @@ extract(F,om:fst(om:erase(om:normal(om:snd(om:parse(om:read(X++"/"++F)))))),1)
 
 
 
-то даже (!) c Eager IF все работает как нада (т.е. заходит в одну ветку), 
+то даже (!) c Eager IF все работает как нада (т.е. заходит в одну ветку),
 опускаю подробности публикую Матрицу:
 
 Norm Lazy Cnt
@@ -182,10 +182,10 @@ data Lazy : Type -> Type where Delay : (val : a) -> Lazy a
    Force : Lazy a -> a
 
 
-A value of type Lazy a is unevaluated until it is forced by Force. The Idris 
-type checker knows about the Lazy type, and inserts conversions where necessary 
-between Lazy a and a, and vice versa. We can therefore write boolCase as 
-follows, without any 
+A value of type Lazy a is unevaluated until it is forced by Force. The Idris
+type checker knows about the Lazy type, and inserts conversions where necessary
+between Lazy a and a, and vice versa. We can therefore write boolCase as
+follows, without any
 explicit use of Force or Delay:
 
    boolCase : Bool -> Lazy a -> Lazy a -> a
@@ -193,12 +193,12 @@ explicit use of Force or Delay:
    boolCase False t e = e
 
 
-Т.е. сделано точно также как в Om, или другими словами через добавление обычной 
-лямбды () -> A вместо A. Просто зашито в дешугаринге, чтобы программист сам 
+Т.е. сделано точно также как в Om, или другими словами через добавление обычной
+лямбды () -> A вместо A. Просто зашито в дешугаринге, чтобы программист сам
 force не писал.
 
-Вот такая петрушка. NPONECCOP патается копать глубже, но глубже у меня не 
-получается, не вижу статей которые опровергали бы эти простые размышления и 
+Вот такая петрушка. NPONECCOP патается копать глубже, но глубже у меня не
+получается, не вижу статей которые опровергали бы эти простые размышления и
 находили более глубокие подводные камни.
 TAGS (EDIT) cs, erlang, om
 

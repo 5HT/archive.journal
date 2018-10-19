@@ -1,22 +1,22 @@
 Erlang SyncML server
 
-За неделю двухчасовых полежалок перед сном мне удалось сделать 
-следующее: у меня есть сервер который принимает SyncML запросы по 
-HTTP протоколу в текстовом или бинарном формате. Я решительно пока 
-остаюсь на XML парсере от Джо Армстронга, который занимает 36К, а 
-также с iServe который занимает 16К. Также для декодирования бинарных 
-WBXML я использую библитеотеку wbxml (36КБ) из sowap.sf.net 
-пропатченную до поддержки syncml, metinf, devinf DTD. А для 
-декодирования UNICODE библиотеку ucs (36КБ+таблицы на 3МБ) того же 
-автора. Если у вас есть SyncML устройство (практически любой 
-современный телефон Нокиа), вы можете законектится на мой сервер с 
+За неделю двухчасовых полежалок перед сном мне удалось сделать
+следующее: у меня есть сервер который принимает SyncML запросы по
+HTTP протоколу в текстовом или бинарном формате. Я решительно пока
+остаюсь на XML парсере от Джо Армстронга, который занимает 36К, а
+также с iServe который занимает 16К. Также для декодирования бинарных
+WBXML я использую библитеотеку wbxml (36КБ) из sowap.sf.net
+пропатченную до поддержки syncml, metinf, devinf DTD. А для
+декодирования UNICODE библиотеку ucs (36КБ+таблицы на 3МБ) того же
+автора. Если у вас есть SyncML устройство (практически любой
+современный телефон Нокиа), вы можете законектится на мой сервер с
 любым логином и паролем по адресу:
 
 http://synrc.com:2500
 
-логи парсера в онлайне вы можете наблюдать на 
-http://synrc.com/sync/server/synclog.htm. Парсер немного лоховат, 
-некоторые запросы с vcard внутри тела, пока не проходят, но это пока. 
+логи парсера в онлайне вы можете наблюдать на
+http://synrc.com/sync/server/synclog.htm. Парсер немного лоховат,
+некоторые запросы с vcard внутри тела, пока не проходят, но это пока.
 А вот как выглядит код моего сервера:
 
 -module(syncserver).
@@ -32,31 +32,23 @@ iserve_request(C, Req) ->
         {req,Con,Len,V,M,Uri,Args,Headers,Body} = Req,
         case M of
                 'POST' ->
-                        {Val,{CTypeC,CType}} = 
-lists:keysearch('Content-Type',1,Headers</font>),
-                        io:format("<p>Content Type: 
-~p</p>",[CType</font>]),
+                        {Val,{CTypeC,CType}} = lists:keysearch('Content-Type',1,Headers</font>),
+                        io:format("<p>Content Type: ~p</p>",[CType</font>]),
                         {ok,DTD} = file:read_file("syncml_12.dtd"),
                         XMLBin = erlang:binary_to_list(Body),
-                        case CType of 
+                        case CType of
                                 "application/vnd.syncml+xml" ->
                                         XML = XMLBin,
-                                        io:format("<p>Incoming Text 
-~p</p>~n<pre>~s</pre>~n",[erlang:now(),xml_print:pp(XML)]);
+                                        io:format("<p>Incoming Text ~p</p>~n<pre>~s</pre>~n",[erlang:now(),xml_print:pp(XML)]);
                                 "application/vnd.syncml+wbxml" ->
-                                        io:format("<p>Incoming Binary 
-~p</p>~n<pre>~p</pre>~n",[erlang:now(),XMLBin]),
-                                        {ok,XML} = 
-wbxml:decode(XMLBin)
+                                        io:format("<p>Incoming Binary ~p</p>~n<pre>~p</pre>~n",[erlang:now(),XMLBin]),
+                                        {ok,XML} = wbxml:decode(XMLBin)
                         end,
                         DTDXML = erlang:binary_to_list(DTD) ++ XML,
-                        {ok,Warnings,Rules,Parse} = 
-xml:bin(erlang:list_to_binary(DTDXML)),
+                        {ok,Warnings,Rules,Parse} = xml:bin(erlang:list_to_binary(DTDXML)),
                         handle_syncml_message(Parse),
-                        io:format("<p>Parse 
-tree<p>~n<pre>~s</pre>~n", [xml_print:pp(Parse)]),
-                iserve:reply_ok([{'Content-Type', 
-"text/plain;charset=utf-8"}], <<>>)
+                        io:format("<p>Parse tree<p>~n<pre>~s</pre>~n", [xml_print:pp(Parse)]),
+                iserve:reply_ok([{'Content-Type', "text/plain;charset=utf-8"}], <<>>)
         end.
 
 Репозиторий проекта на http://synrc.com/repository/sync/server

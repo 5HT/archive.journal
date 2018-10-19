@@ -1,8 +1,8 @@
 Continuous Integration сервер на Эрланг за 30 минут
 
-В рамкам серии образовательных статей о том как написать свой PaaS в 500 
-строчек, задля популяризации Эрланга, продвижение оупен соурс, а также движения 
-"Пиши Мало думай Хорошо" сегодня мы покажем как написать свой CI сервер на 
+В рамкам серии образовательных статей о том как написать свой PaaS в 500
+строчек, задля популяризации Эрланга, продвижение оупен соурс, а также движения
+"Пиши Мало думай Хорошо" сегодня мы покажем как написать свой CI сервер на
 Эрланг с помощью Cowboy и N2O.
 
 Мы будем использовать такие приложения:
@@ -11,25 +11,24 @@ Continuous Integration сервер на Эрланг за 30 минут
     {cowboy, ".*", {git, "git://github.com/extend/cowboy.git", "master"}},
     {sync,        ".*", {git, "git://github.com/doxtop/sync", "HEAD"}},
     {erlydtl,       ".*", {git, "git://github.com/voxoz/erlydtl.git", "HEAD"}},
-    {n2o,           ".*", {git, "git://github.com/5HT/n2o",                
-"HEAD"}},
+    {n2o,           ".*", {git, "git://github.com/5HT/n2o", "HEAD"}},
     {lager,       ".*", {git, "git://github.com/basho/lager", {tag,"1.2.2"}}}
 ]}.
 
 
-N2O нам нужен для того, что бы быстро накидать сайтик и REST интерфейс к нашему 
-серверу. Вообще-то это не просто CI, это агент LXC контейнера в нашем Erlang 
-PaaS, который будет уметь конфигурировать релизы, добавлять и удалять 
-приложения, деплоить это все в Xen и т.д. Но это все потом, а сейчас напишем 
+N2O нам нужен для того, что бы быстро накидать сайтик и REST интерфейс к нашему
+серверу. Вообще-то это не просто CI, это агент LXC контейнера в нашем Erlang
+PaaS, который будет уметь конфигурировать релизы, добавлять и удалять
+приложения, деплоить это все в Xen и т.д. Но это все потом, а сейчас напишем
 хуки для Ковбоя:
 
     Dispatch = cowboy_router:compile(
         [{'_', [
-            {"/static/[...]", cowboy_static, [{directory, {priv_dir, 
+            {"/static/[...]", cowboy_static, [{directory, {priv_dir,
 releaseman, [<<"static">>]}},
-                                                {mimetypes, {fun 
+                                                {mimetypes, {fun
 mimetypes:path_to_mimes/2, default}}]},
-            {"/rest/:bucket",            n2o_rest, []}, %% for releases REST 
+            {"/rest/:bucket",            n2o_rest, []}, %% for releases REST
 interface
             {"/rest/:bucket/:key",       n2o_rest, []},
             {"/rest/:bucket/:key/[...]", n2o_rest, []},
@@ -39,8 +38,8 @@ interface
     ]),
 
 
-На гитхабе прописывем Веб Хук http://synrc.com/github/hook/USER/REPO для 
-определенного юзер репо, например для репозитория 5HT/n2o: 
+На гитхабе прописывем Веб Хук http://synrc.com/github/hook/USER/REPO для
+определенного юзер репо, например для репозитория 5HT/n2o:
 http://synrc.com/github/hook/5HT/n2o.
 
 напишем этот обработчик:
@@ -58,7 +57,7 @@ handle(Req, State) ->
     ResponseReq = case Allowed of
         true ->
             case global:whereis_name("builder") of
-                undefined -> spawn(fun() -> 
+                undefined -> spawn(fun() ->
 global:register_name("builder",self()), builder() end);
                 Pid -> global:send("builder",{build,Repo,User}) end,
             HTML = wf:to_binary(["<h1>202 Project Started to Build</h1>",
@@ -72,12 +71,12 @@ global:register_name("builder",self()), builder() end);
     {ok, ResponseReq, State}.
 
 
-здесь важно перечислить тех, чей код вы разрешаете билдить, иначе на вашем 
-сервере будут билдить все кому не лень, и даже хайджекнуть. Сам билдер очень 
+здесь важно перечислить тех, чей код вы разрешаете билдить, иначе на вашем
+сервере будут билдить все кому не лень, и даже хайджекнуть. Сам билдер очень
 простой:
 
 builder() ->
-    receive 
+    receive
         {build,Repo,User} -> build(Repo,User)
     end, builder().
 
@@ -91,21 +90,21 @@ build(Repo,User) ->
     os:cmd(["mkdir -p \"",Buildlogs,"/",LogFolder,"\""]),
     Ctx = {User,Repo,Docroot,Buildlogs,LogFolder},
     case os:cmd(["ls ",Docroot]) of
-        [] -> os:cmd(["git clone git@github.com:",User,"/",Repo,".git 
+        [] -> os:cmd(["git clone git@github.com:",User,"/",Repo,".git
 ",Docroot]);
         _ -> ok end,
     Script = ["git pull","rebar get-deps","rebar compile",
-              
+
 "./stop.sh","./release.sh","./styles.sh","./javascript.sh","./start.sh"],
     [ cmd(Ctx,No,lists:nth(No,Script)) || No <- lists:seq(1,length(Script)) ].
 
 
-Здесь в переменной Script -- то, что вы хотите выполнять. Ну сама команда cmd, 
+Здесь в переменной Script -- то, что вы хотите выполнять. Ну сама команда cmd,
 которая пишет логи и т.д.
 
 cmd({User,Repo,Docroot,Buildlogs,LogFolder},No,List) ->
     Message = os:cmd(["cd ",Docroot," && ",List]),
-    FileName = 
+    FileName =
 binary_to_list(base64:encode(lists:flatten([integer_to_list(No)," ",List]))),
     File = lists:flatten([Buildlogs,"/",LogFolder,"/",FileName]),
     error_logger:info_msg("Command: ~p",[List]),
@@ -113,7 +112,7 @@ binary_to_list(base64:encode(lists:flatten([integer_to_list(No)," ",List]))),
     file:write_file(File,Message).
 
 
-Все, этого достаточно. Теперь можно написать REST интерфейс к этому серверу, на 
+Все, этого достаточно. Теперь можно написать REST интерфейс к этому серверу, на
 N2O это выглядит так:
 
 -module(releases_rest).
@@ -122,10 +121,10 @@ N2O это выглядит так:
 
 % PUBLIC REST INTERFACE FOR GLOBAL SERVER
 
--define(RELS, 
+-define(RELS,
 [#release{id="5HT-skyline",name="5HT-skyline",user="5HT",repo="skyline"}] ).
 
-init() -> ets:new(releases, [named_table,{keypos,#release.id},public]), 
+init() -> ets:new(releases, [named_table,{keypos,#release.id},public]),
 ets:insert(releases, ?RELS).
 get([]) -> ets:foldl(fun(C,Acc) -> [C|Acc] end,[],releases);
 get(Id) -> ets:lookup(releases,Id).
@@ -133,11 +132,11 @@ delete(Id) -> ets:delete(releases,Id).
 put(R=#release{}) -> ets:insert(releases,R).
 exists(Id) -> ets:member(releases,Id).
 to_html(R=#release{}) -> [<<"<tr><td>">>,coalesce(R#release.id),<<">,
-                                          
+
 <<"<td>">>,coalesce(R#release.user),<<"</td><td>">>,
-                                          
+
 <<"<td>">>,coalesce(R#release.repo),<<"</td><td>">>,
-                                                     
+
 coalesce(R#release.name),<<"</td></tr>">>].
 
 coalesce(Name) -> case Name of undefined -> <<>>; A -> list_to_binary(A) end.
@@ -150,7 +149,7 @@ coalesce(Name) -> case Name of undefined -> <<>>; A -> list_to_binary(A) end.
 releases() ->
     Builds = string:tokens(os:cmd(["ls -1 buildlogs"]),"\n"),
     [ #h1{ body = "Continuos Integration"}, #h2{ body = "Builds" },
-      [ #p{ body = #link { body = R, url= "/index?release="++R }} || R <- 
+      [ #p{ body = #link { body = R, url= "/index?release="++R }} || R <-
 Builds ] ,
       #br{},#br{},#br{},
       #span{ body = "© Synrc Research Center" }
@@ -163,7 +162,7 @@ builds(Release) ->
     error_logger:info_msg("builds: ~p",[Release]),
     Builds = string:tokens(os:cmd(["ls -1 buildlogs/",Release]),"\n"),
     [ #h2{ body = "Builds for " ++ Release },
-      [ #p{ body = #link { body = B, url= 
+      [ #p{ body = #link { body = B, url=
 "/index?release="++Release++"&build="++B }} || B <- Builds ]
     ].
 
@@ -172,12 +171,12 @@ builds(Release) ->
 
 steps(Release,Build) ->
     error_logger:info_msg("steps: ~p ~p",[Release,Build]),
-    Steps = string:tokens(os:cmd(["ls -1 
+    Steps = string:tokens(os:cmd(["ls -1
 \"buildlogs/",Release,"/",Build,"\""]),"\n"),
-    [ #h2{ body = "Steps for " ++ Build ++ " build of " ++ Release ++ " 
+    [ #h2{ body = "Steps for " ++ Build ++ " build of " ++ Release ++ "
 release" },
-      [ #p{ body = #link { body = wf:to_list(base64:decode(S)), 
-         url= "/index?release="++Release++"&build="++Build++"&log="++S }} || S 
+      [ #p{ body = #link { body = wf:to_list(base64:decode(S)),
+         url= "/index?release="++Release++"&build="++Build++"&log="++S }} || S
 <- lists:sort(Steps) ]
     ].
 
@@ -200,14 +199,14 @@ log(Release,Build,Step) ->
 -include_lib("kernel/include/file.hrl").
 -include_lib("releaseman/include/releases.hrl").
 
-main() -> [ #dtl{file = "index", 
+main() -> [ #dtl{file = "index",
 app=releaseman,bindings=[{title,title()},{body,body()}]} ].
 title() -> [ <<"RELEASE MANAGER">> ].
 body() ->
     case {wf:qs(<<"release">>),wf:qs(<<"build">>),wf:qs(<<"log">>)} of
       {undefined,undefined,undefined} -> releases();
       {Release,undefined,undefined} -> builds(binary_to_list(Release));
-      {Release,Build,undefined} -> 
+      {Release,Build,undefined} ->
 steps(binary_to_list(Release),binary_to_list(Build));
       {Release,Build,Step} -> log(binary_to_list(Release),
             binary_to_list(Build),binary_to_list(Step)) end.

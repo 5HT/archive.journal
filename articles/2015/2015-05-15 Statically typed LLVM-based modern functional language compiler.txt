@@ -23,7 +23,7 @@ rev [x|xs] acc -> rev xs [x|acc].
          GC: runs: 3846
          GC: reclaimed: 15624375K
 
-Type Inference: 
+Type Inference:
 
       $ lc -t heap.l
 

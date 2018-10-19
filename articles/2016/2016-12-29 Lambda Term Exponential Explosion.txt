@@ -1,16 +1,16 @@
 Lambda Term Exponential Explosion
 
-NPONECCOP поставил вопрос и был получен прекрасный ответ который хочется 
+NPONECCOP поставил вопрос и был получен прекрасный ответ который хочется
 процитировать.
 
-q:(nat->nat->nat)->nat->nat->nat = \f:(nat->nat->nat).(\a b:nat.f (f a b) (f a 
+q:(nat->nat->nat)->nat->nat->nat = \f:(nat->nat->nat).(\a b:nat.f (f a b) (f a
 b))
 
 q p => \a b.p (p a b) (p a b)
 
-q (q p) => \c d.q p (q p c d) (q p c d) 
+q (q p) => \c d.q p (q p c d) (q p c d)
   => \c d.q p (p (p c d) (p c d)) (p (p c d) (p c d))
-  => \c d.p (p [p (p (p c d) (p c d))] [p (p (p c d) (p c d))]) (p [p (p (p c 
+  => \c d.p (p [p (p (p c d) (p c d))] [p (p (p c d) (p c d))]) (p [p (p (p c
 d) (p c d))] [p (p (p c d) (p c d))])
 
 
@@ -73,6 +73,6 @@ Prelude> (q $ q $ q $ q $ q $ q $ q $ q $ q (+)) 1 1
 976801874298166903427690031858186486050853753882811946569946433649006084096
 
 
-Это пример терма, который растет экспоненциально при аппликативном порядке бета 
+Это пример терма, который растет экспоненциально при аппликативном порядке бета
 редукции (аксиома subst операционной семантики).
 TAGS (EDIT) cs, groupoid infinity

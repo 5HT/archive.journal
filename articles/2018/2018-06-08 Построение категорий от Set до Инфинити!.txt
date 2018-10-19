@@ -1,23 +1,23 @@
 Построение категорий от Set до Инфинити!
 
-После первой 2-часовой лекции по MLTT, где детально разбираются Пи, Сигма, Путь 
-и все их компоненты Formation/Inro/Elim/Rec/Case/Induction/Eta/Beta (а у Пути 
-еще дополнительных куча subst, trans, все конечно через J выражаются, но через 
-J реально никто не пишет, поэтому надо учить сразу культурке). У Пи типа есть 
-еще funExt аксиома без которой не доказывается, что тип морфизмов является 
-множеством, поэтому конструктивное построение инфинити категорий было 
-невозможно до agda --cubical. Если морфизмы образуют не множество, а групоид, 
-то это уже будет другая категория и так дальше до инфинити групоида. Кроме 
-этого категории еще вкладываются друг в друга, например 0-категория — это 
-множества или сетоид, где отношение Hom A B — это отношение эквивалентности на 
-множествах, 1-категория, это категория где объекты — это 0-категории, множества 
-или топологические пространства, а морфизмы — это отображения, в 2-категориях 
-объекты — это 1-категории или просто категории, 1-морфизмы — это функторы, а 
-2-морфизмы — это естественные преобразования. На втором уроке можно уже строить 
-категорию Множеств. Ну а категорию функторов можно давать уже после полного 
-введения в теорию категори с лимитами. И уже только после теорката и категории 
-функторов можно прееходить к семантике зависимой теории, категории контекстов, 
-где морфизмы — это подстановки и категориям с семействами. Только сейчас решил 
+После первой 2-часовой лекции по MLTT, где детально разбираются Пи, Сигма, Путь
+и все их компоненты Formation/Inro/Elim/Rec/Case/Induction/Eta/Beta (а у Пути
+еще дополнительных куча subst, trans, все конечно через J выражаются, но через
+J реально никто не пишет, поэтому надо учить сразу культурке). У Пи типа есть
+еще funExt аксиома без которой не доказывается, что тип морфизмов является
+множеством, поэтому конструктивное построение инфинити категорий было
+невозможно до agda --cubical. Если морфизмы образуют не множество, а групоид,
+то это уже будет другая категория и так дальше до инфинити групоида. Кроме
+этого категории еще вкладываются друг в друга, например 0-категория — это
+множества или сетоид, где отношение Hom A B — это отношение эквивалентности на
+множествах, 1-категория, это категория где объекты — это 0-категории, множества
+или топологические пространства, а морфизмы — это отображения, в 2-категориях
+объекты — это 1-категории или просто категории, 1-морфизмы — это функторы, а
+2-морфизмы — это естественные преобразования. На втором уроке можно уже строить
+категорию Множеств. Ну а категорию функторов можно давать уже после полного
+введения в теорию категори с лимитами. И уже только после теорката и категории
+функторов можно прееходить к семантике зависимой теории, категории контекстов,
+где морфизмы — это подстановки и категориям с семействами. Только сейчас решил
 написать это.
 
 -- The general notion of (∞,1)-categories
@@ -26,11 +26,11 @@ J реально никто не пишет, поэтому надо учить 
 -- 1-cat   -- 1-ob are spaces or 0-cat, 1-hom are maps
 -- 2-cat-A -- 2-ob are 1-cat, 1-hom are functors/maps        \ bounded
 -- 2-cat-B -- 2-ob are 1-cat, 2-hom are ntrans/mapsOnMaps    / definition
--- 3-cat-A -- 2-ob are (2-cat-A,2-cat-B), 1-hom are functors of product 
+-- 3-cat-A -- 2-ob are (2-cat-A,2-cat-B), 1-hom are functors of product
 categories \
--- 3-cat-B -- 2-ob are (2-cat-A,2-cat-B), 2-hom are ntrans of product 
+-- 3-cat-B -- 2-ob are (2-cat-A,2-cat-B), 2-hom are ntrans of product
 categories    ) morphisms
--- 3-cat-C -- 3-ob are (2-cat-A,2-cat-B), 3-hom are modifications               
+-- 3-cat-C -- 3-ob are (2-cat-A,2-cat-B), 3-hom are modifications
    /
 
 -- Enrichment
@@ -45,7 +45,7 @@ categories    ) morphisms
 -- equiv        0-hom: U = undefined
 -- functor      1-hom (C D: 1-cat): U = undefined
 -- ntrans       2-hom (C D: 1-cat) (F G: 1-hom C D): U = undefined
--- modification 3-hom (C D: 1-cat) (F G: 1-hom C D) (I J: 2-hom C D F G): U = 
+-- modification 3-hom (C D: 1-cat) (F G: 1-hom C D) (I J: 2-hom C D F G): U =
 undefined
 
 -- 1-Category of Sets
@@ -55,15 +55,15 @@ Set: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     id (A: Ob): Hom A A = idfun A.1
     c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C = o A.1 B.1 C.1 g f
     HomSet (A B: Ob): isSet (Hom A B) = setFun A.1 B.1 B.2
-    L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = refl (Hom A 
+    L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = refl (Hom A
 B) f
-    R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = refl (Hom A 
+    R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = refl (Hom A
 B) f
     Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
      : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
      = refl (Hom A D) (c A B D f (c B C D g h))
 
-Functions (X Y: U) (Z: isSet Y): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) 
+Functions (X Y: U) (Z: isSet Y): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q)
 where
      Ob: U = X -> Y
      Hom (A B: Ob): U = id (X -> Y)
@@ -73,7 +73,7 @@ where
      L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = undefined
      R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = undefined
      Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
-       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) = 
+       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) =
 undefined
 
 -- 2-Category with 1-hom morphisms (functors)
@@ -86,11 +86,11 @@ Cat: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = undefined
     R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = undefined
     Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
-       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) = 
+       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) =
 undefined
 
 -- AwodeyCT Definition 7.9. The functor category
--- 2-Category of Functors F: X -> Y with 2-hom morphisms (natural 
+-- 2-Category of Functors F: X -> Y with 2-hom morphisms (natural
 transformations)
 Func (X Y: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     Ob: U = catfunctor X Y
@@ -101,7 +101,7 @@ Func (X Y: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = undefined
     R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = undefined
     Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
-       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) = 
+       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) =
 undefined
 
 -- Category of Abelian Groups
@@ -118,7 +118,7 @@ Ab: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
       = lemma_idmonoidhom1 (A.1, A.2.1.1) (B.1, B.2.1.1) f
     Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
        : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
-       = lemma_monoidcomp0(A.1,A.2.1.1)(B.1,B.2.1.1)(C.1,C.2.1.1)(D.1,D.2.1.1)f 
+       = lemma_monoidcomp0(A.1,A.2.1.1)(B.1,B.2.1.1)(C.1,C.2.1.1)(D.1,D.2.1.1)f
 g h
 
 -- Product Category of two Categories
@@ -128,40 +128,40 @@ Product (X Y: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     Ob: U = prod x y
     Hom (A B: Ob): U = prod (id x) (id y)
     id (A: Ob): Hom A A = (idfun x, idfun y)
-    c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C = (o x x x f.1 g.1, o y y 
+    c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C = (o x x x f.1 g.1, o y y
 y f.2 g.2)
     HomSet (A B: Ob): isSet (Hom A B) = undefined
-    L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = refl (Hom A 
+    L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = refl (Hom A
 B) f
-    R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = refl (Hom A 
+    R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = refl (Hom A
 B) f
     Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
        : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
        = refl (Hom A D) (c A C D (c A B C f g) h)
 
 
-Почему категорию множеств можно давать сразу на втором уроке без теорката? 
-Потому, что в доказательствах свойств категории испольется только refl, такой 
-же фокус как и с инференс правилами встроенной теории типов 
-(самодоказательство, пруф чекинг тайп чекера по сути). Остается только детально 
-разбрать доказательствао setFun которое говорит, что если кодомен множество, то 
-стрелка тоже множество, ну а у нас не только кодомен множество, но и домен, так 
-что доказательство тоже тривиальное, и как раз оно требует funExt. 
+Почему категорию множеств можно давать сразу на втором уроке без теорката?
+Потому, что в доказательствах свойств категории испольется только refl, такой
+же фокус как и с инференс правилами встроенной теории типов
+(самодоказательство, пруф чекинг тайп чекера по сути). Остается только детально
+разбрать доказательствао setFun которое говорит, что если кодомен множество, то
+стрелка тоже множество, ну а у нас не только кодомен множество, но и домен, так
+что доказательство тоже тривиальное, и как раз оно требует funExt.
 
-Сама структура SET тоже непростая, и для общей реализации надо использовать 
-n-groupoid, так как isSet предикат в SET = (X: U) * isSet X — это 0-групоид. 
-Благо это все можно рассказать на первом уроке. Объектами 3-категория будет 
-2-тапл 2-категорий и дальше по индукции. Просто начиная с 4-категории уже 
-начинает резко нехватать бумаги из-за симплициальной струтктуры инфинити 
-категорий, и непонятно, кому и зачем это может понадобиться. Думаю можно 
-написать генератор сигнатур для инфинити категорий. Но только через 
-метапрограммирование, напрямую AST генерировать, эффективнее всего. Вот 
-например башня из трех сигнатур по которой все понятно: 
+Сама структура SET тоже непростая, и для общей реализации надо использовать
+n-groupoid, так как isSet предикат в SET = (X: U) * isSet X — это 0-групоид.
+Благо это все можно рассказать на первом уроке. Объектами 3-категория будет
+2-тапл 2-категорий и дальше по индукции. Просто начиная с 4-категории уже
+начинает резко нехватать бумаги из-за симплициальной струтктуры инфинити
+категорий, и непонятно, кому и зачем это может понадобиться. Думаю можно
+написать генератор сигнатур для инфинити категорий. Но только через
+метапрограммирование, напрямую AST генерировать, эффективнее всего. Вот
+например башня из трех сигнатур по которой все понятно:
 
-1-hom (C D: cat): U — сигнатура функтора 
+1-hom (C D: cat): U — сигнатура функтора
 2-hom (C D: cat) (F G: 1-hom C D): U — сигнатура естественного преобразования
-3-hom (C D: cat) (F G: 1-hom C D) (I J: 2-hom C D F G): U — сигнатура 
-3-морфизма 
+3-hom (C D: cat) (F G: 1-hom C D) (I J: 2-hom C D F G): U — сигнатура
+3-морфизма
 
 Для любителей матфизики, введение в n-категории Джона Баеза.
 

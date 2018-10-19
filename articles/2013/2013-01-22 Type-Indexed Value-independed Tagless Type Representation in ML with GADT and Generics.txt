@@ -1,16 +1,15 @@
-Type-Indexed Value-independed Tagless Type Representation in ML with GADT and 
-Generics
+Type-Indexed Value-independed Tagless Type Representation in ML with GADT and Generics
 
-Когда говорят об обобщенных функциях в основном имеют ввиду обобщение вокруг 
-значений. Ну и задача диспатча по значениям сводится к вызову фукнции нужного 
-типа для заданного значения. В нашем предыдущем примере с боксингом такая 
-зависимость функции от значения была очевидной и угрюмой. В Haskell 
-генерик-функции полностью отвязаны от значений и привязаны только к типам без 
-использования каких бы то нибыло тагов. 
+Когда говорят об обобщенных функциях в основном имеют ввиду обобщение вокруг
+значений. Ну и задача диспатча по значениям сводится к вызову фукнции нужного
+типа для заданного значения. В нашем предыдущем примере с боксингом такая
+зависимость функции от значения была очевидной и угрюмой. В Haskell
+генерик-функции полностью отвязаны от значений и привязаны только к типам без
+использования каких бы то нибыло тагов.
 
-Ну а теперь время высшего пилотажа от Олега Киселева :-) Здесь приведен именно 
-такой пример, который появился благодаря тому что модули можно использовать как 
-компоненты сигнатур наряду с функциями и типами. Также эта модель полиморфизма 
+Ну а теперь время высшего пилотажа от Олега Киселева :-) Здесь приведен именно
+такой пример, который появился благодаря тому что модули можно использовать как
+компоненты сигнатур наряду с функциями и типами. Также эта модель полиморфизма
 подразумевает расширение до произвольных алгебраических типов функции show.
 
 module type Interpretation = sig
@@ -35,16 +34,15 @@ let string : string repr = (module struct
     module Interpret (I : Interpretation) = struct let result = I.string end
     end : Representation with type a = string)
 
-let ( * ) : 'a 'b. 'a repr -> 'b repr -> ('a * 'b) repr  = fun (type a') (type 
-b') arepr brepr ->
+let ( * ) : 'a 'b. 'a repr -> 'b repr -> ('a * 'b) repr  = fun (type a') (type b') arepr brepr ->
     (module struct
     type a = a' * b'
     module A = (val arepr : Representation with type a = a')
     module B = (val brepr : Representation with type a = b')
-    module Interpret (I : Interpretation) = struct 
-           module AI = A.Interpret(I) 
-           module BI = B.Interpret(I) 
-           open I 
+    module Interpret (I : Interpretation) = struct
+           module AI = A.Interpret(I)
+           module BI = B.Interpret(I)
+           open I
            let result = AI.result * BI.result end
     end : Representation with type a = a' * b')
 
@@ -55,8 +53,8 @@ module Show : Interpretation with type 'a tc = 'a -> string = struct
        let string s = s end ;;
 
 let show : 'a . 'a repr -> 'a -> string =
-    fun (type a) repr v -> 
-         let module R = (val repr : Representation with type a = a) in 
+    fun (type a) repr v ->
+         let module R = (val repr : Representation with type a = a) in
          let module N = R.Interpret (Show)
           in N.result v ;;
 
@@ -66,10 +64,10 @@ print_string (show (int * int) (2,3)) ;;
 print_string (show (int * string) (2,"ok")) ;;
 
 
-Если добавить определение для list и tuple то можно будет писать show list, 
-show string * int 2 и любые алгебраические типы. Именно так и работает 
-библиотека deriving, которую написал Джереми Ялоп, а первый такую имплементация 
-генерик индексации по типу свободную от значнений для OCaml 3.12 сделал Олег 
+Если добавить определение для list и tuple то можно будет писать show list,
+show string * int 2 и любые алгебраические типы. Именно так и работает
+библиотека deriving, которую написал Джереми Ялоп, а первый такую имплементация
+генерик индексации по типу свободную от значнений для OCaml 3.12 сделал Олег
 Кисилев. До этого такое было невозможно в OCaml.
 
 __________
