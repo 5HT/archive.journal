@@ -57,8 +57,8 @@ o, Сюда — allpaths o -> ((p: concept o) -> nondual o p). И докажем
 в стрелку (coerce) и конгруэнтностью (cong) из базовой библиотеки.
 
 forward (o:U): ((p: concept o) -> nondual o p) -> allpaths o
-  = \(nd: (p: concept o) -> nondual o p) (a b: o) -> coerce (Path o a a) (Path
-o a b) (nd (\(z:o)->Path o a z) a b) (refl o a)
+  = \(nd: (p: concept o) -> nondual o p) (a b: o) ->
+     coerce (Path o a a) (Path o a b) (nd (\(z:o)->Path o a z) a b) (refl o a)
 
 backward (o:U): allpaths o -> ((p: concept o) -> nondual o p)
   = \(all: allpaths o)(p: concept o)(x y: o) -> cong o U p x y (all x y)
