@@ -1,0 +1,74 @@
+Новый ролаут N2O
+
+Всё хотел вести блог прямо в гитхабе и вот я здесь. Привет Твиттер!
+
+Раз в год я выкатываю свежие версии N2O. В этом году это — Более матурная MQTT библиотека,
+которая вместе с веб-сокетной версией получили тег 5.10, последняя все ещё остается в отдельном репозитории;
+NITRO уже смержилась и совместима с обеими версиями, кто знает, возможно, в следующих версиях,
+или уже в новом, гду придёт гранд мерж MQTT и N2O репозиториев (осталось пару файлов
+перенести из старого репозитория и запустить старый вебсокетный-пример на новом дереве)!
+В связи с нарастающим количеством деприкейтов в логах, было принято решение залочить все чужие либы
+и сделать что-то типа SYNRC хранилища репозиториев. В этом месяце в него вошли и залочились:
+
+— github.com/voxoz/cowboy — 1.0.4
+— github.com/voxoz/cowlib — 1.0.0
+— github.com/voxoz/ranch — 1.0.0
+— github.com/voxoz/erlydtl — 0.8
+— github.com/voxoz/emqttc — 0.8
+— github.com/voxoz/gen_logger — 1.2
+— github.com/voxoz/lager — 3.2.2
+— github.com/synrc/emq_dashboard — 2.1.1
+— github.com/synrc/emqttd — 2.1.2
+— github.com/voxoz/esockd — 4.1.1
+— github.com/voxoz/mochiweb — 4.2.1
+— github.com/voxoz/gproc — 0.8
+— github.com/voxoz/syn — 1.5
+
+Одновременно с этим обновился главный хедлайнер сезона, библиотека voxoz/mq,
+которая включает старый EMQ 2.1.2 и его дашборд. Кроме этого выкатилась октябрская волна
+экосистемы N2O, а именно (от старых к новым):
+
+— github.com/synrc/n2o — 5.10
+— github.com/synrc/kvs — 5.10
+— github.com/synrc/mad — 4.10
+— github.com/synrc/fs — 4.10
+— github.com/synrc/active — 4.10
+— github.com/synrc/nitro — 3.10
+— github.com/synrc/bpe — 3.10
+— github.com/synrc/sh — 2.10
+— github.com/synrc/review — 1.10
+— github.com/synrc/bert — 1.10
+— github.com/synrc/mqtt — 5.10 (N2O-MQTT)
+
+Где-то минорные фиксы, где-то ворнинги, все репозитории включены
+в тревисе и можно видеить их стрим: https://travis-ci.org/voxoz,
+https://travis-ci.org/synrc, там же можно глянуть все логи всех билдов.
+Как видно многие репозитории не включены, поэтому в ближайших планах
+засветить всё зеленым, это подзразумевает сборку ребаром и мёдом.
+
+Почему ругают mad, я не знаю, например rebar на 19.3 gen_logger
+
+==> gen_logger (compile)
+ERROR: OTP release 20.0.4 or later is required, you have: 19
+ERROR: compile failed while processing /home/travis/build/synrc/review/deps/gen_logger: rebar_abort
+
+The command "rebar get-deps compile" exited with 1.
+
+не собирает, а с mad всё работает:
+
+$ cat .travis.yml
+language: erlang
+otp_release:
+  - 19.3
+script:
+  - "curl -fsSL https://raw.github.com/synrc/mad/master/mad > mad"
+  - "chmod +x mad"
+  - "./mad dep com"
+
+The command "./mad dep com" exited with 0.
+Done. Your build exited with 0.
+
+mad начал поддерживать сборку кубическим тайпчекером, появился модуль mad_cubical,
+но через год-два, кто знает, возможно тут будет уже свой AST трансформатор на Erlang.
+
+
