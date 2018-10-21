@@ -63,7 +63,6 @@ print_string (show int 3) ;;
 print_string (show (int * int) (2,3)) ;;
 print_string (show (int * string) (2,"ok")) ;;
 
-
 Если добавить определение для list и tuple то можно будет писать show list,
 show string * int 2 и любые алгебраические типы. Именно так и работает
 библиотека deriving, которую написал Джереми Ялоп, а первый такую имплементация

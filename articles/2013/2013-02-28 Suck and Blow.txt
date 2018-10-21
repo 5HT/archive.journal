@@ -9,9 +9,9 @@ Suck and Blow
 темплейты:
 
 <ul>
-        $forall Entity articleId article <- articles
-            <li>
-                <a href=@{ArticleR articleId} > #{articleTitle article}
+    $forall Entity articleId article <- articles
+        <li>
+            <a href=@{ArticleR articleId} > #{articleTitle article}
 
 
 Вот это пример темплейта из Yesod. Ну гавно же, на такое смотреть, истинный
@@ -56,19 +56,16 @@ chat_loop() ->
             Terms = [#span { text=Username, class=username }, ": ",
                      #span { text=Message, class=message } ],
             wf:insert_bottom(chatHistory, Terms),
-            wf:wire("obj('chatHistory').scrollTop =
-obj('chatHistory').scrollHeight;"),
+            wf:wire("obj('chatHistory').scrollTop = obj('chatHistory').scrollHeight;"),
             wf:flush()
     end,
     chat_loop().
-
 
 Ну красота же. Нет блядь подавай им:
 
 <form id="form1" runat="server">
         The current time is: <asp:Label runat="server" id="lbl1" />
    </form>
-
 
 Апогей такого подхода, это дебаггеры, который уже понимают и ActionScript и
 MXML и дебагер ходит по XML как по родному коду. Есть даже чуваки, которые на

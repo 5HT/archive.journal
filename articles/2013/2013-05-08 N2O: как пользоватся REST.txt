@@ -20,28 +20,23 @@ N2O: как пользоватся REST
                 #user{id="doxtop",email="doxtop@synrc.com"},
                 #user{id="roman"}]).
 
-init() -> ets:new(users, [named_table,{keypos,#user.id}]), ets:insert(users,
-?USERS).
+init() -> ets:new(users, [named_table,{keypos,#user.id}]), ets:insert(users, ?USERS).
 get([]) -> ets:foldl(fun(C,Acc) -> [C|Acc] end,[],users);
 get(Id) -> ets:lookup(users,Id).
 delete(Id) -> ets:delete(users,Id).
 put(User=#user{}) -> ets:insert(users,User).
 exists(Id) -> ets:member(users,Id).
-to_html(User=#user{}) -> [<<"<tr><td>">>,coalesce(User#user.id),<<"</td><td>">>,
-
-coalesce(User#user.email),<<"</td><td>">>,
-                                         coalesce(User#user.name),<<"</td>>].
-
 coalesce(Name) -> case Name of undefined -> <<>>; A -> list_to_binary(A) end.
-
+to_html(User=#user{}) -> [<<"<tr><td>">>,coalesce(User#user.id),<<"</td><td>">>,
+                          coalesce(User#user.email),<<"</td><td>">>,
+                          coalesce(User#user.name),<<"</td>>].
 
 И в настойках N2O прописать роутинг:
 
 dispatch_rules() ->
     cowboy_router:compile(
         [{'_', [
-            {["/static/[...]"], cowboy_static, [{directory, {priv_dir, ?APP,
-[<<"static">>]}},
+            {["/static/[...]"], cowboy_static, [{directory, {priv_dir, ?APP, [<<"static">>]}},
                                                 {mimetypes, {mimetypes,
 path_to_mimes}, default}]},
             {["/rest/:bucket"], n2o_rest, []},

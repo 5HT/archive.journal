@@ -98,8 +98,6 @@ volume create vol replica и у вас кластер, который будет
 некоторых нод поменять виртуальную машину Erlang с R14 на R15! Это не снилось
 даже для хот коде свапа OTP-шного.
 
-
-
 Вот и весь секрет успеха: Riak, GProc, RabbitMQ, Nitrogen, Cowboy, GlusterFS.
 Если вам нужен свой фейсбук обращайтесь в http://synrc.com.
 TAGS (EDIT) cs

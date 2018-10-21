@@ -59,11 +59,11 @@ tokens(Tokens,Res) ->
              tokens(T,Res ++ [Cut ++ [H]]) end.
 
 forms(File) -> Forms = [ begin {ok,Form} = erl_parse:parse_form(Line),
-                       Form end || Line <- parse(File)], io:format("Forms:
-~p",[Forms]).
+                       Form end || Line <- parse(File)], io:format("Forms:~p",[Forms]).
 
 
 Получается такое дерево из эрланг кортежей и списков:
+
 164> shen:forms("fac.erl").
 Forms: [{function,1,start,0,
             [{clause,1,[],[],
@@ -84,8 +84,8 @@ Forms: [{function,1,start,0,
                           {atom,7,fac},
                           [{op,7,'-',{var,7,'N'},{integer,7,1}}]}}]}]}]
 
-
 Которе прекрасно парсается эрлангом:
+
 function(Name,Args,Clauses) ->
   [ io_lib:format("var ~s = pattern({~n", [ Name ]),
     string:join([ clause(Args,C) || C <- Clauses ],",\n"),
@@ -93,37 +93,26 @@ function(Name,Args,Clauses) ->
 
 clause(Argc,{clause,X,Argv,Guard,Expressions}) ->
     Match = string:join([ exp(Arg) || Arg <- Argv ],","),
-    Args = string:join([ arg(Arg,N) || {Arg,N} <-
-lists:zip(Argv,lists:seq(1,Argc))],","),
+    Args = string:join([ arg(Arg,N) || {Arg,N} <- lists:zip(Argv,lists:seq(1,Argc))],","),
   [ io_lib:format("\t'~s': function(~s) {~n", [Match,Args]),
-    ["\t\t"++case N == length(Expressions) of true -> "return "; _ -> "" end ++
-exp(E)++";\n"
+    ["\t\t"++case N == length(Expressions) of true -> "return "; _ -> "" end ++ exp(E)++";\n"
        || {E,N} <- lists:zip(Expressions,lists:seq(1,length(Expressions)))],
     io_lib:format("~s",["\t}"]) ].
 
 arg({integer,X,Value},N) ->           io_lib:format("x~s",[integer_to_list(N)]);
-arg({var,X,Value},N) ->
-io_lib:format("~s",[string:to_lower(atom_to_list(Value))]).
-par(List) ->
-io_lib:format("~s",[lists:flatten(string:join([exp(V)||V<-List],","))]).
+arg({var,X,Value},N) -> io_lib:format("~s",[string:to_lower(atom_to_list(Value))]).
+par(List) -> io_lib:format("~s",[lists:flatten(string:join([exp(V)||V<-List],","))]).
+
 exp({nil,X}) -> "[]";
-exp({integer,X,Value}) ->
-io_lib:format("~s",[integer_to_list(Value)]);
+exp({integer,X,Value}) -> io_lib:format("~s",[integer_to_list(Value)]);
 exp({string,X,Value}) ->              io_lib:format("'~s'",[Value]);
-exp({cons,X,Left,Right}) ->
-io_lib:format("[~s,~s]",[exp(Left),exp(Right)]);
-exp({var,X,Value}) ->
-io_lib:format("~s",[string:to_lower(atom_to_list(Value))]);
-exp({op,X,'-',Left,Right}) ->         io_lib:format("~s -
-~s",[exp(Left),exp(Right)]);
-exp({op,X,'*',Left,Right}) ->         io_lib:format("~s *
-~s",[exp(Left),exp(Right)]);
-exp({call,X,{atom,Y,Name},Params}) ->
-io_lib:format("~s(~s)",[Name,par(Params)]);
-exp({match,X,Left,Right}) ->          io_lib:format("~s =
-~s",[exp(Left),exp(Right)]);
-exp({call,X,{remote,XX,{atom,Y,Module},{atom,Z,Name}},Params}) ->
-    io_lib:format("~s.~s(~s)",[Module,Name,par(Params)]);
+exp({cons,X,Left,Right}) -> io_lib:format("[~s,~s]",[exp(Left),exp(Right)]);
+exp({var,X,Value}) -> io_lib:format("~s",[string:to_lower(atom_to_list(Value))]);
+exp({op,X,'-',Left,Right}) ->         io_lib:format("~s -~s",[exp(Left),exp(Right)]);
+exp({op,X,'*',Left,Right}) ->         io_lib:format("~s *~s",[exp(Left),exp(Right)]);
+exp({call,X,{atom,Y,Name},Params}) -> io_lib:format("~s(~s)",[Name,par(Params)]);
+exp({match,X,Left,Right}) ->          io_lib:format("~s =~s",[exp(Left),exp(Right)]);
+exp({call,X,{remote,XX,{atom,Y,Module},{atom,Z,Name}},Params}) -> io_lib:format("~s.~s(~s)",[Module,Name,par(Params)]);
 exp(X) -> X.
 
 Обернем все в пролог и эпилог:
@@ -137,8 +126,8 @@ main() ->
     io:format("Forms: ~p",[Forms]),
     io:format("~s",[lists:flatten([prelude(),intermezzo(Forms),coda()])]).
 
-
 Получаем на выходе fac.js:
+
 var pattern = require("matches").pattern;
 var start = pattern({
         '': function() {
@@ -155,10 +144,8 @@ var fac = pattern({
         }});
 start();
 
-
 Запускаем node fac.js:
 factorial ~p [ 5, [ 120, [] ] ]
-
 
 Факториал посчитан :) https://github.com/5HT/shen
 TAGS (EDIT) cs, erlang, javascript

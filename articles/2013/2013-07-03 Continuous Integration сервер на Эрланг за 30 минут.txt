@@ -15,7 +15,6 @@ Continuous Integration сервер на Эрланг за 30 минут
     {lager,       ".*", {git, "git://github.com/basho/lager", {tag,"1.2.2"}}}
 ]}.
 
-
 N2O нам нужен для того, что бы быстро накидать сайтик и REST интерфейс к нашему
 серверу. Вообще-то это не просто CI, это агент LXC контейнера в нашем Erlang
 PaaS, который будет уметь конфигурировать релизы, добавлять и удалять
@@ -24,12 +23,9 @@ PaaS, который будет уметь конфигурировать рел
 
     Dispatch = cowboy_router:compile(
         [{'_', [
-            {"/static/[...]", cowboy_static, [{directory, {priv_dir,
-releaseman, [<<"static">>]}},
-                                                {mimetypes, {fun
-mimetypes:path_to_mimes/2, default}}]},
-            {"/rest/:bucket",            n2o_rest, []}, %% for releases REST
-interface
+            {"/static/[...]", cowboy_static, [{directory, {priv_dir, releaseman, [<<"static">>]}},
+                                              {mimetypes, {fun mimetypes:path_to_mimes/2, default}}]},
+            {"/rest/:bucket",            n2o_rest, []}, %% for releases REST interface
             {"/rest/:bucket/:key",       n2o_rest, []},
             {"/rest/:bucket/:key/[...]", n2o_rest, []},
             {"/github/hook/[...]", github_handler, []},
@@ -57,8 +53,7 @@ handle(Req, State) ->
     ResponseReq = case Allowed of
         true ->
             case global:whereis_name("builder") of
-                undefined -> spawn(fun() ->
-global:register_name("builder",self()), builder() end);
+                undefined -> spawn(fun() -> global:register_name("builder",self()), builder() end);
                 Pid -> global:send("builder",{build,Repo,User}) end,
             HTML = wf:to_binary(["<h1>202 Project Started to Build</h1>",
                  "",User,"-",Repo,""]),
@@ -90,14 +85,11 @@ build(Repo,User) ->
     os:cmd(["mkdir -p \"",Buildlogs,"/",LogFolder,"\""]),
     Ctx = {User,Repo,Docroot,Buildlogs,LogFolder},
     case os:cmd(["ls ",Docroot]) of
-        [] -> os:cmd(["git clone git@github.com:",User,"/",Repo,".git
-",Docroot]);
+        [] -> os:cmd(["git clone git@github.com:",User,"/",Repo,".git",Docroot]);
         _ -> ok end,
-    Script = ["git pull","rebar get-deps","rebar compile",
-
-"./stop.sh","./release.sh","./styles.sh","./javascript.sh","./start.sh"],
+    Script = ["git pull","rebar get-deps","rebar compile","./stop.sh","./release.sh",
+              "./styles.sh","./javascript.sh","./start.sh"],
     [ cmd(Ctx,No,lists:nth(No,Script)) || No <- lists:seq(1,length(Script)) ].
-
 
 Здесь в переменной Script -- то, что вы хотите выполнять. Ну сама команда cmd,
 которая пишет логи и т.д.
@@ -111,9 +103,8 @@ binary_to_list(base64:encode(lists:flatten([integer_to_list(No)," ",List]))),
     error_logger:info_msg("Output: ~p",[Message]),
     file:write_file(File,Message).
 
-
-Все, этого достаточно. Теперь можно написать REST интерфейс к этому серверу, на
-N2O это выглядит так:
+Все, этого достаточно.
+Теперь можно написать REST интерфейс к этому серверу, на N2O это выглядит так:
 
 -module(releases_rest).
 -compile(export_all).
@@ -121,8 +112,7 @@ N2O это выглядит так:
 
 % PUBLIC REST INTERFACE FOR GLOBAL SERVER
 
--define(RELS,
-[#release{id="5HT-skyline",name="5HT-skyline",user="5HT",repo="skyline"}] ).
+-define(RELS, [#release{id="5HT-skyline",name="5HT-skyline",user="5HT",repo="skyline"}] ).
 
 init() -> ets:new(releases, [named_table,{keypos,#release.id},public]),
 ets:insert(releases, ?RELS).
@@ -132,15 +122,11 @@ delete(Id) -> ets:delete(releases,Id).
 put(R=#release{}) -> ets:insert(releases,R).
 exists(Id) -> ets:member(releases,Id).
 to_html(R=#release{}) -> [<<"<tr><td>">>,coalesce(R#release.id),<<">,
-
-<<"<td>">>,coalesce(R#release.user),<<"</td><td>">>,
-
-<<"<td>">>,coalesce(R#release.repo),<<"</td><td>">>,
-
-coalesce(R#release.name),<<"</td></tr>">>].
-
-coalesce(Name) -> case Name of undefined -> <<>>; A -> list_to_binary(A) end.
-
+                          <<"<td>">>,coalesce(R#release.user),<<"</td><td>">>,
+                          <<"<td>">>,coalesce(R#release.repo),<<"</td><td>">>,
+                          coalesce(R#release.name),<<"</td></tr>">>].
+                          coalesce(Name) -> case Name of undefined -> <<>>;
+                                               A -> list_to_binary(A) end.
 
 Ну и теперь напишем вебсайтик, который будет состоять из одной странцы:
 
@@ -149,12 +135,10 @@ coalesce(Name) -> case Name of undefined -> <<>>; A -> list_to_binary(A) end.
 releases() ->
     Builds = string:tokens(os:cmd(["ls -1 buildlogs"]),"\n"),
     [ #h1{ body = "Continuos Integration"}, #h2{ body = "Builds" },
-      [ #p{ body = #link { body = R, url= "/index?release="++R }} || R <-
-Builds ] ,
+      [ #p{ body = #link { body = R, url= "/index?release="++R }} || R <- Builds ] ,
       #br{},#br{},#br{},
       #span{ body = "© Synrc Research Center" }
     ].
-
 
 Вывод билдов для каждого релиза:
 
@@ -162,8 +146,7 @@ builds(Release) ->
     error_logger:info_msg("builds: ~p",[Release]),
     Builds = string:tokens(os:cmd(["ls -1 buildlogs/",Release]),"\n"),
     [ #h2{ body = "Builds for " ++ Release },
-      [ #p{ body = #link { body = B, url=
-"/index?release="++Release++"&build="++B }} || B <- Builds ]
+      [ #p{ body = #link { body = B, url= "/index?release="++Release++"&build="++B }} || B <- Builds ]
     ].
 
 
@@ -171,25 +154,17 @@ builds(Release) ->
 
 steps(Release,Build) ->
     error_logger:info_msg("steps: ~p ~p",[Release,Build]),
-    Steps = string:tokens(os:cmd(["ls -1
-\"buildlogs/",Release,"/",Build,"\""]),"\n"),
-    [ #h2{ body = "Steps for " ++ Build ++ " build of " ++ Release ++ "
-release" },
+    Steps = string:tokens(os:cmd(["ls -1 \"buildlogs/",Release,"/",Build,"\""]),"\n"),
+    [ #h2{ body = "Steps for " ++ Build ++ " build of " ++ Release ++ " release" },
       [ #p{ body = #link { body = wf:to_list(base64:decode(S)),
-         url= "/index?release="++Release++"&build="++Build++"&log="++S }} || S
-<- lists:sort(Steps) ]
-    ].
-
+         url= "/index?release="++Release++"&build="++Build++"&log="++S }} || S <- lists:sort(Steps) ] ].
 
 Вывод лога:
 
 log(Release,Build,Step) ->
     error_logger:info_msg("log: ~p ~p ~p",[Release,Build,Step]),
     {ok,Bin} = file:read_file(["buildlogs/",Release,"/",Build,"/",Step]),
-    [<<"
-">>,Bin,<<"
-">>].
-
+    [<<"">>,Bin,<<"">>].
 
 Ну и сам модуль страницы:
 
@@ -206,11 +181,9 @@ body() ->
     case {wf:qs(<<"release">>),wf:qs(<<"build">>),wf:qs(<<"log">>)} of
       {undefined,undefined,undefined} -> releases();
       {Release,undefined,undefined} -> builds(binary_to_list(Release));
-      {Release,Build,undefined} ->
-steps(binary_to_list(Release),binary_to_list(Build));
+      {Release,Build,undefined} -> steps(binary_to_list(Release),binary_to_list(Build));
       {Release,Build,Step} -> log(binary_to_list(Release),
             binary_to_list(Build),binary_to_list(Step)) end.
-
 
 Вот как это выглядит, наш Билд сервер: http://build.synrc.com/
 TAGS (EDIT) #br, #dtl, #h1, #h2, #link, #p, #release, #span, cs
