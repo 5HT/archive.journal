@@ -1,0 +1,77 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2016-08-09</title>
+    <link rel="stylesheet" href="../../blank.css?v=4" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>STREAM</a>
+    <a href='#'>2016-08-09</a>
+</nav>
+<main>
+    <section>
+        <h3>Лямбда Синтаксисы</h3>
+
+        <p> В этом посте хочу собрать все лямбда синтаксисы.
+            Навскидку есть несколько синтаксисов для лямбды:</p>
+        <p> λ x . B x            — нетипизированная классика<br>
+            λ x : A , B x        — в научных статьях<br>
+            λ (x: A) → B x       — современный синтаксис Morte/Om<br>
+            λ (x: A) , B x       — Lean<br>
+            (x: A) B x           — LISP синтаксис<br>
+            [x: A] B(x)          — AUTOMATH<br>
+            fun (x: A) => B x    — языки программирования и французкая школа<br>
+            fun (X) -> B(X)      — Erlang</p>
+        <p> Классика используется студентами, которые решают домашки, на википедии, и в
+            HOL/Isabelle. Второй синтаксис используется в самых крутых статьях по лямбда
+            исчислению, его использует например Страйхер, третий используется тоже часто в
+            статьях, например Пфенинг. LISP синтаксис заюзал в своей работе по индуктивных
+            семейставах Дыбьер. Но все это вариации AUTOMATH, где есть [], что есть там и
+            квантор и лямбда. Есть еще логический синтаксис правил вывода, который заюзал
+            МакБрайд в Эпиграмме, но это по-моему слишком. Синтаксис, который используется в
+            современных языках программирования, так же приведен, тут по столько по скольку,
+            так как статьи на нем писать неудобно. Мы выбрали в качестве синтаксиса лямбда
+            исчисления в OM тот, где есть и скобочки и стрелочки. Нормальные формы лямбд мы
+            выстраиваем вертикально так как это делал Дыбьер, чтобы видеть паттерн и
+            глубину терма.</p>
+        <p> Отдельно хочется отметить семейство синтаксисов Caramel, авторства MaiaVictor,
+            к сожалению фыйлы Карамели похоронены под мастером, но я вытащил:</p>
+            <figure><code>
+ cons  = (x list cons nil -> (cons x (list cons nil)))
+ nil   = (cons nil -> (id nil))
+ foldr = (cons nil list -> (list cons nil))
+ seq   = (foldr comp id)
+ do    = (comp seq reverse)
+ take  = (n -> (n (r l -> (cons (head l) (r (tail l)))) (const nil)))
+            </code></figure>
+        <p> То как выглядят индуктивные типы условно можно разделить на британскую школу
+            LCF/ML/HOL/Hope/Miranda/Haskell/Agda/Idris и американскую LISP/ACL2/NuPRL/Lean школу.</p>
+        <figure><code>
+ data List (A : Set) : Set where
+      []  : List A
+      _∷_ : (x : A) (xs : List A) → List A
+
+ data List (A: *): * :=
+      (Nil: List A)
+      (Cons: A → List A → List A)
+
+ data List (A: U): U :=
+      nil
+    | cons (x: A) (xs: List A)
+
+ data List : (A: Type) -> Type
+    | nil  : Nat
+    | cons : (x:A, xs: List(A)) -> Nat
+        </code></figure>
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
+
