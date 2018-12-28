@@ -67,16 +67,16 @@ groupoid/infinity. Желающие формальных определений 
 теории множеств берутся из топоса.</p>
 
         <figure><code>
-site (C: precategory ): U
-  = (C: precategory )
-  ∗ Coverage C
+ site (C: precategory ): U
+   = (C: precategory )
+   ∗ Coverage C
 
-presheaf (C: precategory ): U
-  = catfunctor (opCat C) Set
+ presheaf (C: precategory ): U
+   = catfunctor (opCat C) Set
 
-sheaf (C: precategory ): U
-  = (S: site C)
-  ∗ presheaf S.1
+ sheaf (C: precategory ): U
+   = (S: site C)
+   ∗ presheaf S.1
         </code></figure>
 
 <p>Дифференциальный связующий топос — это топос с двумя такими сопряженными
@@ -117,13 +117,13 @@ sheaf (C: precategory ): U
 коиндуктивный процесс ретопологизации:</p>
 
         <figure><code>
-data flat (A: U)
-  = con (x: flat A)
+ data flat (A: U)
+   = con (x: flat A)
 
-flatInd (A: U) (C: flat A -> U)
-        (f: (u: flat A) -> C (con u))
-      : (x: flat A) -> C x
-      = split con x -> f x
+ flatInd (A: U) (C: flat A -> U)
+         (f: (u: flat A) -> C (con u))
+       : (x: flat A) -> C x
+       = split con x -> f x
         </code></figure>
 
 <p>Один из примеров связующих топосов  — это категории рефлексивных графов, как
