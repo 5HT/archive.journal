@@ -85,16 +85,16 @@
         <p> Синтаксис кубика настолько простой, что его BNF нотацию
             я могу привести на 16 строчек:</p>
         <figure><code>
-   sys := [ sides ]          side := (id=0)->exp+(id=1)->exp
-  form := form\/f1+f1+f2    sides := #empty+cos+side
-   cos := side,side+side,cos  mod := module id where imps dec
-    f1 := f1/\f2               f2 := -f2+id+0+1
-   imp := import id           brs := #empty+cobrs
-   app := exp exp             tel := #empty+cotel
-  imps := #list imp         cotel := (exp:exp) tel
-    id := #list #nat          dec := #empty+codec
-    u2 := glue+unglue+Glue     u1 := fill+comp
-   ids := #list id             br := ids->exp+ids@ids->exp
+   sys := [ sides ]              side := (id=0)->exp+(id=1)->exp
+  form := form\/f1+f1+f2        sides := #empty+cos+side
+   cos := side,side+side,cos      mod := module id where imps dec
+    f1 := f1/\f2                   f2 := -f2+id+0+1
+   imp := import id               brs := #empty+cobrs
+   app := exp exp                 tel := #empty+cotel
+  imps := #list imp             cotel := (exp:exp) tel
+    id := #list #nat              dec := #empty+codec
+    u2 := glue+unglue+Glue         u1 := fill+comp
+   ids := #list id                 br := ids->exp+ids@ids->exp
  codec := def dec
  cobrs := | br brs
    sum := #empty+id tel+id tel|sum+id tel < ids > sys
