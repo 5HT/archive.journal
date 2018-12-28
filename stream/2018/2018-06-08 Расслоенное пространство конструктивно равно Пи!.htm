@@ -103,13 +103,13 @@ PhD Феликса я вообще не уверен, что я бы взялс�
    = \ (x: F y) -> ((y,x),refl B y)
 
  lem2 (B: U) (F: B -> U) (y: B) (x: F y)
-    : Path (F y) (comp (&lt;i&gr;F (refl B y @ i)) x []) x
-    = &lt;j&gr; comp (&lt;i&gr;F ((refl B y) @ j/\i)) x [(j=1) -> <k>x]
+    : Path (F y) (comp (&lt;i&gt;F (refl B y @ i)) x []) x
+    = &lt;j&gt; comp (&lt;i&gt;F ((refl B y) @ j/\i)) x [(j=1) -> <k>x]
 
  lem3 (B: U) (F: B -> U) (y: B) (x: fiber (total B F) B (trivial B F) y)
     : Path (fiber (total B F) B (trivial B F) y) ((y,encode B F y x),refl B y) x
-    = &lt;i&gr; ((x.2 @ -i,comp (&lt;j&gr; F (x.2 @ -i /\ j)) x.1.2
-          [(i=1) -> &lt;_&gr; x.1.2 ]),&lt;j&gr; x.2 @ -i \/ j)
+    = &lt;i&gt; ((x.2 @ -i,comp (&lt;j&gt; F (x.2 @ -i /\ j)) x.1.2
+          [(i=1) -> &lt;_&gt; x.1.2 ]),&lt;j&gt; x.2 @ -i \/ j)
         </code></figure>
 
         <figure><code>
