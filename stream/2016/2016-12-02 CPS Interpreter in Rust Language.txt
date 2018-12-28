@@ -21,12 +21,14 @@ String, Boolean, Float, поэтому в процессе работы инте
 Rc<RefCell<Environment>>). Если сказать о контекстах высоко — то вложенные
 контексты соответствуют Сигма типу и являются свидетелями контекстуальной
 полноты.
+
 pub struct Environment {
     parent: Option<Rc<RefCell<Environment>>>,
     values: HashMap<String, AST>,
 }
 
 impl Environment {
+
     pub fn new_root() -> Result<Rc<RefCell<Environment>>, Error> {
         let mut env = Environment {
             parent: None,
@@ -34,19 +36,18 @@ impl Environment {
         };
         Ok(Rc::new(RefCell::new(env)))
     }
-    pub fn new_child(parent: Rc<RefCell<Environment>>) ->
-Rc<RefCell<Environment>> {
+
+    pub fn new_child(parent: Rc<RefCell<Environment>>) -> Rc<RefCell<Environment>> {
         let env = Environment {
             parent: Some(parent),
             values: HashMap::new(),
         };
         Rc::new(RefCell::new(env))
     }
-    pub fn find(&self, key: &String) -> Option<(AST, Rc<RefCell<Environment>>)>
-{
+
+    pub fn find(&self, key: &String) -> Option<(AST, Rc<RefCell<Environment>>)> {
         match self.values.get(key) {
-            Some(val) => Some((val.clone(),
-Rc::new(RefCell::new(self.clone())))),
+            Some(val) => Some((val.clone(), Rc::new(RefCell::new(self.clone())))),
             None => {
                 match self.parent {
                     Some(ref parent) => parent.borrow().find(key),
@@ -57,6 +58,7 @@ Rc::new(RefCell::new(self.clone())))),
     }
 
 Интерпретатор хранит рутовый контекст.
+
 pub struct Interpreter {
     root: Rc<RefCell<Environment>>,
 }
@@ -76,6 +78,7 @@ Force, причем все дефер обычно заканчиваются с
 вычислительных вселенных. По крайней мере такты интерпретатора уже можно
 считать. Если бы этот интерпретатор был клаудом, он бы чарджил и билил только
 форсы.
+
 pub enum Trampoline {
     Defer(AST, Rc<RefCell<Environment>>, Continuation),
     Force(AST, Continuation),
@@ -96,6 +99,7 @@ call-by-name причмокивая. Тут хочется быть максим
 для которых определен AST конструктор. Лямбда исчисление является свидетелем
 функциоальной полноты нашей системы. Если добавить сюда Пи тип, мы сможем
 превратить интерпретатор в теорем прувер? :-)
+
 pub enum Continuation {
     EvaluateExpressions(AST, Rc<RefCell<Environment>>, Box<Continuation>),
     EvaluateAssign(AST, Rc<RefCell<Environment>>, Box<Continuation>),
@@ -109,12 +113,12 @@ pub enum Continuation {
 В CPS интерпретаторе самое главное — это цикл, который крутит AST дерево и
 создает отложенные вычисление, периодически форся вычисления. Обычно это
 проистодит в стиле Defer-Force, но все зависит от программ.
+
 fn process(exprs: AST, env: Rc<RefCell<Environment>>) -> Result<AST,Error> {
     if exprs.len() == 0 {
         return Ok(AST::Nil);
     }
-    let mut b = try!(evaluate_expressions(exprs, env,
-Box::new(Continuation::Return)));
+    let mut b = try!(evaluate_expressions(exprs, env, Box::new(Continuation::Return)));
     loop {
         match b {
             Trampoline::Defer(a, e, k) => b = try!(handle_defer(a, e, k)),
@@ -125,17 +129,14 @@ Box::new(Continuation::Return)));
 }
 
 handle_defer выглядит примерно так:
-fn handle_defer(a: AST,
-                env: Rc<RefCell<Environment>>,
-                k: Continuation)
-                -> Result<Trampoline,Error> {
+
+fn handle_defer(a: AST, env: Rc<RefCell<Environment>>, k: Continuation) -> Result<Trampoline,Error> {
     match a {
         AST::Assign(box name, box body) => {
             Ok(Trampoline::Force(body,
                                  Continuation::Assign(name, env, Box::new(k))))
         }
-        AST::Call(box callee, box args) => evaluate_function(callee, env, args,
-k),
+        AST::Call(box callee, box args) => evaluate_function(callee, env, args, k),
         AST::Name(name) => {
             match lookup(name, env) {
                 Ok(v) => k.run(v),
@@ -147,6 +148,7 @@ k),
 }
 
 evaluate_function разворачивает Name и деферит лямбду.
+
 fn evaluate_function(fun: AST,
                      env: Rc<RefCell<Environment>>,
                      args: AST,
@@ -154,8 +156,7 @@ fn evaluate_function(fun: AST,
                      -> Result<Trampoline, Error> {
     match fun {
         AST::Lambda(box names, box body) => {
-            Ok(Trampoline::Force(body, Continuation::Func(names, args, env,
-Box::new(k))))
+            Ok(Trampoline::Force(body, Continuation::Func(names, args, env, Box::new(k))))
         }
         AST::Name(s) => {
             match env.borrow().find(&s) {
@@ -178,6 +179,7 @@ Box::new(k))))
 }
 
 evaluate_expressions создает один отложеный такт интерпретатора, типа R(1).
+
 fn evaluate_expressions(exprs: AST,
                         env: Rc<RefCell<Environment>>,
                         k: Box<Continuation>)
@@ -186,8 +188,7 @@ fn evaluate_expressions(exprs: AST,
         Some((car, cdr)) => {
             Ok(Trampoline::Defer(car,
                                  env.clone(),
-                                 Continuation::EvaluateExpressions(cdr, env,
-k)))
+                                 Continuation::EvaluateExpressions(cdr, env, k)))
         }
         None => {
             Err(Error::EvalError {
@@ -200,8 +201,10 @@ k)))
 
 Обработчики Лямбда исчисления простые, эвалуатор ложит и кладет в контексты,
 сравниватель сранивает, биндинг переменной биндит переменную.
+
 impl Continuation {
     pub fn run(self, val: AST) -> Result<Trampoline,Error> {
+
         match self {
             Continuation::EvaluateExpressions(rest, env, k) => {
                 if rest.is_cons() || !rest.is_empty() {
@@ -213,15 +216,13 @@ impl Continuation {
             Continuation::EvaluateFunc(names, args, env, k) => {
                 let local_env = Environment::new_child(env);
                 for (name, value) in names.into_iter().zip(args.into_iter()) {
-                    try!(local_env.borrow_mut().define(name.to_string(),
-value));
+                    try!(local_env.borrow_mut().define(name.to_string(), value));
                 }
                 evaluate_expressions(val, local_env, k)
             }
             Continuation::EvaluateCond(if_expr, else_expr, env, k) => {
                 match val {
-                    AST::Bool(false) => Ok(Trampoline::Defer(else_expr, env,
-*k)),
+                    AST::Bool(false) => Ok(Trampoline::Defer(else_expr, env, *k)),
                     _ => Ok(Trampoline::Defer(if_expr, env, *k)),
                 }
             }
@@ -248,6 +249,7 @@ value));
 Вот и весь интерпретатор (кроме правил для Verb и Adverb, там умножение и
 вычитание необходимые для факториала и Cond вообще говоря тоже, который в K
 языке повешен на Cast). Традиционно бенчмарки против Erlang написанном на С.
+
 1> Fac = fun Factorial(X) -> case X of 1 -> 1; _ -> X * Factorial(X-1) end end.
 #fun<1131414>
 2> Fac(5).
@@ -256,9 +258,9 @@ value));
 {91,120}
 
 Интерпретатор написанном на Rust:
+
 "fac:{[x]$[x=1;1;x*fac[x-1]]};fac[5]"
 test tests::fac ... bench:      16,850 ns/iter (+/- 1,169)
 
 91 микросекунд (Erlang) против 17 микросекунд (O-CPS INTERPRETER)
-TAGS (EDIT) #fun, cs, kernel, voxoz
 
