@@ -1,0 +1,72 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2018-06-09</title>
+    <link rel="stylesheet" href="../../blank.css?v=4" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>STREAM</a>
+    <a href='#'>2018-06-09</a>
+</nav>
+<main>
+    <section>
+        <h3>Категорная Семантика <br>Зависимых Типов</h3>
+        <p> Если рассматривать лямбда исчисление CoC как вычислительную теорию, то ее
+            семантика будет категория, в которой морфизмы — это преобразования
+            (подстановки), а объекты — это всевозможные контексты. Очевидно, что такая
+            категория не малая! Таким образом подстановка в теории типов согласно
+            изоморфизму Карри-Говарда должна соответствовать Пулбеку категории контекстов.
+            Да-да, это — те самые контексты Г, в которых хранятся переменные (x:A) и
+            которые еще называются телескопами. Однако, в отличии от подстановки, которая
+            всегда ассоциативна в тоерии типов, Пулбек может быть вообще говоря не
+            ассоциативным, поэтому тут вручную рихтуется это несоответствие через
+            дополнительный функтор.</p>
+
+        <p> Классическая модель Dybjer называлась Categories with Families, а модель
+            Воеводского называется С-Systems и хранит контекст не как вложенные сигма, а
+            как List с ограниченной длинной (рафинированый вектор). Но в остальном модель
+            похожая. В нашей базовой библиотеке есть полная формализация модели Воеводского
+            и наброски модели Дыбьера. Статьи пока нет, но черновик уже положен.</p>
+        <figure><code>
+ CSystem : U
+   = (ob : nat -> U)
+   * (hom : Sigma nat ob -> Sigma nat ob -> U)
+   * (isC : isPrecategory (Sigma nat ob, hom))
+   * (c0 : isC0System ob hom isC)
+   * isCSystem (ob, hom, isC, c0)
+        </code></figure>
+        <p>Definition of a universe category</p>
+        <figure><code>
+ uc : U
+    = (C : precategory)
+    * (_ : isCategory C)
+    * (pt : terminal C)
+    * (V : carrier C) * (VT : carrier C) * (p : hom C VT V)
+    * ((f : homTo C V) -> hasPullback C (V, f, VT, p))
+        </code></figure>
+        <p>An equivalence of universe categories is an equivalence of categories</p>
+        <figure><code>
+ compatible with the "p" morphism
+ ucEquiv (A B : uc) : U
+   = (e : catEquiv A.1 B.1)
+   * (V : Path (carrier B.1) (e.1.1 A.2.2.2.1) B.2.2.2.1)
+   * (VT : Path (carrier B.1) (e.1.1 A.2.2.2.2.1) B.2.2.2.2.1)
+   * (PathP (&lt;i&gt;hom B.1 (VT@i) (V@i))
+     (e.1.2.1 A.2.2.2.2.1 A.2.2.2.1 A.2.2.2.2.2.1) B.2.2.2.2.2.1)
+        </code></figure>
+        <hr>
+        <p>
+        [2]. <a href="https://www.youtube.com/watch?v=JsHminiPzzs">https://www.youtube.com/watch?v=JsHminiPzzs</a><br>
+        [3]. M.Sokhatskyi. <a href="https://github.com/groupoid/groupoid.space/blob/master/tex/articles/inductive/inductive.pdf">Issue II: Inductive Types</a><br>
+        </p>
+        </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>

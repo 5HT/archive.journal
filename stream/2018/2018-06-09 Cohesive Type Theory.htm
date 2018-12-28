@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="" />
     <meta name="author" content="Maxim Sokhatsky" />
-    <title>2018-06-08</title>
+    <title>2018-06-09</title>
     <link rel="stylesheet" href="../../blank.css?v=4" />
 </head>
 <body>
 <nav>
     <a href='../../index.html'>5HT</a>
     <a href='../index.html'>STREAM</a>
-    <a href='#'>2018-10-08</a>
+    <a href='#'>2018-10-09</a>
 </nav>
 <main>
     <section>
@@ -34,33 +34,33 @@ HoTT, cohesivett, или модальная теория типов, котор�
 коредуцированные объекты.
         </p>
         <figure><code>
-Im : U -> U
-ImUnit (A: U) : A -> Im A
+ Im : U -> U
+ ImUnit (A: U) : A -> Im A
 
-isCoreduced (A:U): U = isEquiv A (Im A) (ImUnit A)
-ImCoreduced (A:U): isCoreduced (Im A)
+ isCoreduced (A:U): U = isEquiv A (Im A) (ImUnit A)
+ ImCoreduced (A:U): isCoreduced (Im A)
 
-ImRecursion (A B: U) (c: isCoreduced B) (f: A -> B)
-  : Im A -> B
+ ImRecursion (A B: U) (c: isCoreduced B) (f: A -> B)
+   : Im A -> B
 
-ImComputeRecursion (A B : U) (c : isCoreduced B) (f : A -> B) (a : A)
-  : PathP(&lt;i&gt;B)((ImRecursion A B c f)(ImUnit A a))(f a)
+ ImComputeRecursion (A B : U) (c : isCoreduced B) (f : A -> B) (a : A)
+   : PathP(&lt;i&gt;B)((ImRecursion A B c f)(ImUnit A a))(f a)
 
-ImApp (A B: U) (f: A -> B): Im A -> Im B
-ImNaturality (A B: U) (f: A -> B)
-  : (a: A) -> Path (Im B) ((ImUnit B) (f a)) ((ImApp A B f) (ImUnit A a))
+ ImApp (A B: U) (f: A -> B): Im A -> Im B
+ ImNaturality (A B: U) (f: A -> B)
+   : (a: A) -> Path (Im B) ((ImUnit B) (f a)) ((ImApp A B f) (ImUnit A a))
 
-ImInduction (A : U) (B : Im A->U)
-    (x : (a: Im A) -> isCoreduced(B a))
-    (y : (a : A) -> B (ImUnit A a))
-  : (a:Im A)->B a
+ ImInduction (A : U) (B : Im A->U)
+     (x : (a: Im A) -> isCoreduced(B a))
+     (y : (a : A) -> B (ImUnit A a))
+   : (a:Im A)->B a
 
-ImComputeInduction (A:U)(B:Im A->U) (c:(a:Im A)->isCoreduced(B a))
-    (f : (a : A) -> B (ImUnit A a)) (a:A)
-  : Path (B (ImUnit A a)) (f a) ((ImInduction A B c f) (ImUnit A a))
+ ImComputeInduction (A:U)(B:Im A->U) (c:(a:Im A)->isCoreduced(B a))
+     (f : (a : A) -> B (ImUnit A a)) (a:A)
+   : Path (B (ImUnit A a)) (f a) ((ImInduction A B c f) (ImUnit A a))
         </code></figure>
     </section>
 </main>
-<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 1980—2019</footer>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
 </body>
 </html>

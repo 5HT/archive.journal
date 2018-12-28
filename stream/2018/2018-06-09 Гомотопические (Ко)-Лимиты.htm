@@ -1,0 +1,98 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2018-06-09</title>
+    <link rel="stylesheet" href="../../blank.css?v=4" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>STREAM</a>
+    <a href='#'>2018-06-09</a>
+</nav>
+<main>
+    <section>
+        <h3>Гомотопические (Ко)-Лимиты</h3>
+        <p> Как известно понять теорию категорий можно только если научился строить лимиты,
+            а понять теорию гомотопий можно, если научился строить гомотопические лимиты!
+            Гомотопический лимит в общем случае не равен категорному. Определение лимита
+            простое — для любых f: A -> C и g: B -> C это ∑ (a: A) ∑ (b: B) f(a) =_C f(b) .
+            Т.е. гомотопический лимит это обобщение расслоения. Кроме Кубической Теории
+            Типов есть еще и Кубическая Гомотопическая теория, в которй 0-клетки — это
+            пространства, 1-клетки — это расслоения, 2-клетки — это лимиты и колимиты, и
+            т.д. В учебнике HoTT троллят читателя и вместо того, чтобы дать пулбеки и
+            пушауты главами, пулбек предлагают решить как упражнение 2.11 ко второй главе.</p>
+
+        <p> Чтобы определить гомотопический колимит или пушаут, уже недостаточно пи и сигмы
+            даже чтобы записать сигнатуру, нужны либо высшие индуктивные типы, либо, если
+            вы умеете (а я вам рассказывал), ипредикативную кодировку. Проще говоря, нужно
+            умножение в лимите заменить на сумму. Покажем как выглядит гомотопический
+            колимит, это для функций f: C -> A, g: C -> B по сути сумма типов po1: A ->
+            colim, po2: B -> colim и их равенства po3: (c: C) -> po1 (f c) = po2 (g c).
+            Нужно построить для этого типа рекурсор и индукцию, кто возьмется?</p>
+
+        <p> Homotopy Colimit</p>
+
+        <figure><code>
+ data pushout (A B C: U) (f: C -> A) (g: C -> B)
+      = po1 (_: A)
+      | po2 (_: B)
+      | po3 (c: C) &lt;i&gt; [ (i=0) -> po1 (f c),
+                         (i=1) -> po2 (g c) ]
+        </code></figure>
+
+        <p>Homotopy Limit</p>
+
+        <figure><code>
+ pullback (A B C:U) (f: A -> C) (g: B -> C): U
+    = (a: A)
+    * (b: B)
+    * Path C (f a) (g b)
+
+ pb1 (A B C: U) (f: A -> C) (g: B -> C): pullback A B C f g -> A
+   = \(x: pullback A B C f g) -> x.1
+ pb2 (A B C: U) (f: A -> C) (g: B -> C): pullback A B C f g -> B
+   = \(x: pullback A B C f g) -> x.2.1
+ pb3 (A B C: U) (f: A -> C) (g: B -> C): (x: pullback A B C f g)
+  -> Path C (f x.1) (g x.2.1)
+   = \(x: pullback A B C f g) -> x.2.2
+
+ induced (Z A B C: U) (f: A -> C) (g: B -> C)
+         (z1: Z -> A) (z2: Z -> B)
+         (h: (z:Z) -> Path C ((o Z A C f z1) z) (((o Z B C g z2)) z))
+       : Z -> pullback A B C f g
+       = \(z: Z) -> ((z1 z),(z2 z),h z)
+
+ pullbackSq (Z A B C: U) (f: A -> C) (g: B -> C) (z1: Z -> A) (z2: Z -> B): U
+          = (h: (z:Z) -> Path C ((o Z A C f z1) z) (((o Z B C g z2)) z))
+          * isEquiv Z (pullback A B C f g) (induced Z A B C f g z1 z2 h)
+
+ isPullbackSq (Z A B C: U) (f: A -> C) (g: B -> C) (z1: Z -> A) (z2: Z -> B)
+              (h: (z:Z) -> Path C ((o Z A C f z1) z) (((o Z B C g z2)) z)): U
+            = isEquiv Z (pullback A B C f g) (induced Z A B C f g z1 z2 h)
+        </code></figure>
+
+        <p> <b>Exercise 2.11</b>.
+            Prove that the pullback P :≡ A x_C B defined in (2.15.11) is
+            the corner of a pullback square.</p>
+
+        <figure><code>
+completePullback (A B C: U) (f: A -> C) (g: B -> C)
+    : pullbackSq (pullback A B C f g) A B C f g (pb1 A B C f g) (pb2 A B C f g)
+    = ?
+        </code></figure>
+        <hr>
+        <p>
+        [1]. B.Munson. <a href="https://web.math.rochester.edu/people/faculty/doug/otherpapers/munson-volic.pdf">Cubical Homotopy Theory.</a><br>
+        [2]. M.Frankland. <a href="http://www.home.uni-osnabrueck.de/mfrankland/Math527/Math527_0308.pdf">Homotopy Theory Homotopy pullbacks</a><br>
+        [3]. <a href="https://groupoid.space/mltt/types/pullback/">Infinity.HIT.Pullback</a><br>
+        </p>
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>

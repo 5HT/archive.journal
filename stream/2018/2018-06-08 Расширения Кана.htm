@@ -38,19 +38,19 @@
         </code></figure>
 <p>Functor to Unit Category</p>
         <figure><code>
-unitFunc (C: precategory): catfunctor C unitCat
+ unitFunc (C: precategory): catfunctor C unitCat
     = undefined
         </code></figure>
 <p>Cone as Kan Extension</p>
         <figure><code>
-cone (J C: precategory) (D: catfunctor J C): U
+ cone (J C: precategory) (D: catfunctor J C): U
    = extension J unitCat C (unitFunc J) D
         </code></figure>
 <p>universality of Kan Extension</p>
         <figure><code>
-  universality (A B C: precategory)
-               (K: catfunctor A B) (G: catfunctor A C)
-               (s t: extension A B C K G) : U
+ universality (A B C: precategory)
+              (K: catfunctor A B) (G: catfunctor A C) 
+              (s t: extension A B C K G) : U
         </code></figure>
 <p>Right Kan Extension</p>
         <figure><code>
@@ -74,6 +74,6 @@ cone (J C: precategory) (D: catfunctor J C): U
 </p>
     </section>
 </main>
-<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 1980—2019</footer>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
 </body>
 </html>
