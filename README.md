@@ -4,7 +4,7 @@ These are sources of <a href="//maxim.livejournal.com">maxim.livejournal.com</a>
 personal work-life journal, that was recorded during 2009-2018 years by Maxim Sokhatsky.
 This journal mainly covers three aspects of Maxim's being:
 <a href="//longchenpa.guru">longchenpa.guru</a> (early years),
-<a href="//n2o.im">n2o.im</a> (erlang years),
+<a href="//n2o.im">n2o.im</a>&nbsp;(erlang years),
 <a href="//groupoid.space">groupoid.space</a> (phd years).
 
 ## preprocess
