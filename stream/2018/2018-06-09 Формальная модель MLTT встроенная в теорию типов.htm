@@ -34,48 +34,40 @@
             основания. Но вообще можно брать любой пейпер по MLTT начиная с Мартина-Лёфа 1984.</p>
 
         <figure><code>
- comp1 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (B a) (app A B a (lam A B a (f a))) (f a) =
- comp2 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (A -> B a) f (\(x:A) -> f x) =
- comp3 (A:U)(B:A->U)(a:A)(b: B a): Equ A a (pr1 A B (a,b)) =
- comp4 (A:U)(B:A->U)(a:A)(b: B a): Equ (B a) b (pr2 A B (a,b)) =
- comp5 (A:U)(B:A->U)(p: Sigma A B): Equ (Sigma A B) p (pr1 A B p,pr2 A B p) =
- comp6 (A:U)(x y:A)(C: D A)(p: Equ A x y)(b: C x x (reflect A x))
-       (X: Equ U (C x x (reflect A x)) (C x y p)): PathP X b (J A x C b y p) =
-        </code></figure>
-        <figure><code>
- MLTT (A: U): U
-   = (Pi_Former:    (A -> U) -> U)
-   * (Pi_Intro:     (B: A -> U) (a: A) -> B a -> (A -> B a))
-   * (Pi_Elim:      (B: A -> U) (a: A) -> (A -> B a) -> B a)
-   * (Pi_Comp1:     (B: A -> U) (a: A) (f: A -> B a)
-     -> Equ (B a) (Pi_Elim B a (Pi_Intro B a (f a))) (f a))
-   * (Pi_Comp2:     (B: A -> U) (a: A) (f: A -> B a)
-     -> Equ (A -> B a) f (\(x:A) -> f x))
-   * (Sigma_Former: (A -> U) -> U)
-   * (Sigma_Intro:  (B: A -> U) (a: A) -> (b: B a) -> Sigma A B)
-   * (Sigma_Elim1:  (B: A -> U) -> (_: Sigma A B) -> A)
-   * (Sigma_Elim2:  (B: A -> U) -> (x: Sigma A B) -> B (pr1 A B x))
-   * (Sigma_Comp1:  (B: A -> U) (a: A) (b: B a)
-     -> Equ A a (Sigma_Elim1 B (Sigma_Intro B a b)))
-   * (Sigma_Comp2:  (B: A -> U) (a: A) (b: B a)
-     -> Equ (B a) b (Sigma_Elim2 B (a,b)))
-   * (Sigma_Comp3:  (B: A -> U) (p: Sigma A B)
-     -> Equ (Sigma A B) p (pr1 A B p,pr2 A B p))
-   * (Id_Former:    A -> (A -> U))
-   * (Id_Intro:     (a: A) -> Equ A a a)
-   * (Id_Elim: (x: A) (C: D A) (d: C x x (Id_Intro x))
-               (y: A) (p: Equ A x y) -> C x y p)
-   * (Id_Comp: (x y:A)(C: D A)(p: Equ A x y)(b: C x x (reflect A x))
-               (X: Equ U (C x x (reflect A x)) (C x y p)) ->
-               HeteroEqu (C x x (reflect A x))
-               (C x y p) b (J A x C b y p) X) * unit
+\import Pi
+\import Sigma
+\import Path
+
+\record MLTT
+  (A : \Type)
+  (Pi_Former : \Pi (A -> \Type) -> \Type)
+  (Pi_Intro : \Pi (B : A -> \Type) -> Pi A B -> Pi A B)
+  (Pi_Elim : \Pi (B : A -> \Type) -> Pi A B -> Pi A B)
+  (Pi_Comp1 : \Pi (B : A -> \Type) (f : Pi A B) (a : A)
+    -> Path (B a) (Pi_Elim B (Pi_Intro B f) a) (f a))
+  (Pi_Comp2 : \Pi (B : A -> \Type) (f : Pi A B)
+    -> Path (Pi A B) f (Pi_Intro B f))
+  (Sigma_Former : \Pi (A -> \Type) -> \Type)
+  (Sigma_Intro : \Pi (B : A -> \Type) (a : A) (b : B a) -> Sigma A B)
+  (Sigma_Elim1 : \Pi (B : A -> \Type) (x : Sigma A B) -> A)
+  (Sigma_Elim2 : \Pi (B : A -> \Type) (x : Sigma A B) -> B (pi1 A B x))
+  (Sigma_Comp1 : \Pi (B : A -> \Type) (a : A) (b : B a)
+    -> a = (Sigma_Elim1 B (Sigma_Intro B a b)))
+  (Sigma_Comp2 : \Pi (B : A -> \Type) (a : A) (b : B a)
+    -> b = (Sigma_Elim2 B (a,b)))
+  (Sigma_Comp3 : \Pi (B : A -> \Type) (p : Sigma A B)
+    -> p = Sigma_Intro B (pi1 A B p) (Sigma_Elim2 B p))
+  (Id_Former : A -> A -> \Type)
+  (Id_Intro : \Pi (a : A) -> Path A a a)
+  (Id_Elim : \Pi (a : A) (C : \Pi (x : A) -> a = x -> \Type)
+    (d : C a (refl A a)) (x : A) (p : a = x) -> C x p)
         </code></figure>
 
         <figure><code>
- instance (A: U): MLTT A
-    = (Pi A, lambda A, app A, comp1 A, comp2 A,
-       Sigma A, pair A, pr1 A, pr2 A, comp3 A, comp4 A, comp5 A,
-       Equ A, reflect A, J A, comp6 A, tt)
+ \func check (A : \Type) : MLTT
+   => \new MLTT A (Pi A) (lam A) (app A) (beta A) (eta A)
+                  (Sigma A) (dpair A) (pi1 A) (pi2 A) (beta1 A) (beta2 A) (eta2 A)
+                  (Path A) (refl A) (J A)
         </code></figure>
         <hr>
         <p>

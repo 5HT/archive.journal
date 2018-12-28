@@ -1,7 +1,5 @@
 Pony vs O-CPS
 
-Уважаемый THEDEEMON предложил обратить свой взор на pony lang.
-
 $ cat main.pony
 use "time"
 actor Main
@@ -36,7 +34,6 @@ $ ./voxoz
 Ackerman: 80332ns, 125
 Factorial: 291ns, 120
 
-
 В то время как у нас:
 
 #[bench]
@@ -67,8 +64,6 @@ tring());
     })
 }
 
-
 test akkerman_k        ... bench:         442 ns/iter (+/- 37)
 test fac_rec           ... bench:         195 ns/iter (+/- 55)
-TAGS (EDIT) o, pony
 

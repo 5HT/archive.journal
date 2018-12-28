@@ -11,5 +11,4 @@ Addition:
 http://pauillac.inria.fr/~fpottier/slides/fpottier-2007-05-linear-bestiary.pdf
 Categorical Semantic of Linear Type Systems:
 https://www.irif.fr/~mellies/papers/panorama.pdf
-TAGS (EDIT) cs
 

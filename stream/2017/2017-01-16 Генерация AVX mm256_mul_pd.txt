@@ -49,4 +49,3 @@ gist: https://gist.github.com/5HT/dfbde5179fb6112e921fa686a5e459f0
 По пути было перепробовано несколько интринсикс библиотек: x86Intrin (Intel) и
 llvmint/simdty (LLVM). Раст для векторизации использует встроенную
 core::intrinsics.
-TAGS (EDIT) avx, rust

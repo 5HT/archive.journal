@@ -7,8 +7,8 @@ Module Effect.
 End Effect.
 
 Inductive command : Type :=
-| Print (message : LString.t)
-| ReadLine.
+  | Print (message : LString.t)
+  | ReadLine.
 
 Definition answer (c : command) : Type :=
   match c with
@@ -27,5 +27,4 @@ Module Computation.
   | Choose : forall (A : Type), t E A -> t E A -> t E A
   | Join : forall (A B : Type), t E A -> t E B -> t E (A * B).
 End C.
-TAGS (EDIT) coq, cs
 
