@@ -1,5 +1,23 @@
-Построение категорий от Set до Инфинити!
-
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2018-06-08</title>
+    <link rel="stylesheet" href="../../blank.css?v=4" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>STREAM</a>
+    <a href='#'>2018-10-08</a>
+</nav>
+<main>
+    <section>
+        <h3>Построение категорий от Set до ∞</h3>
+        <p>
 После первой 2-часовой лекции по MLTT, где детально разбираются Пи, Сигма, Путь
 и все их компоненты Formation/Inro/Elim/Rec/Case/Induction/Eta/Beta (а у Пути
 еще дополнительных куча subst, trans, все конечно через J выражаются, но через
@@ -19,32 +37,33 @@ J реально никто не пишет, поэтому надо учить 
 функторов можно прееходить к семантике зависимой теории, категории контекстов,
 где морфизмы — это подстановки и категориям с семействами. Только сейчас решил
 написать это.
-
--- The general notion of (∞,1)-categories
-
--- 0-cat   -- 0-ob are elements, 0-hom is equivalence relation, setoid -- sets
--- 1-cat   -- 1-ob are spaces or 0-cat, 1-hom are maps
--- 2-cat-A -- 2-ob are 1-cat, 1-hom are functors/maps        \ bounded
--- 2-cat-B -- 2-ob are 1-cat, 2-hom are ntrans/mapsOnMaps    / definition
--- 3-cat-A -- 2-ob are (2-cat-A,2-cat-B), 1-hom are functors of product categories \
--- 3-cat-B -- 2-ob are (2-cat-A,2-cat-B), 2-hom are ntrans of product categories    ) morphisms
--- 3-cat-C -- 3-ob are (2-cat-A,2-cat-B), 3-hom are modifications                   /
-
--- Enrichment
-
---   (0-cat = Hom(A,B)         = A = B)
--- ↪ (1-cat = Hom(0-cat,0-cat) = set -> 0-cat)
--- ↪ (2-cat = Hom(1-cat,1-cat) = (set -> 0-cat) -> 1-cat)
--- ↪ (3-cat = Hom(2-cat,2-cat) = ((set -> 0-cat) -> 1-cat) -> 2-cat)
-
--- The general notion of k-morphisms
-
--- equiv        0-hom: U = undefined
--- functor      1-hom (C D: 1-cat): U = undefined
--- ntrans       2-hom (C D: 1-cat) (F G: 1-hom C D): U = undefined
--- modification 3-hom (C D: 1-cat) (F G: 1-hom C D) (I J: 2-hom C D F G): U = undefined
-
--- 1-Category of Sets
+        </p>
+<p>The general notion of (∞,1)-categories</p>
+        <figure><code>
+ -- 0-cat   -- 0-ob are elements, 0-hom is equivalence relation, setoid -- sets
+ -- 1-cat   -- 1-ob are spaces or 0-cat, 1-hom are maps
+ -- 2-cat-A -- 2-ob are 1-cat, 1-hom are functors/maps        \ bounded
+ -- 2-cat-B -- 2-ob are 1-cat, 2-hom are ntrans/mapsOnMaps    / definition
+ -- 3-cat-A -- 2-ob are (2-cat-A,2-cat-B), 1-hom are functors of prod categories \
+ -- 3-cat-B -- 2-ob are (2-cat-A,2-cat-B), 2-hom are ntrans of prodcategories     |
+ -- 3-cat-C -- 3-ob are (2-cat-A,2-cat-B), 3-hom are modifications               /
+        </code></figure>
+        <p>Enrichment</p>
+        <figure><code>
+ --   (0-cat = Hom(A,B)         = A = B)
+ -- ↪ (1-cat = Hom(0-cat,0-cat) = set -> 0-cat)
+ -- ↪ (2-cat = Hom(1-cat,1-cat) = (set -> 0-cat) -> 1-cat)
+ -- ↪ (3-cat = Hom(2-cat,2-cat) = ((set -> 0-cat) -> 1-cat) -> 2-cat)
+        </code></figure>
+        <p>The general notion of k-morphisms</p>
+        <figure><code>
+ -- equiv        0-hom: U
+ -- functor      1-hom (C D: 1-cat): U
+ -- ntrans       2-hom (C D: 1-cat) (F G: 1-hom C D): U
+ -- modification 3-hom (C D: 1-cat) (F G: 1-hom C D) (I J: 2-hom C D F G): U
+        </code></figure>
+        <p>1-Category of Sets</p>
+        <figure><code>
 Set: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     Ob: U = SET
     Hom (A B: Ob): U = A.1 -> B.1
@@ -56,9 +75,10 @@ Set: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
      : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
      = refl (Hom A D) (c A B D f (c B C D g h))
-
-Functions (X Y: U) (Z: isSet Y): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q)
-where
+        </code></figure>
+        <figure><code>
+ Functions (X Y: U) (Z: isSet Y): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q)
+   where
      Ob: U = X -> Y
      Hom (A B: Ob): U = id (X -> Y)
      id (A: Ob): Hom A A = idfun (X -> Y)
@@ -67,10 +87,11 @@ where
      L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = undefined
      R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = undefined
      Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
-       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) = undefined
-
--- 2-Category with 1-hom morphisms (functors)
-Cat: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
+       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
+        </code></figure>
+    <p>2-Category with 1-hom morphisms (functors)</p>
+        <figure><code>
+ Cat: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     Ob: U = precategory
     Hom (A B: Ob): U = catfunctor A B
     id (A: Ob): catfunctor A A = idFunctor A
@@ -79,12 +100,12 @@ Cat: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = undefined
     R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = undefined
     Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
-       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) = undefined
-
--- AwodeyCT Definition 7.9. The functor category
--- 2-Category of Functors F: X -> Y with 2-hom morphisms (natural
-transformations)
-Func (X Y: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
+       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
+        </code></figure>
+    <p> AwodeyCT Definition 7.9. The functor category
+         2-Category of Functors F: X -> Y with 2-hom morphisms (natural transformations).</p>
+        <figure><code>
+ Func (X Y: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     Ob: U = catfunctor X Y
     Hom (A B: Ob): U = ntrans X Y A B
     id (A: Ob): ntrans X Y A A = undefined
@@ -93,10 +114,11 @@ Func (X Y: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = undefined
     R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = undefined
     Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
-       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) = undefined
-
--- Category of Abelian Groups
-Ab: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
+       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
+        </code></figure>
+        <p>Category of Abelian Groups</p>
+        <figure><code>
+ Ab: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     Ob: U = abgroup
     Hom (A B: Ob): U = abgrouphom A B
     id (A: Ob): Hom A A = idmonoidhom (A.1, A.2.1.1)
@@ -110,23 +132,25 @@ Ab: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
        : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
        = lemma_monoidcomp0(A.1,A.2.1.1)(B.1,B.2.1.1)(C.1,C.2.1.1)(D.1,D.2.1.1)f g h
-
--- Product Category of two Categories
-Product (X Y: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
+        </code></figure>
+    <p>Product Category of two Categories</p>
+        <figure><code>
+ Product (X Y: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     x: U = carrier X
     y: U = carrier Y
     Ob: U = prod x y
     Hom (A B: Ob): U = prod (id x) (id y)
     id (A: Ob): Hom A A = (idfun x, idfun y)
-    c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C = (o x x x f.1 g.1, o y y y f.2 g.2)
+    c (A B C: Ob) (f: Hom A B) (g: Hom B C):
+      Hom A C = (o x x x f.1 g.1, o y y y f.2 g.2)
     HomSet (A B: Ob): isSet (Hom A B) = undefined
     L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = refl (Hom A B) f
     R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = refl (Hom A B) f
     Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
        : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
        = refl (Hom A D) (c A C D (c A B C f g) h)
-
-
+        </code></figure>
+<p>
 Почему категорию множеств можно давать сразу на втором уроке без теорката?
 Потому, что в доказательствах свойств категории испольется только refl, такой
 же фокус как и с инференс правилами встроенной теории типов
@@ -134,7 +158,7 @@ Product (X Y: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
 разбрать доказательствао setFun которое говорит, что если кодомен множество, то
 стрелка тоже множество, ну а у нас не только кодомен множество, но и домен, так
 что доказательство тоже тривиальное, и как раз оно требует funExt.
-
+</p><p>
 Сама структура SET тоже непростая, и для общей реализации надо использовать
 n-groupoid, так как isSet предикат в SET = (X: U) * isSet X — это 0-групоид.
 Благо это все можно рассказать на первом уроке. Объектами 3-категория будет
@@ -144,15 +168,21 @@ n-groupoid, так как isSet предикат в SET = (X: U) * isSet X — �
 написать генератор сигнатур для инфинити категорий. Но только через
 метапрограммирование, напрямую AST генерировать, эффективнее всего. Вот
 например башня из трех сигнатур по которой все понятно:
+</p><p>
+1-hom (C D: cat): U — сигнатура функтора<br>
+2-hom (C D: cat) (F G: 1-hom C D): U — сигнатура естественного преобразования<br>
+3-hom (C D: cat) (F G: 1-hom C D) (I J: 2-hom C D F G): U — сигнатура 3-морфизма<br>
+</p>
 
-1-hom (C D: cat): U — сигнатура функтора
-2-hom (C D: cat) (F G: 1-hom C D): U — сигнатура естественного преобразования
-3-hom (C D: cat) (F G: 1-hom C D) (I J: 2-hom C D F G): U — сигнатура
-3-морфизма
+<p>Для любителей матфизики, введение в n-категории Джона Баеза.</p>
 
-Для любителей матфизики, введение в n-категории Джона Баеза.
-
-_______________
-[1]. http://math.ucr.edu/home/baez/ncat.ps
-[2]. http://web.stanford.edu/~arpon/math/files/inftycats-motivation.pdf
-TAGS (EDIT) cs, groupoid infinity
+<hr>
+<p>
+[1]. <a href="http://math.ucr.edu/home/baez/ncat.ps">http://math.ucr.edu/home/baez/ncat.ps</a><br>
+[2]. <a href="http://web.stanford.edu/~arpon/math/files/inftycats-motivation.pdf">http://web.stanford.edu/~arpon/math/files/inftycats-motivation.pdf</a><br>
+        </p>
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 1980—2019</footer>
+</body>
+</html>

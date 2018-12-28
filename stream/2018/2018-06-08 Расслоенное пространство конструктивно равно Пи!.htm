@@ -1,0 +1,139 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2018-06-08</title>
+    <link rel="stylesheet" href="../../blank.css?v=4" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>STREAM</a>
+    <a href='#'>2018-10-08</a>
+</nav>
+<main>
+    <section>
+        <h3>Расслоенное пространство конструктивно равно Пи!</h3>
+        <p>
+Больше файбер бандлов! Целый день доказывал простейшую теорему о том, что
+слоение — это квантор всеобщности, но не сходятся условия ретракта и секции f .
+g = id_A, g . f = id_B. В беспомощности отправил письмо с просьбой подсказки.
+Пытался починить фибрации Хопфа, но они не чинятся никак. Инвертирование S1 не
+дает S1, говорит S1 /= S1 и все. Надо будет попробовать на днях новую ветку
+hcomptrans. Нарисовал страничку, куда со временем должны попасть фибрации
+Хопфа. Оказывается то, как я придумал создавать индуктивно сферы называется
+иерархия суспензий. Сфера S^0 — это булевый тип, две точки. Сфера S^(n+1) — это
+суспензия сферы S^n, n=0... Cуспензии к счастью в кубике работают. Посмотрел у
+Спеньера, что для того, чтобы определять всякие разные виды расслоений мне
+нужна структурная группа.
+        </p><p>
+Подошло к концу доказательство того факта, что тривиальное расслоение равно
+зависимой функции. Это конечно не топчик, но хорошее основание не только для
+алгебраической топологии, но и для теории типов, потому как тесно связан с
+квантором Пи и является по-сути еще одной его теоремой. Особенно хорошо этот
+пример показывает прямые пруфы в кубической теории, которые заметно отличаются
+от агдовских пруфов. Если взять доказательство этого же факта у Феликса Веллена
+на Агде, то заподозрить нас в плагиате будет невозможно, потому в кубике
+доказательство выглядет совершенно по-другому чем у Агды. С другой стороны, без
+PhD Феликса я вообще не уверен, что я бы взялся за эту задачу, настолько было
+полезным для меня ее прочтение. Книги: Хьюзмоллер "Расслоенные пространства",
+Стинрод "Косые произведения", Бурбаки "Дифференциируемые и аналитические
+многообразия", Ху Cы Цьзян "Теория Гомотопий".
+        </p><p>
+        Определения
+        </p><p>
+        <figure><code>
+ -- F_B  -> E -> B -- fiber bundle (F_B,E,p,B),
+ -- F: B -> U      -- fiber, ex. Vector Space, Total Space, Dependent Product, Pi
+ -- E              -- total topological space
+ -- B              -- base space
+ -- h: F -> E      -- homeomorphism
+ -- p:      E -> B -- surjective projection map
+ -- p^-1:   B -> E -- fiber (y: B) = (x: E) * p (x) = y, inverse image
+ -- E=(y:B)*p^-1 y -- total space
+ -- p^-1 iso F     -- fiber is iso F_B
+ -- T. E = B * F_B -- fiber bundle called trivial if total space is a cart.prod.
+ -- pr_1:  E ->  B -- cartesian projection
+        </code></figure>
+        <figure><code>
+ -- NOTE: there is twisted hidden structure in p
+ -- U = neighborhood in base B
+ -- fibers locally behave like a products, but could be twisted
+        </code></figure>
+        <figure><code>
+ --           h
+ --           |
+ -- p-inv (U) -> U * F
+ --        |   /
+ --    p --|  /-- pr_1
+ --        V /
+ --        U
+ --
+ -- pr_1 o h = p
+        </code></figure>
+        <p>
+Пруф скетч
+        </p>
+        <figure><code>
+ --  F y = fiber (total B F) B (trivial B F) y
+ --      = (z: E) * Path B z.1 y
+ --      = (z: B) * (k: F z) * Path B z y
+ --      = (x y: B) * (_: Path B x y) * (F y)
+ --      = (_: isContr B) * (F y)
+ --      = F y
+        </code></figure>
+        <figure><code>
+ import iso
+ import nat
+
+ fiber (E B: U) (p: E -> B) (y: B): U = (x: E) * Path B (p x) y
+ Family    (B: U): U = B -> U
+ Fibration (B: U): U = (X: U) * (X -> B)
+
+ total   (B: U) (F: Family B): U = Sigma B F
+ trivial (B: U) (F: Family B): total B F -> B = \ (x: total B F) -> x.1
+
+ encode (B: U) (F: B -> U) (y: B) : fiber (total B F) B (trivial B F) y -> F y
+   = \ (x: fiber (total B F) B (trivial B F) y) -> subst B F x.1.1 y x.2 x.1.2
+
+ decode (B: U) (F: B -> U) (y: B) : F y -> fiber (total B F) B (trivial B F) y
+   = \ (x: F y) -> ((y,x),refl B y)
+
+ lem2 (B: U) (F: B -> U) (y: B) (x: F y)
+    : Path (F y) (comp (&lt;i&gr;F (refl B y @ i)) x []) x
+    = &lt;j&gr; comp (&lt;i&gr;F ((refl B y) @ j/\i)) x [(j=1) -> <k>x]
+
+ lem3 (B: U) (F: B -> U) (y: B) (x: fiber (total B F) B (trivial B F) y)
+    : Path (fiber (total B F) B (trivial B F) y) ((y,encode B F y x),refl B y) x
+    = &lt;i&gr; ((x.2 @ -i,comp (&lt;j&gr; F (x.2 @ -i /\ j)) x.1.2
+          [(i=1) -> &lt;_&gr; x.1.2 ]),&lt;j&gr; x.2 @ -i \/ j)
+        </code></figure>
+
+        <figure><code>
+ FiberPi (B: U) (F: B -> U) (y: B)
+   : Path U (fiber (total B F) B (trivial B F) y) (F y)
+   = isoPath T A f g s t where
+     T: U = fiber (total B F) B (trivial B F) y
+     A: U = F y
+     f: T -> A = encode B F y
+     g: A -> T = decode B F y
+     s (x: A): Path A (f (g x)) x = lem2 B F y x
+     t (x: T): Path T (g (f x)) x = lem3 B F y x
+        </code></figure>
+        <hr>
+        <p>
+        [1]. <a href="http://groupoid.space/mltt/types/bundle">http://groupoid.space/mltt/types/bundle/</a><br>
+        [2]. <a href="http://www.maths.ed.ac.uk/~v1ranick/papers/husemoller">http://www.maths.ed.ac.uk/~v1ranick/papers/husemoller</a><br>
+        [3]. <a href="https://paginas.matem.unam.mx/cprieto/phocadownloadpap/Libros/fiber%20bundles.pdf">Marcelo A. Aguilar, Carlos Prieto. Fiber Bundles.</a><br>
+        [4]. <a href="http://www.math.drexel.edu/~ahicks/mathematics/fibre">http://www.math.drexel.edu/~ahicks/mathematics/fibre</a><br>
+        [5]. <a href="http://math.stanford.edu/~ralph/fiber.pdf">http://math.stanford.edu/~ralph/fiber.pdf</a><br>
+        [6]. <a href="http://pages.vassar.edu/mccleary/files/2011/04/history.fibre_.spaces.pdf">http://pages.vassar.edu/mccleary/files/2011/04/history.fibre_.spaces.pdf</a><br>
+        </p>
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 1980—2019</footer>
+</body>
+</html>

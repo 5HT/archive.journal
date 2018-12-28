@@ -1,0 +1,66 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2018-06-08</title>
+    <link rel="stylesheet" href="../../blank.css?v=4" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>STREAM</a>
+    <a href='#'>2018-10-08</a>
+</nav>
+<main>
+    <section>
+        <h3>Cohesive Type Theory</h3>
+        <p>
+Для любителей монад у меня есть хорошая новость, самое последнее расширение
+HoTT, cohesivett, или модальная теория типов, которая синтаксически хачит такие
+штуки как линейность, окресности, связность, бесконечно малые и шейпы как
+фундаментальные инфинити групоиды. Там три вида контекстов Γ | ∆ | Ξ. И 6
+операций — cohesive модалити ʃ (групоид, комонада) ⊣ ♭ (комонада, дискретность)
+⊣ ♯ (монада, кодискр.) и дифференциальные модалити ℜ (редукции, комонада,
+гладкость) ⊣ ℑ (бесконечно малые фиг. модальности, монада) ⊣ & (étale морфизмы,
+комонада).
+        </p><p>
+Модальная теория типов. Загнали акиомы и погнали. Невозможно же посчитать
+бесконечно малые. Можно сюда алгоритмы вставить которые будут комонадично
+считать до определенной точности или в тайпчекер зашить! Тут записано
+<a href="https://ncatlab.org/nlab/show/infinitesimal+shape+modality">Infinitesimal Shape Modality</a> &mdash;
+коредуцированные объекты.
+        </p>
+        <figure><code>
+Im : U -> U
+ImUnit (A: U) : A -> Im A
+
+isCoreduced (A:U): U = isEquiv A (Im A) (ImUnit A)
+ImCoreduced (A:U): isCoreduced (Im A)
+
+ImRecursion (A B: U) (c: isCoreduced B) (f: A -> B)
+  : Im A -> B
+
+ImComputeRecursion (A B : U) (c : isCoreduced B) (f : A -> B) (a : A)
+  : PathP(&lt;i&gt;B)((ImRecursion A B c f)(ImUnit A a))(f a)
+
+ImApp (A B: U) (f: A -> B): Im A -> Im B
+ImNaturality (A B: U) (f: A -> B)
+  : (a: A) -> Path (Im B) ((ImUnit B) (f a)) ((ImApp A B f) (ImUnit A a))
+
+ImInduction (A : U) (B : Im A->U)
+    (x : (a: Im A) -> isCoreduced(B a))
+    (y : (a : A) -> B (ImUnit A a))
+  : (a:Im A)->B a
+
+ImComputeInduction (A:U)(B:Im A->U) (c:(a:Im A)->isCoreduced(B a))
+    (f : (a : A) -> B (ImUnit A a)) (a:A)
+  : Path (B (ImUnit A a)) (f a) ((ImInduction A B c f) (ImUnit A a))
+        </code></figure>
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 1980—2019</footer>
+</body>
+</html>

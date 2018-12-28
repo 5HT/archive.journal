@@ -1,0 +1,79 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2018-06-08</title>
+    <link rel="stylesheet" href="../../blank.css?v=4" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>STREAM</a>
+    <a href='#'>2018-10-08</a>
+</nav>
+<main>
+    <section>
+        <h3>Расширения Кана</h3>
+        <p> Вчера весь вечер рисовал страницу про категории и крутил расширения Кана. Так и
+            не смог построить даже сигнатуру универсальности расширений Кана, вот лох! Но
+            обо всем по порядку. Расширение Кана двух функторов К: А -> B, G: A -> C — это
+            такой функтор F: B -> C, для которого существует естественное преобразование
+            композиции функоторов F o K и функтора G. Конус функтора D: J -> C — это
+            расширение кана, где функтор К: J -> 1 действует в кодомен единичной категории.
+            Свойство универсальности расширений Кана — это их единственность при фиксации К
+            и G для любых двух расширений Кана. Правое расширение Кана функторов К и G, это
+            по-сути определение расширения Кана вместе со свойством универсальности, т.е. ∑
+            (x: extension K G) ∏ (y: extension K G) isContr(universality K G x y).
+            Категорный предел по функтору D: J -> C (диаграмме) — есть правое раширение
+            Кана, где К: J -> 1 действует в единичную категорию. Вот и все.
+        </p>
+        <figure><code>
+ extension (A B C: precategory) (K: catfunctor A B) (G: catfunctor A C) : U
+    = (F: catfunctor B C)
+    * (counit: ntrans A C (compFunctor A B C K F) G)
+    * unit
+        </code></figure>
+<p>Functor to Unit Category</p>
+        <figure><code>
+unitFunc (C: precategory): catfunctor C unitCat
+    = undefined
+        </code></figure>
+<p>Cone as Kan Extension</p>
+        <figure><code>
+cone (J C: precategory) (D: catfunctor J C): U
+   = extension J unitCat C (unitFunc J) D
+        </code></figure>
+<p>universality of Kan Extension</p>
+        <figure><code>
+  universality (A B C: precategory)
+               (K: catfunctor A B) (G: catfunctor A C)
+               (s t: extension A B C K G) : U
+        </code></figure>
+<p>Right Kan Extension</p>
+        <figure><code>
+ ran (A B C: precategory) (K: catfunctor A B) (G: catfunctor A C) : U
+    = (x: extension A B C K G) * ((y: extension A B C K G)
+    -> isContr (universality A B C K G x y))
+        </code></figure>
+<p>Limit</p>
+        <figure><code>
+ limit (J C: precategory) (D: catfunctor J C): U
+    = ran J unitCat C (unitFunc J) D
+        </code></figure>
+<hr>
+<p>
+[1]. <a href="http://www.math.harvard.edu/theses/senior/lehner/lehner.pdf">http://www.math.harvard.edu/theses/senior/lehner/lehner.pdf</a><br>
+[2]. <a href="https://github.com/groupoid/cubical/blob/master/src/cat.ctt">https://github.com/groupoid/cubical/blob/master/src/cat.ctt</a><br>
+[3]. <a href="https://github.com/groupoid/cubical/blob/master/src/fun.ctt">https://github.com/groupoid/cubical/blob/master/src/fun.ctt</a><br>
+[4]. <a href="https://github.com/groupoid/cubical/blob/master/src/adj.ctt">https://github.com/groupoid/cubical/blob/master/src/adj.ctt</a><br>
+[5]. <a href="https://github.com/groupoid/cubical/blob/master/src/sip.ctt">https://github.com/groupoid/cubical/blob/master/src/sip.ctt</a><br>
+[6]. <a href="https://github.com/groupoid/cubical/blob/master/src/cones.ctt">https://github.com/groupoid/cubical/blob/master/src/cones.ctt</a><br>
+</p>
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 1980—2019</footer>
+</body>
+</html>
