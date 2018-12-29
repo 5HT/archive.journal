@@ -1,0 +1,136 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2016-08-09</title>
+    <link rel="stylesheet" href="../../blank.css?v=4" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>STREAM</a>
+    <a href='#'>2016-08-09</a>
+</nav>
+<main>
+    <section>
+        <h3>Неизвестная Миру Лямбда Кодировка с CPS Континуатором</h3>
+        <p> НАМО ЛЯМБДАГАРБХА</p>
+        <p> Итак, как вы все знаете, в PTS системах для кодирования индуктивных типов
+            данных принято использовать лямбда исчисление. Все вы знаете про Church,
+            Parigot, Scott кодировки. Если кто забыл, я быстро напомню! Но есть одна особая
+            кодировка, которая круче чем все эти кодировки, но которая почему-то совершенно
+            не описана в литературе, но описана была MaiaVictor. Его же синтаксис Caramel
+            использовался для демонстрации всех кодировок в нетипизированном лямбда исчислении.</p>
+
+        <p> Будем использовать инфиксную скобочную форму записи лямбды: "(a b -> c)"
+            означает "λ a b . c", чтобы λ не мусолила глаза и легче было распознавать узор
+            последовательности.</p>
+
+        <h4>Church кодировка</h4>
+
+        <p> Самая простая. Она представляет структуры в виде своих
+            правых фолдов. Будем рассматривать простейшие структуры данных натуральные
+            числа. Они же используются дя чистого моделирования вселенных.</p>
+
+        <p> 0 = (f x -> x)<br>
+            1 = (f x -> (f x))<br>
+            2 = (f x -> (f (f x)))<br>
+            3 = (f x -> (f (f (f x))))</p>
+
+        <p> pred = (n (g h -> (h (g succ))) (const zero) id) &mdash; O(n), плохо.<br>
+            foldNat = (s z nat -> (nat s z)) &mdash; Нерекурсивный, хорошо.</p>
+
+        <p> С ней есть "маленькая" проблемка: pred такого числа или tail списка занимает O(n).</p>
+
+        <h4>Scott кодировка</h4>
+
+        <p> Дана Скотт предложил кодирвать структуры не в виде их
+            фолдов а в виде их паттерн мачинг элиминаторов.</p>
+
+        <p> 0 = (f x -> x)<br>
+            1 = (f x -> (f (f x -> x)))<br>
+            2 = (f x -> (f (f x -> (f (f x -> x)))))<br>
+            3 = (f x -> (f (f x -> (f (f x -> (f (f x -> x)))))))</p>
+
+        <p> pred = (nat -> (nat (pred -> pred) _)) &mdash; O(1), хорошо.<br>
+            foldNat = (s z nat -> (nat (pred -> (s (foldNat s z pred))) z)) &mdash; Рекурсия, плохо.</p>
+
+        <p> Для такой кодировки у нас pred натурального числа занимает константу, но для
+            выражения нужна рекурсия. А мы на это в Групоид Инфинити никак не можем пойти.</p>
+
+        <h4> Кодировка Parigot</h4>
+
+        <p> Является смесью Скотт и Черч кодировок. Паригот убирает рекурсию из фолдов.</p>
+
+        <p> 0 = (f x -> x)<br>
+            1 = (f x -> (f (f x -> (f x)) (f x -> x)))<br>
+            2 = (f x -> (f (f x -> (f (f x))) (f x -> (f (f x -> (f x)) (f x -> x)))))<br>
+            3 = (f x -> (f (f x -> (f (f (f x)))) (f x -> (f (f x -> (f (f x))) (f x -> (f (f x -> (f x)) (f x -> x)))))))</p>
+
+        <p> pred = (nat -> (nat (_ pred -> pred) _)) -- O(1), хорошо.<br>
+            foldNat = (nat -> (nat (fold _ -> fold) _)) -- нерекурсивный, хорошо.</p>
+
+        <p> Как вы видите Паригот вроде как заебись, но термы ростут как на дрожжах. Т.е.
+            экспоненциально. Но мы можем избавиться от этого!</p>
+
+        <h4>Кодировка CPS</h4>
+
+        <p> Вместо нумералов черча мы храним континуаторы (c -> (c f x)).
+            Описание этой кодировки вы не найдете в интернете ни в одном пейпере.</p>
+
+        <p> 0 = (f x -> x)<br>
+            1 = (f x -> (f (c -> (c f x)) (f x -> x)))<br>
+            2 = (f x -> (f (c -> (c f x)) (f x -> (f (c -> (c f x)) (f x -> x)))))<br>
+            3 = (f x -> (f (c -> (c f x)) (f x -> (f (c -> (c f x)) (f x -> (f (c -> (c f x)) (f x -> x)))))))</p>
+
+        <p> pred = (nat -> (nat (_ pred -> pred) _)) &mdash; O(1), хорошо!<br>
+            foldNat = (s z nat -> (nat (cont pred -> (s (cont pred))) z)) &mdash; нерекурсивная, хорошо!</p>
+
+        <p> И термы все растут так как при черче просто умножаются на константу -- размер
+            континуатора. Одна хуйня что для этой кодировки нужны Self-типы Пенг-Фу и Ко,
+            слабая форма рекурсивных типов. Но зато индукция и все остальное получается
+            бесплатно для этой кодировки.</p>
+
+        <p> Бенчмарк CPS кодирвки против Church кодировки:</p>
+
+        <p>Pack/Unpack 1 000 000 Inductive Nat Church:  {410682,#Fun}<br>
+            Pack/Unpack 1 000 000 Inductive Nat CPS:     {712684,1000000}<br>
+            Pack/Unpack 1 000 000 Inductive Church List: {717695,'_'}</p>
+
+        <p> Типа в два раз медленнее.</p>
+
+            <figure><code>
+ data nat : * | (zero: () → nat)
+              | (succ: nat → nat)
+            </code></figure>
+
+            <p>Church</p>
+            <figure><code>
+ nat    () -> [fun (S) -> 1 + S end, 0 ].
+ zero   () -> fun (S) -> fun (Z) -> Z end end.
+ succ   () -> fun (N) -> fun (S)
+           -> fun (Z) -> S((N(S))(Z)) end end end.
+            </code></figure>
+
+            <p>CPS</p>
+            <figure><code>
+ nat1() -> [fun (F) -> fun (X) -> F(X) + 1 end end, 0 ].
+ zero1() -> fun (F) -> fun (X) -> X end end.
+ succ1() -> fun (Z) -> fun (F) -> fun (X)
+         -> (F(fun(C) -> (C(F))(X) end))(Z) end end end.
+            </code></figure>
+            <p>Erlang:
+            <a href="https://github.com/groupoid/om/blob/master/src/enc_cps.erl">CPS</a>,
+            <a href="https://github.com/groupoid/om/blob/master/src/enc_ch.erl">Church</a>,
+            <a href="https://github.com/groupoid/om/blob/master/src/enc_ch.erl">Parigot</a>.</p>
+
+            <p>ОМ ЛЯМБДА ГАРБХА ХУМ</p>
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
+
