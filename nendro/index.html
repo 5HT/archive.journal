@@ -1,0 +1,78 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2018-12-29</title>
+    <link rel="stylesheet" href="../blank.css?v=4" />
+<script>
+var audio;
+var playlist;
+var tracks;
+var current;
+
+ function init(){
+    current = 0;
+    audio = $('audio');
+    playlist = $('#playlist');
+    tracks = playlist.find('li b a');
+    len = tracks.length - 1;
+    audio[0].volume = .10;
+    playlist.find('a').click(function(e){
+        e.preventDefault();
+        link = $(this);
+        current = link.parent().index();
+        run(link, audio[0]);
+    });
+    audio[0].addEventListener('ended',function(e){
+        current++;
+        if(current == len){
+            current = 0;
+            link = playlist.find('a')[0];
+        }else{
+            link = playlist.find('a')[current];
+        }
+        run($(link),audio[0]);
+    });
+ }
+
+ function run(link, player){
+    $('.active').removeClass();
+        player.src = link.attr('href');
+        par = link.parent();
+        par.addClass('active');
+        audio[0].load();
+        audio[0].play();
+ }
+
+ function play(element) { document.getElementById("player").src = element.href; return false; }
+</script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+</head>
+<body onload='init()'>
+<main>
+    <header><img src="../seal.png"><h1>NÖNDRO</h1></header>
+    <section>
+        <p>
+        <p>Audio illustration to <a href="https://longchenpa.guru/gter.ma/snying.thig.rtsa.pod/texts/sngon.'gro/index.htm">Longchen Nyingthig Nöndro</a>:<br><br>
+        <audio id=player preload=auto autoplay=true controls=controls style="width:250px;">
+        <ul id=playlist>
+            <li><b><a href="http://ns.synrc.com/music/dharma/1. Auspicious.mp3">8 Auspicious Prayer</a></b></li>
+            <li><b><a href="http://ns.synrc.com/music/dharma/2. Take Refuge.mp3">Taking Refuge</a></b></li>
+            <li><b><a href="http://ns.synrc.com/music/dharma/3. Vajrasattva.mp3">Vajrasattva Mantra</a></b></li>
+            <li><b><a href="http://ns.synrc.com/music/dharma/4. Manjushri.mp3">Manjushri Calling</a></b></li>
+            <li><b><a href="http://ns.synrc.com/music/dharma/5. Mandala.mp3">Mandala Offering</a></b></li>
+            <li><b><a href="http://ns.synrc.com/music/dharma/6. Chod.mp3">Chod</a></b></li>
+            <li><b><a href="http://ns.synrc.com/music/dharma/7. Guru Rinpoche.mp3">Guru Yoga</a></b></li>
+            <li><b><a href="http://ns.synrc.com/music/dharma/8. Kunzan Monlam.mp3">Kunzan Monlam</a></b></li>
+            <li><b><a href="http://ns.synrc.com/music/dharma/9. Leymon Tendrel.mp3">Feast Song</a></b></li>
+            <li><b><a href="http://ns.synrc.com/music/dharma/A. Dechen Monlam.mp3">Dechen Monlam</a></b></li>
+        </ul>
+        </p>
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
