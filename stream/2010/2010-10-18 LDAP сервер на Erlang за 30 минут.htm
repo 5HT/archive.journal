@@ -16,7 +16,7 @@
 </nav>
 <main>
     <section>
-        <h3>LDAP Server на Эрланг за 30 минут</h3>
+        <h3>LDAP сервер на Erlang за 30 минут</h3>
         <p> Вот может кому интересно почему я начал писать SyncML сервер на эрланг.
             Если кратко, мне понравилось. Если длиннее: я определяю насколько просто
             писать на компьютерном языке по тому насколько просто прострелить себе
@@ -191,7 +191,8 @@
     dets:open_file(disk, [{file, FileName},{keypos,#'ContactRecord'.cn}]),
     ets:from_dets(ram,disk).
 
- traverse(Fun) -> dets:traverse(disk,Fun).
+ traverse(Fun) ->
+    dets:traverse(disk,Fun).
 
  list() ->
     ets:foldl(fun(C,Acc) -> io:format("~p~n",[C]) end,none,ram).
