@@ -1,0 +1,235 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2010-10-18</title>
+    <link rel="stylesheet" href="../../blank.css?v=4" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>STREAM</a>
+    <a href='#'>2010-10-18</a>
+</nav>
+<main>
+    <section>
+        <h3>LDAP Server на Эрланг за 30 минут</h3>
+        <p> Вот может кому интересно почему я начал писать SyncML сервер на эрланг.
+            Если кратко, мне понравилось. Если длиннее: я определяю насколько просто
+            писать на компьютерном языке по тому насколько просто прострелить себе
+            ногу написать LDAP сервер. Задача такая: написать приложение которое
+            отвечает Windows Mail/Apple Mail, etc. и возвращает по LDAP протоколу
+            спискок адресатов для автоматической подставновки (inplace search)
+            в адресных полях письма. Т.е. что бы из такого:</p>
+        <center> <img src="https://archive.li/NEf94/a2c39ab075841a47c5ba8850d5776ddb424e7e4b.png" width=600></center>
+        <p> получить вот такое:</p>
+        <center> <img src="https://archive.li/NEf94/b2cb299be73b2d38eff9d831ab7b07ed5e06987b.png" width=600></center>
+            <p> Прежде все я зашел на <a href="http://www.rfc-editor.org/rfc/rfc4511.txt">http://www.rfc-editor.org/rfc/rfc4511.txt</a>
+                и начал скачивать определение LDAP протокола в ASN.1 нотации.
+                Простая копи паста примерно такого кода:</p>
+
+            <figure><code>
+ LDAP DEFINITIONS IMPLICIT TAGS ::=
+ BEGIN
+
+    LDAPMessage ::= SEQUENCE {
+             messageID       MessageID,
+             protocolOp      CHOICE {
+                  bindRequest           BindRequest,
+                  bindResponse          BindResponse,
+                  unbindRequest         UnbindRequest,
+                  searchRequest         SearchRequest,
+                  searchResEntry        SearchResultEntry,
+                  searchResDone         SearchResultDone,
+                  searchResRef          SearchResultReference,
+                  modifyRequest         ModifyRequest,
+                  modifyResponse        ModifyResponse,
+                  addRequest            AddRequest,
+                  addResponse           AddResponse,
+                  delRequest            DelRequest,
+                  delResponse           DelResponse,
+                  modDNRequest          ModifyDNRequest,
+                  modDNResponse         ModifyDNResponse,
+                  compareRequest        CompareRequest,
+                  compareResponse       CompareResponse,
+                  abandonRequest        AbandonRequest,
+                  extendedReq           ExtendedRequest,
+                  extendedResp          ExtendedResponse,
+                  ...,
+                  intermediateResponse  IntermediateResponse },
+             controls       [0] Controls OPTIONAL }
+
+    MessageID ::= INTEGER (0 ..  maxInt)
+
+    maxInt INTEGER ::= 2147483647 -- (2^^31 - 1) --
+
+    LDAPString ::= OCTET STRING -- UTF-8 encoded, [ISO10646] characters
+            </code></figure>
+            <p>Дальше я с помощью Эрланг сгенерировал парсер этой хуеты. </p>
+            <figure><code>
+ > asn1ct:compile("LDAP.asn1").
+
+ =PROGRESS REPORT==== 18-Oct-2010::23:42:39 ===
+          supervisor: {local,kernel_safe_sup}
+             started: [{pid,<0.43.0>},
+                       {name,disk_log_sup},
+                       {mfargs,{disk_log_sup,start_link,[]}},
+                       {restart_type,permanent},
+                       {shutdown,1000},
+                       {child_type,supervisor}]
+
+ =PROGRESS REPORT==== 18-Oct-2010::23:42:39 ===
+          supervisor: {local,kernel_safe_sup}
+             started: [{pid,<0.44.0>},
+                       {name,disk_log_server},
+                       {mfargs,{disk_log_server,start_link,[]}},
+                       {restart_type,permanent},
+                       {shutdown,2000},
+                       {child_type,worker}]
+ ok
+ 2>
+            </code></figure>
+            <p>Потом я написал код который отвечает на LDAP запросы:</p>
+            <figure><code>
+ -module(eds).
+ -author('Maxim Sokhatsky ').
+ -export([start/0]).
+ -compile(export_all).
+ -include("LDAP.hrl").
+ -include("roster.hrl").
+ -define(TCP_OPTIONS, [binary, {packet, 0}, {active, false}, {reuseaddr, true}]).
+            </code></figure>
+            <figure><code>
+ start() ->
+    listen(389).
+
+ listen(Port) ->
+    {ok, LSocket} = gen_tcp:listen(Port, ?TCP_OPTIONS),
+    accept(LSocket).
+
+ accept(LSocket) ->
+    {ok, Socket} = gen_tcp:accept(LSocket),
+    spawn(fun() -> loop(Socket) end),
+    accept(LSocket).
+
+ loop(Socket) ->
+    case gen_tcp:recv(Socket, 0) of
+        {ok, Data} ->
+            Decoded = asn1rt:decode('LDAP','LDAPMessage',Data),
+            case Decoded of
+                {ok,{'LDAPMessage',No,Message,Asn}}
+                        -> message(No,Message,Socket);
+                _Else -> noLDAP
+            end,
+            loop(Socket);
+        {error, closed} ->
+            ok
+    end.
+            </code></figure>
+            <figure><code>
+ message(No,Message,Socket) ->
+    io:format("messageID: ~p~n",[No]),
+    io:format("~p~n",[Message]),
+    case Message of
+        {bindRequest, {'BindRequest',Type,Uid,Auth}}
+            -> bind(No,Uid,Auth,Socket);
+        {abandonRequest,Type} -> abandon(No,Socket);
+        {unbindRequest, Null} -> abandon(0,Socket);
+        {searchRequest, {'SearchRequest',SearchDN,Scope,Deref,SizeLimit,
+            TimeLimit,TypesOnly,Filter,Attributes}}
+            -> search(No, SearchDN, Scope,Deref,SizeLimit,
+               TimeLimit,TypesOnly, Filter,Attributes,Socket)
+    end.
+
+ bind(No,Uid,Auth,Socket) ->
+    roster:init(Uid),
+    Response = #'BindResponse'{resultCode = success, matchedDN = Uid,
+                               diagnosticMessage = "OK"},
+    answer(Response,No,bindResponse,Socket).
+
+ answer(Response,No,ProtocolOp,Socket) ->
+    Message = #'LDAPMessage'{messageID = No,
+                             protocolOp = {ProtocolOp, Response}},
+    {ok, Bytes} = asn1rt:encode('LDAP', 'LDAPMessage', Message),
+    io:format("~p~n", [Message]),
+    gen_tcp:send(Socket, list_to_binary(Bytes)).
+
+ search(No,SearchDN,Scope,Deref,SizeLimit,
+        TimeLimit,TypesOnly,Filter,Attributes,Socket) ->
+    roster:traverse(fun({'ContactRecord',CommonName,GivenName,Mail}) ->
+        CN = {'PartialAttribute', "cn", [CommonName]},
+        MAIL = {'PartialAttribute', "mail", [Mail]},
+        Response = {'SearchResultEntry', CommonName, [CN,MAIL]},
+        answer(Response,No,searchResEntry,Socket),
+        continue
+    end),
+    Done = #'LDAPResult'{resultCode = success, matchedDN = SearchDN,
+                         diagnosticMessage = "OK"},
+    answer(Done,No,searchResDone,Socket).
+
+ abandon(No,Socket) ->
+    roster:done(),
+    gen_tcp:close(Socket).
+            </code></figure>
+            <p>А также библиотеку для работы с контактной книгой</p>
+            <figure><code>
+ -module(roster).
+ -include("roster.hrl").
+ -include_lib("stdlib/include/qlc.hrl").
+ -compile(export_all).
+ -export([init/1,done/0,put/3,get/1,traverse/1]).
+
+ init(FileName) ->
+    case ets:info(ram) of
+        undefined -> ets:new(ram, [named_table,{keypos,#'ContactRecord'.cn},
+                           {write_concurrency,true},{read_concurrency,true}]);
+        Else -> ok
+    end,
+    dets:open_file(disk, [{file, FileName},{keypos,#'ContactRecord'.cn}]),
+    ets:from_dets(ram,disk).
+
+ traverse(Fun) -> dets:traverse(disk,Fun).
+
+ list() ->
+    ets:foldl(fun(C,Acc) -> io:format("~p~n",[C]) end,none,ram).
+
+ done() ->
+    case ets:info(ram) of
+        undefined -> ram_empty;
+        ElseClearRam -> ets:delete(ram)
+    end,
+    case dets:info(disk) of
+        {error,Reason} -> disk_closed;
+        ElseCloseDisk -> Res = dets:close(disk), done
+    end.
+
+ put(CN,GivenName,EMail) ->
+    Contact = #'ContactRecord'{cn = CN, givenName = GivenName, mail = EMail},
+    ets:insert(ram, Contact),
+    dets:insert(disk, Contact),
+    ok.
+
+ get(CN) ->
+    case ets:lookup(ram,CN) of
+        [Contact] -> {ok, Contact};
+        [] -> {error,instance}
+    end.
+            </code></figure>
+            <p>...В виде эрланг рекордов:</p>
+            <figure><code>
+ -record('ContactRecord', {cn, givenName, mail}).
+            </code></figure>
+            <p>Откомпилировал это:</p>
+            <figure><code>
+ erlc +debug_info -o ebin src\LDAP.erl src\eds.erl src\roster.erl
+            </code></figure>
+            <p>И все :)</p>
+            <p>P.S. <a href="https://github.com/devaspot/eds">https://github.com/synrc/eds</a></p>
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
