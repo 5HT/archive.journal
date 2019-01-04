@@ -188,9 +188,9 @@ PiType (A: U) (B: A -> U): isIso (Pi A B) (Pi A B)
   = (lam A B,lam A B,Pi_Beta A B,Pi_Eta A B)
   = (app A B,lam A B,Pi_Beta A B,Pi_Eta A B)
   = (app A B,app A B,Pi_Eta A B,Pi_Eta A B)
-  = ...
         </code></figure>
 
+        <p> Любой из этих вариантов чекается!</p>
 
         <p> На самом деле, такие тавтологии рождаются потому, что мы в isIso поставили равные типы,
             до этого в примерах мы делали транспорты из крайних точек пути, тут же у нас петля.
