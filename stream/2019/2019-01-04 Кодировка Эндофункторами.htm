@@ -106,10 +106,6 @@
         <figure><code>
  UnivType (A B: U): isIso (equiv A B) (Path U A B)
    = (equivToPath A B, pathToEquiv A B,eqToEq A B,idToPath A B)
-
- Checking: UnivType
- File loaded.
- >
         </code></figure>
 
         <p> Неплохо, поехали дальше.</p>
@@ -191,6 +187,12 @@
         </code></figure>
 
         <p> Любой из этих вариантов чекается!</p>
+
+        <figure><code>
+ Checking: PiType
+ File loaded.
+ >
+        </code></figure>
 
         <p> На самом деле, такие тавтологии рождаются потому, что мы в isIso поставили равные типы,
             до этого в примерах мы делали транспорты из крайних точек пути, тут же у нас петля.
