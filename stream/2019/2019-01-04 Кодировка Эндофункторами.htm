@@ -1,0 +1,239 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2019-01-04</title>
+    <link rel="stylesheet" href="../../blank.css?v=4" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>STREAM</a>
+    <a href='#'>2019-01-04</a>
+</nav>
+<main>
+    <section>
+        <h3>Кодировка Эндофункторами</h3>
+
+        <p> Специально для канала Формальная Философия</p>
+
+        <h4>Вступление</h4>
+
+        <p> Как вы знаете все индуктивные типы (Nat, List и т.д.)
+            могут быть представлены в Чёрч-кодировке которая есть
+            упаковка категорной модели. Идея кодирования следующая,
+            раз мы работаем в теории категорий, то всё сущности мы
+            рассматриваем как объекты и связи между ними (везде одно и то же!),
+            (ну и еще композицию с ее законами). Значит и индуктивные типы мы раскладываем в это же,
+            т.е. другими словами мы строим категорную модель конкретных индуктивных
+            инстансов data, или как говорят мы строим категории F-алгебр:</p>
+
+        <figure><code>
+ natOb: U
+   = (X: U)
+   * (zero: X)
+   * (succ: X -> X)
+   * unit
+
+ natHom (x1 x2: natOb): U
+   = (map: x1.1 -> x2.1)
+   * (mapZero: Path x2.1 (map (x1.2.1)) (x2.2.1))
+   * (mapSucc: (x: x1.1) -> Path x2.1 (map (x1.2.2.1 x)) (x2.2.2.1 (map x)))
+   * unit
+
+ isHomotopyInitialNat (I: natOb): U
+   = (C:  natOb)
+   * (x:  natHom I C)
+   * ((y: natHom I C) -> Path (natHom I C) x y)
+        </code></figure>
+
+        <p> Здесь у нас unit-терминейтед record &mdash; это что-то типа null-терминейтед стринг.
+            Я думаю идея понятна. Если взять лимит в этой категории получится
+            штука изоморфная черч-кодировке. В HoTT это можно увидеть в
+            параграфе Nat-алгебр (5.4.1) и Nat-гомоморфизмов (5.4.2).
+            Полная кодировка должна включать не только зависимый элиминатор, через который уже
+            выражается рекурсор и кейс анализ, но и правила связывающие фьюжин intro-elim двумя
+            правилами beta и eta которые называются ещё ректракт и секция.</p>
+
+        <h4>Постановка задачи</h4>
+
+        <p> В этой статье мы покажем, что, во-первых, интернализация MLTT в сущности есть
+            кодировкой изоморфизмами, и, во-вторых, покажем, что в кодировке Пи у нас
+            функция равна своей аппликации (да да, вам не послышалось).</p>
+
+        <p> Ну, я думаю не нужно доказывать или показывать, что всё в MLTT есть тип,
+            или всё в мире есть феномен. А раз так, то мы можем построить категорию
+            этих объектов и морфизмов между ними (это у математиков что-то типа если
+            есть гора, то на неё нужно взобраться, или как я называю в любой
+            непонятной ситуации строй категорию). Т.е. тоеретически возможно засунуть
+            любой тип в сигнатуру изоморфизма:
+
+        <figure><code>
+ isIso (XML JSON: U): U
+   = (f: XML -> JSON) -- intro
+   * (g: JSON -> XML) -- elim
+   * (s: section XML JSON f g) -- beta
+   * (   retract XML JSON f g) -- eta
+        </code></figure>
+
+        <p> Давайте попробуем это сделать для сложных типов, чтобы доказать первую часть задачи,
+            а потом попробуем закодировать самый базовый Пи-тип на котором строится вся теория MLTT,
+            и докажем вторую часть задания.</p>
+
+        <h4> Аксиома Унивалентности</h4>
+
+        <p> Она не золотой грааль, а обычнейший тип, а значит для нее существует 5 правил теории типов
+            Мартина Лёфа:
+
+        <figure><code>
+ univ_Formation (A B: U)
+   : U = equiv A B -> Path U A B -- Formation
+ equivToPath (A B: U)
+   : univ_Formation A B -- Intro
+ pathToEquiv (A B: U) (p: Path U A B)
+   : equiv A B -- UElim
+ eqToEq (A B : U) (p : Path U A B)
+   : Path (Path U A B) (equivToPath A B (pathToEquiv A B p)) p -- Beta
+ idToPath (A B: U) (w: equiv A B)
+   : Path (equiv A B) (pathToEquiv A B (equivToPath A B w)) w -- Eta
+        </code></figure>
+
+        <p> Превращаем аксиому унивалентности в енкодер-декодер или изоморфизм:</p>
+
+        <figure><code>
+ UnivType (A B: U): isIso (equiv A B) (Path U A B)
+   = (equivToPath A B, pathToEquiv A B,eqToEq A B,idToPath A B)
+
+ Checking: UnivType
+ File loaded.
+ >
+        </code></figure>
+
+        <p> Неплохо, поехали дальше.</p>
+
+        <h4> Равенство Равенства и Изоморфизма</h4>
+
+        <p> Так как фибрационная эквивалентность есть одним из видов равенства и аксиома
+            унивелентности это в сущности часть конструкции которая связывает фьюжин типов
+            фибрационной эквивалентности Equiv и типа Path встроенного в кубический тайпчекер,
+            то можно построить точно такой же изоморфизм между типом Iso, который тоже в
+            сущности является одним из видов равенства, простой и поняный всем программистам encode/decode.
+            Зделаем же это!</p>
+
+        <figure><code>
+ iso_Form (A B: U)
+   : U = isIso A B -> Path U A B
+ iso_Intro (A B: U)
+   : iso_Form A B
+ iso_Elim (A B: U)
+   : Path U A B -> isIso A B
+ iso_Comp (A B : U) (p : Path U A B)
+   : Path (Path U A B) (iso_Intro A B (iso_Elim A B p)) p
+ iso_Uniq (A B : U) (p: isIso A B)
+   : Path (isIso A B) (iso_Elim A B (iso_Intro A B p)) p
+        </code></figure>
+
+        <p>Заметьте как мы циклически встраиваемся в нижний уровень подсвовывая
+           в сами изоморфизм сигнатуру с изоморфизмом</p>
+
+        <figure><code>
+ IsoPathType (A B: U): isIso (isIso A B) (Path U A B)
+   = (iso_Intro A B,iso_Elim A B,iso_Comp A B,iso_Uniq A B)
+        </code></figure>
+
+
+        <h4> Пи-тип </h4>
+
+        <p>Теперь давайте перейдем к самому простому и самому загадночному изоморфизму
+           изоморфизму Пи-типов. Вспомним категорные догматы: чтобы закодировать что-то,
+           нам надо построить категорию эндоморфизмов этого. В нашем случае, так как мы
+           отложили учебник по теоркату и вышиваем на XML <-> JSON сигнатурах, мы
+           просто строим изоморфизм между Пи и Пи:</p>
+
+        <figure><code>
+ PiType (A: U) (B: A -> U): isIso (Pi A B) (Pi A B)
+   = (app A B,lam A B,Pi_Beta A B,Pi_Eta A B)
+        </code></figure>
+
+        <figure><code>
+ Pi (A: U) (B: A -> U)
+   : U = (x:A) -> B(x)
+ lam (A: U) (B: A -> U) (b: Pi A B)
+   : Pi A B = \(x: A) -> b x
+ app (A: U) (B: A -> U) (f: Pi A B) (a: A)
+   : B a = f a
+ Pi_Beta (A: U) (B: A -> U) (f: Pi A B)
+   : Path (Pi A B) (\(x:A) -> f x) f
+ Pi_Eta (A: U) (B: A -> U) (f: Pi A B)
+   : Path (Pi A B) f (\(x:A) -> f x)
+        </code></figure>
+
+        <p> Как видно мы тут немного подхачили, но вполне законно так как мы просто
+            перенесли a : A из телескопа параметров в правую часть результата и протащили в путь:
+            Path (B a) -> Path (Pi A B).</p>
+
+        <figure><code>
+ beta_classic (A:U)(B:A->U)(f: Pi A B) (a:A) : Path (B a) ((lambda A B f) a) (f a)
+ Pi_Beta      (A:U)(B:A->U)(f: Pi A B)    : Path (Pi A B) (\(x:A) -> f x) f
+        </code></figure>
+
+        <p> Теперь докажем вторую задачу и главный номер
+            представления (то, что функция равна своей аппликации, ну бредятина же на звук!):</p>
+
+        <figure><code>
+PiType (A: U) (B: A -> U): isIso (Pi A B) (Pi A B)
+  = (lam A B,lam A B,Pi_Beta A B,Pi_Eta A B)
+  = (app A B,lam A B,Pi_Beta A B,Pi_Eta A B)
+  = (app A B,app A B,Pi_Eta A B,Pi_Eta A B)
+  = ...
+        </code></figure>
+
+
+        <p> На самом деле, такие тавтологии рождаются потому, что мы в isIso поставили равные типы,
+            до этого в примерах мы делали транспорты из крайних точек пути, тут же у нас петля.
+            Но, тем не менее, этот терм вы можете встретить в любой статье про лямбла исчисление,
+            так как он является вычислительной семантикой зависимого лямбда исчисления.</p>
+
+        <figure><code>
+PTS (A: U): U
+  = (Pi_Former:   (A -> U) -> U)
+  * (Pi_Intro: (B: A -> U) -> Pi A B -> Pi A B)
+  * (Pi_Elim:  (B: A -> U) -> Pi A B -> Pi A B)
+  * (Pi_Comp1: (B: A -> U) (a: A) (f: Pi A B)
+    -> Equ (B a) (Pi_Elim B (Pi_Intro B f) a) (f a))
+  * (Pi_Comp2: (B: A -> U) (a: A) (f: Pi A B)
+    -> Equ (Pi A B) f (\(x:A) -> f x))
+  * unit
+        </code></figure>
+
+        <h4> Функциональная экстенсиональность</h4>
+
+        <p> В качестве бонус трека, funext.
+            В этом примере мы показываем, что терм funext &mdash; это все-лишь интро правило,
+            формация же есть классические изоморфизм двух функций f и g, которые находятся
+            в пространстве функций A -> B (в этом примере не зависимых, зависимых вам на домашку).</p>
+
+        <figure><code>
+ funext_form (A B: U) (f g: A -> B)
+   : U = Path (A -> B) f g
+ funext (A B: U) (f g: A -> B) (p: (x:A) -> Path B (f x) (g x))
+   : funext_form A B f g
+ happly (A B: U) (f g: A -> B) (p: funext_form A B f g) (x: A)
+   : Path B (f x) (g x)
+ funext_Beta (A B: U) (f g: A -> B) (p: (x:A) -> Path B (f x) (g x))
+   : (x:A) -> Path B (f x) (g x)
+ funext_Eta (A B: U) (f g: A -> B) (p: Path (A -> B) f g)
+   : Path (Path (A -> B) f g) (funext A B f g (happly A B f g p)) p
+        </code></figure>
+
+            <br><br><br>
+            <center>&dot;</center>
+            <br><br><br>
+
+    <section>
+</main>
+</body>
+</html>
