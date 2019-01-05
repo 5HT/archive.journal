@@ -81,6 +81,12 @@
    * (g: JSON -> XML) -- elim
    * (s: section XML JSON f g) -- beta
    * (   retract XML JSON f g) -- eta
+
+ section (A B:U) (f:A->B) (g:B->A): U
+   = (b:B) -> Path B (f(g(b))) b
+
+ retract (A B:U) (f:A->B) (g:B->A): U
+   = (a:A) -> Path A (g(f(a))) a
         </code></figure>
 
         <p> Давайте попробуем это сделать для сложных типов, чтобы доказать первую часть задачи,
