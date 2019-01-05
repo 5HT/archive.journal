@@ -76,9 +76,9 @@
             любой тип в сигнатуру изоморфизма:
 
         <figure><code>
- isIso (XML JSON: U): U
-   = (f: XML -> JSON) -- intro
-   * (g: JSON -> XML) -- elim
+ isIso (XML JSON: U): U        -- form
+   = (f: XML -> JSON)          -- intro
+   * (g: JSON -> XML)          -- elim
    * (s: section XML JSON f g) -- beta
    * (   retract XML JSON f g) -- eta
 
