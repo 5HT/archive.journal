@@ -21,7 +21,8 @@
         <p> Специально для канала Формальная Философия. В статье не рассматривается
             ничего сложнее чем encode-decode XML <-> JSON вместе с правилами enc dec = id и
             dec enc = id. Просто вместо переменных XML/JSON мы рассматриваем несколько конкретных
-            типов: Iso, Equiv, Pi, Interval.</p>
+            типов: Iso, Equiv, Pi, Interval. Другими словами, мы будем кодировать эти типы
+            и транспорты между ними с помощью изоморфизмамов.</p>
 
         <h4>Вступление</h4>
 
@@ -89,7 +90,7 @@
         <h4> Аксиома Унивалентности</h4>
 
         <p> Она не золотой грааль, а обычнейший тип, а значит для нее существует 5 правил теории типов
-            Мартина Лёфа:
+            Мартина-Лёфа:
 
         <figure><code>
  univ_Formation (A B: U)
@@ -97,11 +98,13 @@
  equivToPath (A B: U)
    : univ_Formation A B -- Intro
  pathToEquiv (A B: U) (p: Path U A B)
-   : equiv A B -- UElim
+   : equiv A B -- Elim
  eqToEq (A B : U) (p : Path U A B)
-   : Path (Path U A B) (equivToPath A B (pathToEquiv A B p)) p -- Beta
+   : Path (Path U A B) (equivToPath A B
+                       (pathToEquiv A B p)) p -- Beta
  idToPath (A B: U) (w: equiv A B)
-   : Path (equiv A B) (pathToEquiv A B (equivToPath A B w)) w -- Eta
+   : Path (equiv A B)  (pathToEquiv A B
+                       (equivToPath A B w)) w -- Eta
         </code></figure>
 
         <p> Превращаем аксиому унивалентности в енкодер-декодер или изоморфизм:</p>
@@ -209,9 +212,9 @@
    * (Pi_Intro: (B: A -> U) -> Pi A B -> Pi A B)
    * (Pi_Elim:  (B: A -> U) -> Pi A B -> Pi A B)
    * (Pi_Comp1: (B: A -> U) (a: A) (f: Pi A B)
-     -> Equ (B a) (Pi_Elim B (Pi_Intro B f) a) (f a))
+  -> Equ (B a) (Pi_Elim B (Pi_Intro B f) a) (f a))
    * (Pi_Comp2: (B: A -> U) (a: A) (f: Pi A B)
-     -> Equ (Pi A B) f (\(x:A) -> f x)) * unit
+  -> Equ (Pi A B) f (\(x:A) -> f x)) * unit
         </code></figure>
 
         <h4> Функциональная экстенсиональность</h4>
@@ -234,7 +237,9 @@
    : Path (Path (A -> B) f g) (funext A B f g (happly A B f g p)) p
         </code></figure>
 
-        <p>Дискас: <a href="https://github.com/5ht/tonpa.guru/issues/4">https://github.com/5ht/tonpa.guru/issues/4</a></p>
+
+        <p>В статье только сигнатуры, все пруфы в <a href="https://github.com/groupoid/cubical">https://github.com/groupoid/cubical</a>.<br>
+           Дискас: <a href="https://github.com/5ht/tonpa.guru/issues/4">https://github.com/5ht/tonpa.guru/issues/4</a></p>
 
             <br><br><br>
             <center>&dot;</center>
