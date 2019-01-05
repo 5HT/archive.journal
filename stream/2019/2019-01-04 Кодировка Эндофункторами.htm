@@ -238,6 +238,12 @@
    : Path (Path (A -> B) f g) (funext A B f g (happly A B f g p)) p
         </code></figure>
 
+        <p>Еще в качестве упражнения функциональную экстенсиональность
+           можно выразить через интервал.</p>
+
+        <figure><code>
+ data I = i0 | i1 | seg &lt;i&gt; [(i=0) -> i0, (i=1) -> i1]
+        </code></figure>
 
         <p>В статье только сигнатуры, все пруфы в <a href="https://github.com/groupoid/cubical">https://github.com/groupoid/cubical</a>.<br>
            Дискас: <a href="https://github.com/5ht/tonpa.guru/issues/4">https://github.com/5ht/tonpa.guru/issues/4</a></p>
