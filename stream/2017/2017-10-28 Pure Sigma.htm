@@ -152,7 +152,7 @@ data Sigma (A: Type) (P: A -> Type) (x:A): Type
  EVAL: suc (suc (suc (suc (suc zero))))
         </code></figure>
 
-        <p> Полная модель с бета и эта правилами закодированная Дмитрием Митиным:</p>
+        <p> Полная модель с бета и эта правилами закодированная <a href="https://github.com/DmytroMitin">Дмитрием Митиным</a>:</p>
 
         <figure><code>
  Sigma (A : U) (B : A -> U) (a : A)
@@ -183,14 +183,14 @@ data Sigma (A: Type) (P: A -> Type) (x:A): Type
 
         <p> Тут мне подсказывают, что писал Thorsten Altenkirch:</p>
 
-        <p>Ok, when we think of homogenous tuples AxA then this can also be understood as
-a function 2 -> A. This also works for heterogenous tuples like AxB using
-dependent functions Pi x:2.if x then A else B. However the next logical step is
-Sigma x:A.B x, which have no good representations as functions (unless we
-accept very dependent functions which in my mind goes against the spirit of
-type theory). For this reason it seems to me that the generalisation from -> to
-Pi and from x to Sigma is the primary one, and the fact that tuples can be
-represented as functions is secondary.</p>
+        <p> Ok, when we think of homogenous tuples AxA then this can also be understood as
+            a function 2 -> A. This also works for heterogenous tuples like AxB using
+            dependent functions Pi x:2.if x then A else B. However the next logical step is
+            Sigma x:A.B x, which have no good representations as functions (unless we
+            accept very dependent functions which in my mind goes against the spirit of
+            type theory). For this reason it seems to me that the generalisation from -> to
+            Pi and from x to Sigma is the primary one, and the fact that tuples can be
+            represented as functions is secondary.</p>
 
         <p> Позволю себе не согласиться с Торстеном,Альтенкирхом: на мой взгляд, именно
             Черч кодировка и показывает скрытую категорную стркутуру теории типов (что
