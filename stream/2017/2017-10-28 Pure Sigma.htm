@@ -1,0 +1,208 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2018-06-08</title>
+    <link rel="stylesheet" href="../../blank.css?v=4" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>STREAM</a>
+    <a href='#'>2018-06-08</a>
+</nav>
+<main>
+    <section>
+        <h3>Pure Sigma</h3>
+        <p> Кто-то на гиттер канале просил год назад, чтобы ему Сигму закодировали в чистых
+            функциях. Я тогда не смог это сделать, но вот недавно формировал домашки и
+            решил поставить такое задание в качестве домашки. Мне вроде говорили, что
+            Альтенкирх где-то писал что это невозможно или по крайней мере это не обладает
+            достаточно хорошими вычислительными характеристиками.</p>
+
+        <figure><code>
+ -- Sigma/@
+    \ (A: *)
+ -> \ (P: A -> *)
+ -> \ (n: A)
+ -> \/ (Exists: *)
+ -> \/ (Intro: A -> P n -> Exists)
+ -> Exists
+        </code></figure>
+
+        <figure><code>
+ -- Sigma/Intro
+    \ (A: *)
+ -> \ (P: A -> *)
+ -> \ (x: A)
+ -> \ (y: P x)
+ -> \ (Exists: *)
+ -> \ (Intro: A -> P x -> Exists)
+ -> Intro x y
+        </code></figure>
+
+        <figure><code>
+ -- Sigma/fst
+    \ (A: *)
+ -> \ (B: A -> *)
+ -> \ (n: A)
+ -> \ (S: #Sigma/@ A B n)
+ -> S A ( \(x: A) -> \(_: B n) -> x )
+        </code></figure>
+
+        <figure><code>
+ -- Sigma/snd
+    \ (A: *)
+ -> \ (B: A -> *)
+ -> \ (n: A)
+ -> \ (S: #Sigma/@ A B n)
+ -> S (B n) ( \(_: A) -> \(y: B n) -> y )
+        </code></figure>
+
+        <figure><code>
+ -- Sigma/test
+ -- P: nat -> U = (\(_:nat) -> list nat)
+ -- mk nat P n5 nil
+ #Sigma/Intro #Nat/@
+              (\(n: #Nat/@) -> #List/@ #Nat/@)
+              #Nat/Five
+              (#List/replicate #Nat/@ #Nat/Five #Nat/Zero)
+
+ -- Sigma/test.fst
+ -- fst nat P zero test
+ #Sigma/fst #Nat/@
+            (\(n: #Nat/@) -> #List/@ #Nat/@)
+            #Nat/Zero
+            #Sigma/test
+
+ -- Sigma/test.snd
+ -- snd nat P zero test
+ #Sigma/snd #Nat/@
+            (\(n: #Nat/@) -> #List/@ #Nat/@)
+            #Nat/Zero
+            #Sigma/test
+        </code></figure>
+
+
+        <p> В тестах создание тапла (nat, list nat) = (5, [0,0,0,0,0]) и взятие у него
+            первой и второй проекции:</p>
+
+        <figure><code>
+ 1> om:fst(om:erase(om:norm(om:a("#Sigma/test.snd"))))
+ == om:fst(om:erase(om:norm(om:a("(#List/replicate #Nat/@ #Nat/Five
+ #Nat/Zero)")))).
+ true
+ 2> om:fst(om:erase(om:norm(om:a("#Sigma/test.fst"))))
+ == om:fst(om:erase(om:norm(om:a("#Nat/Five")))).
+ true
+ 3> om:type(om:type(om:a("#Sigma/snd"))).
+ {star,1}
+ 4> om:type(om:type(om:a("#Sigma/fst"))).
+ {star,1}
+        </code></figure>
+
+        <p> Трюк заключается в протаскивании первого элемента в базу, все равно конструктор
+            один и он же принимает его. Т.е. классическое индуктивное определение</p>
+
+        <figure><code>
+ data Sigma (A: Type) (P: A -> Type): Type
+    = (intro: (x:A) (y:P x) -> Sigma A P)
+        </code></figure>
+
+        <p>сменяется на следующее:</p>
+
+        <figure><code>
+data Sigma (A: Type) (P: A -> Type) (x:A): Type
+   = (intro: (y:P x) -> Sigma A P)
+        </code></figure>
+
+        <p> Наверно проблемы начнутся как с pred, когда придется закодировать N-тапл из сигм
+            и переносить все кроме последнего в базу, но тоже вроде все законно.
+            Единственное к чему тут можно предъявить претензии — это дополнительный
+            параметр пустышка #Nat/Zero который передается в примерах в качестве (x:A) при
+            вызове элиминаторов, он нужен для совместимости типов, но как видно из примера,
+            экстрактятся из сконструированного тапла #Sigma/Intro настоящие значения (fst
+            test = 5 и snd test = [0,0,0,0,0]). Другими словами это означает что первый
+            элемент типовой пары должен быть как минимум стягиваемым пространством, что в
+            принципе в духе Сигмы и квантора существования.</p>
+
+        <p> P.S. Модель в cubicaltt, для тех, кто не доверяет Ом.</p>
+
+        <figure><code>
+ module puresigma where
+ import nat
+ import list
+
+ P: nat -> U = (\(_:nat) -> list nat)
+ sig (A:U)(P:A->U)(x:A): U = (e:U)->(i:A->P x->e)->e
+ mk  (A:U)(P:A->U)(x:A)(y:P x)(e:U)(i:A->P x->e):e=i x y
+ fst (A:U)(P:A->U)(x:A)(s:sig A P x):A=s A(\(z:A)(y:P x)->z)
+ snd (A:U)(P:A->U)(x:A)(s:sig A P x):P x=s(P x)(\(z:A)(y:P x)->y)
+
+ test: sig nat P n5 = mk nat P n5 nil
+ test_pr1: nat = fst nat P zero test
+ test_pr2: list nat = snd nat P zero test
+
+ > test_pr2
+ EVAL: nil
+ > test_pr1
+ EVAL: suc (suc (suc (suc (suc zero))))
+        </code></figure>
+
+        <p> Полная модель с бета и эта правилами закодированная Дмитрием Митиным:</p>
+
+        <figure><code>
+ Sigma (A : U) (B : A -> U) (a : A)
+   : U = (C : A -> U) -> ((a1 : A) -> B a1 -> C a1) -> C a
+ deppair (A : U) (B : A -> U) (a : A) (b : B a)
+   : Sigma A B a = \(C : A -> U) -> \(c : (a1 : A) -> B a1 -> C a1) -> c a b
+ pr1 (A : U) (B : A -> U) (a : A) (x : Sigma A B a)
+   : A = x (\(_ : A) -> A) (\(a1 : A) -> \(_ : B a1) -> a1)
+ pr2 (A : U) (B : A -> U) (a : A) (x : Sigma A B a)
+   : B a = x B (\(a1 : A) -> \(b : B a1) -> b)
+ Beta1 (A : U) (B : A -> U) (a : A) (b : B a)
+   : Path A a (pr1 A B a (deppair A B a b)) = refl A a
+ Beta2 (A : U) (B : A -> U) (a : A) (b : B a)
+   : Path (B a) b (pr2 A B a (deppair A B a b)) = refl (B a) b
+ prf (A : U) (B : A -> U) (C : A -> U) (a : A)
+     (c : (a1 : A) -> B a1 -> C a1) (x : Sigma A B a)
+   : Path (C a) (x C c) (c a (x B (\(a1 : A) -> \(b : B a1) -> b)))
+ Eta2 (A : U) (B : A -> U) (a : A) (x : Sigma A B a)
+   : Path (Sigma A B a) x (deppair A B a (pr2 A B a x)) =
+  funExt (A -> U) (\(C : A -> U) -> ((a1 : A) -> B a1 -> C a1) -> C a)
+    x (deppair A B a (pr2 A B a x)) (\(C : A -> U) ->
+    funExt ((a1 : A) -> B a1 -> C a1) (\(_ : (a1 : A) -> B a1 -> C a1)
+      -> C a) (x C) (deppair A B a (pr2 A B a x) C)
+       (\(c : (a1 : A) -> B a1 -> C a1) -> prf A B C a c x
+    )
+  )
+          </code></figure>
+
+        <p> Тут мне подсказывают, что писал Thorsten Altenkirch:</p>
+
+        <p>Ok, when we think of homogenous tuples AxA then this can also be understood as
+a function 2 -> A. This also works for heterogenous tuples like AxB using
+dependent functions Pi x:2.if x then A else B. However the next logical step is
+Sigma x:A.B x, which have no good representations as functions (unless we
+accept very dependent functions which in my mind goes against the spirit of
+type theory). For this reason it seems to me that the generalisation from -> to
+Pi and from x to Sigma is the primary one, and the fact that tuples can be
+represented as functions is secondary.</p>
+
+        <p> Позволю себе не согласиться с Торстеном,Альтенкирхом: на мой взгляд, именно
+            Черч кодировка и показывает скрытую категорную стркутуру теории типов (что
+            подтвердил PTS проект Cedile) обнажая ее самантику, она ни как не может
+            идти в разрез духа тетории типов, которым как раз и является теория категорий.</p>
+
+            <br><br><br>
+            <center>&dot;</center>
+            <br><br><br>
+
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
