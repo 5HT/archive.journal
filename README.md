@@ -1,6 +1,6 @@
 # Namdak Tonpa Blog
 
-These are sources of <a href="//maxim.livejournal.com">maxim.livejournal.com</a>,
+These are sources of <a href="//tonpa.guru">tonpa.guru</a>,
 personal work-life journal, that was recorded during 2009-2018 years by Maxim Sokhatsky.
 This journal mainly covers three aspects of Maxim's being:
 <a href="//longchenpa.guru">longchenpa.guru</a> (early years),
