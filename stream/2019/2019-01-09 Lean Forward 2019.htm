@@ -91,6 +91,21 @@
        (cocomplete : has_colimits M)
        (W C F : morphism_class M)
        (h : is_model_category W C F)
+
+ structure is_model_category (W C F : morphism_class M) : Prop :=
+           (weq : is_weak_equivalences W)
+           (caf : is_wfs C (F ∩ W))
+           (acf : is_wfs (C ∩ W) F)
+
+ def Borel : Top ⥤ Meas :=
+     concrete_functor @measure_theory.borel
+                      @measure_theory.measurable_of_continuous
+
+ def Top : Type (u+1) := bundled topological_space
+ instance (x : Top) : topological_space x := x.str
+ instance : concrete_category @continuous :=
+            ⟨@continuous_id, @continuous.comp⟩
+
         </code></figure>
 
         <p> Третя &mdash; доведення незалежності континуум гіпотези від Джесі Хана.
@@ -115,6 +130,9 @@
  end
         </code></figure>
         <p> Далі буде. </p>
+
+        <p>Фідбек: <a href="https://github.com/5ht/tonpa.guru/issues/4">https://github.com/5ht/tonpa.guru/issues/4</a></p>
+
     </section>
 </main>
 </body>
