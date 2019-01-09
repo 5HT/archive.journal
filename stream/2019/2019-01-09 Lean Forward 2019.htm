@@ -97,12 +97,19 @@
            (caf : is_wfs C (F ∩ W))
            (acf : is_wfs (C ∩ W) F)
 
+ def Meas : Type (u+1) := bundled measurable_space
+ def Top  : Type (u+1) := bundled topological_space
+
  def Borel : Top ⥤ Meas :=
      concrete_functor @measure_theory.borel
                       @measure_theory.measurable_of_continuous
 
- def Top : Type (u+1) := bundled topological_space
- instance (x : Top) : topological_space x := x.str
+ instance (x : Top)  : topological_space x := x.str
+ instance (x : Meas) : measurable_space x  := x.str
+
+ instance : concrete_category @measurable :=
+            ⟨@measurable_id, @measurable.comp⟩
+
  instance : concrete_category @continuous :=
             ⟨@continuous_id, @continuous.comp⟩
 
