@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom>
 <channel>
   <title>Подкаст Вовы и Максима</title>
   <description>Лучшие люди в интернете</description>
   <link>http://tonpa.guru/cast</link>
   <lastBuildDate>Mon, 20 Jan 2019 14:20:00 +0000</lastBuildDate>
   <pubDate>Mon, 20 Jan 2019 9:20:00 +0000</pubDate>
+   <copyright>Copyright © 2019 Maxim Sokhatsky, Vladimir Kirillov.</copyright>
   <ttl>1800</ttl>
   <item>
     <title>Автор Вайбера</title>
