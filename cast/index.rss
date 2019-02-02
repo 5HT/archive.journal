@@ -19,10 +19,8 @@
   </itunes:category>
   <itunes:explicit>no</itunes:explicit>
   <item>
-     <itunes:episodeType>trailer</itunes:episodeType>
-     <itunes:title>Автор Вайбера</itunes:title>
-     <title>Автор Вайбера</title>
-     <description>@notorca</description>
+     <title>@notorca</title>
+     <description>Автор Вайбера</description>
      <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/notorca.mp3"/>
      <guid>http://ns.synrc.com/music/cast/notorca.mp3</guid>
      <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
