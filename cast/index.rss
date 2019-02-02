@@ -1,21 +1,35 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">
 <channel>
-  <title>Подкаст Вовы и Максима</title>
-  <description>Лучшие люди в интернете</description>
-  <atom:link rel="self" type="application/rss+xml" href="https://tonpa.gutu/cast/index.rss"/>
-  <link>https://tonpa.gutu/cast/index.rss</link>
-  <lastBuildDate>Mon, 20 Jan 2019 14:20:00 +0000</lastBuildDate>
-  <pubDate>Mon, 20 Jan 2019 9:20:00 +0000</pubDate>
-   <copyright>Copyright © 2019 Maxim Sokhatsky, Vladimir Kirillov.</copyright>
-  <ttl>1800</ttl>
-  <item>
-    <title>Автор Вайбера</title>
-    <description>@notorca</description>
-    <link>http://ns.synrc.com/music/cast/notorca.mp3</link>
-    <guid isPermaLink="true">http://ns.synrc.com/music/cast/notorca.mp3</guid>
-    <pubDate>Mon, 20 Jan 2019 9:20:00 +0002</pubDate>
-  </item>
+<title>Подкаст Вовы и Максима</title>
+<link>https://tonpa.guru/cast</link>
+<language>en-us</language>
+<copyright></copyright>
+<itunes:subtitle></itunes:subtitle>
+<itunes:author>Namdak Tonpa and Darkproger</itunes:author>
+<itunes:summary>Best People in Internet</itunes:summary>
+<description>Лучшие люди в интернете</description>
+<itunes:type>serial</itunes:type>
+<itunes:owner>
+<itunes:name>Подкаст Вовы и Максима</itunes:name>
+<itunes:email>maxim@synrc.com</itunes:email>
+</itunes:owner>
+<itunes:image href="http://podcasts.apple.com/resources/example/hiking_treks/images/cover_art.jpg"/>
+<itunes:category text="Art">
+<itunes:category text="Indoor"/>
+</itunes:category>
+<itunes:explicit>no</itunes:explicit>
+<item>
+   <itunes:episodeType>trailer</itunes:episodeType>
+   <itunes:title>Автор Вайбера</itunes:title>
+   <title>Автор Вайбера</title>
+   <description>@notorca</description>
+   <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/notorca.mp3"/>
+   <guid>http://ns.synrc.com/music/cast/notorca.mp3</guid>
+   <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
+   <itunes:duration>1:45</itunes:duration>
+   <itunes:explicit>no</itunes:explicit>
+</item>
   <item>
     <title>Карьерный Бодхисаттва<title>
     <description>@mr_mig_by</description>
