@@ -13,7 +13,7 @@
     <itunes:name>Подкаст Вовы и Максима</itunes:name>
     <itunes:email>maxim@synrc.com</itunes:email>
   </itunes:owner>
-  <itunes:image href="http://podcasts.apple.com/resources/example/hiking_treks/images/cover_art.jpg"/>
+  <itunes:image href="https://tonpa.guru/cast/cast.png"/>
   <itunes:category text="Arts">
     <itunes:category text="Literature" />
   </itunes:category>
