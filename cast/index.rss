@@ -14,8 +14,8 @@
     <itunes:email>maxim@synrc.com</itunes:email>
   </itunes:owner>
   <itunes:image href="http://podcasts.apple.com/resources/example/hiking_treks/images/cover_art.jpg"/>
-  <itunes:category text="Talk">
-     <itunes:category text="Indoor"/>
+  <itunes:category text="Arts">
+    <itunes:category text="Literature" />
   </itunes:category>
   <itunes:explicit>no</itunes:explicit>
   <item>
