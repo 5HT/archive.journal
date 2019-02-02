@@ -30,5 +30,45 @@
      <itunes:duration>1:45</itunes:duration>
      <itunes:explicit>no</itunes:explicit>
   </item>
+
+  <item>
+     <itunes:episodeType>full</itunes:episodeType>
+     <itunes:title>@mr_mig_by</itunes:title>
+     <itunes:subtitle>Карьерный Бодхисаттва</itunes:subtitle>
+     <itunes:episode>2</itunes:episode>
+     <title>@mr_mig_by</title>
+     <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/mr_mig_by.mp3"/>
+     <guid>http://ns.synrc.com/music/cast/mr_mig_by.mp3</guid>
+     <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
+     <itunes:duration>1:45</itunes:duration>
+     <itunes:explicit>no</itunes:explicit>
+  </item>
+
+  <item>
+     <itunes:episodeType>full</itunes:episodeType>
+     <itunes:title>@ko_bx</itunes:title>
+     <itunes:subtitle>Лямбда Тренер</itunes:subtitle>
+     <itunes:episode>3</itunes:episode>
+     <title>@ko_bx</title>
+     <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/ko_bx.mp3"/>
+     <guid>http://ns.synrc.com/music/cast/ko_bx.mp3</guid>
+     <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
+     <itunes:duration>1:45</itunes:duration>
+     <itunes:explicit>no</itunes:explicit>
+  </item>
+
+  <item>
+     <itunes:episodeType>full</itunes:episodeType>
+     <itunes:title>@_bravit</itunes:title>
+     <itunes:subtitle>Представитель Хаскель Комитета</itunes:subtitle>
+     <itunes:episode>3</itunes:episode>
+     <title>@_bravit</title>
+     <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/_bravit.mp3"/>
+     <guid>http://ns.synrc.com/music/cast/_bravit.mp3</guid>
+     <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
+     <itunes:duration>1:45</itunes:duration>
+     <itunes:explicit>no</itunes:explicit>
+  </item>
+
 </channel>
 </rss>
