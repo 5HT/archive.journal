@@ -24,8 +24,8 @@
      <itunes:subtitle>Автор Вайбера</itunes:subtitle>
      <itunes:episode>1</itunes:episode>
      <title>@notorca</title>
-     <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/notorca.mp3"/>
-     <guid>http://ns.synrc.com/music/cast/notorca.mp3</guid>
+     <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/notorca.aac"/>
+     <guid>http://ns.synrc.com/music/cast/notorca.aac</guid>
      <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
      <itunes:duration>1:45</itunes:duration>
      <itunes:explicit>no</itunes:explicit>
@@ -40,7 +40,7 @@
      <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/mr_mig_by.mp3"/>
      <guid>http://ns.synrc.com/music/cast/mr_mig_by.mp3</guid>
      <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
-     <itunes:duration>1:45</itunes:duration>
+     <itunes:duration>1:20</itunes:duration>
      <itunes:explicit>no</itunes:explicit>
   </item>
 
@@ -53,7 +53,7 @@
      <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/ko_bx.mp3"/>
      <guid>http://ns.synrc.com/music/cast/ko_bx.mp3</guid>
      <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
-     <itunes:duration>1:45</itunes:duration>
+     <itunes:duration>1:31</itunes:duration>
      <itunes:explicit>no</itunes:explicit>
   </item>
 
@@ -61,12 +61,51 @@
      <itunes:episodeType>full</itunes:episodeType>
      <itunes:title>@_bravit</itunes:title>
      <itunes:subtitle>Представитель Хаскель Комитета</itunes:subtitle>
-     <itunes:episode>3</itunes:episode>
+     <itunes:episode>4</itunes:episode>
      <title>@_bravit</title>
      <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/_bravit.mp3"/>
      <guid>http://ns.synrc.com/music/cast/_bravit.mp3</guid>
      <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
-     <itunes:duration>1:45</itunes:duration>
+     <itunes:duration>2:25</itunes:duration>
+     <itunes:explicit>no</itunes:explicit>
+  </item>
+
+  <item>
+     <itunes:episodeType>full</itunes:episodeType>
+     <itunes:title>@atlanter</itunes:title>
+     <itunes:subtitle>Мастер Компиляторов</itunes:subtitle>
+     <itunes:episode>5</itunes:episode>
+     <title>@atlanter</title>
+     <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/atlanter.mp3"/>
+     <guid>http://ns.synrc.com/music/cast/atlanter.mp3</guid>
+     <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
+     <itunes:duration>2:25</itunes:duration>
+     <itunes:explicit>no</itunes:explicit>
+  </item>
+
+  <item>
+     <itunes:episodeType>full</itunes:episodeType>
+     <itunes:title>@henk</itunes:title>
+     <itunes:subtitle>Автор Лямбда Куба</itunes:subtitle>
+     <itunes:episode>6</itunes:episode>
+     <title>@henk</title>
+     <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/henk.mp3"/>
+     <guid>http://ns.synrc.com/music/cast/henk.mp3</guid>
+     <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
+     <itunes:duration>0:10</itunes:duration>
+     <itunes:explicit>no</itunes:explicit>
+  </item>
+
+  <item>
+     <itunes:episodeType>full</itunes:episodeType>
+     <itunes:title>@SiliconBangalor</itunes:title>
+     <itunes:subtitle>Директор по внедрению ML моделей</itunes:subtitle>
+     <itunes:episode>7</itunes:episode>
+     <title>@SiliconBangalor</title>
+     <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/SiliconBangalor.mp3"/>
+     <guid>http://ns.synrc.com/music/cast/SiliconBangalor.mp3</guid>
+     <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
+     <itunes:duration>1:52</itunes:duration>
      <itunes:explicit>no</itunes:explicit>
   </item>
 
