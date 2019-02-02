@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+  <title>Подкаст Вовы и Максима</title>
+  <description>Лучшие люди в интернете</description>
+  <link>http://tonpa.guru/cast</link>
+  <lastBuildDate>Mon, 20 Jan 2019 14:20:00 +0000</lastBuildDate>
+  <pubDate>Mon, 20 Jan 2019 9:20:00 +0000</pubDate>
+  <ttl>1800</ttl>
+  <item>
+    <title>Автор Вайбера</title>
+    <description>@notorca</description>
+    <link>http://ns.synrc.com/music/cast/notorca.mp3</link>
+    <guid isPermaLink="true">http://ns.synrc.com/music/cast/notorca.mp3</guid>
+    <pubDate>Mon, 20 Jan 2019 9:20:00 +0002</pubDate>
+  </item>
+  <item>
+    <title>Карьерный Бодхисаттва<title>
+    <description>@mr_mig_by</description>
+    <link>http://ns.synrc.com/music/cast/mr_mig_by.mp3</link>
+    <guid isPermaLink="true">http://ns.synrc.com/music/cast/mr_mig_by.mp3</guid>
+    <pubDate>Mon, 20 Jan 2019 9:20:00 +0002</pubDate>
+  </item>
+  <item>
+    <title>Лямбда Тренер</title>
+    <description>@ko_bx</description>
+    <link>http://ns.synrc.com/music/cast/ko_bx.mp3</link>
+    <guid isPermaLink="true">http://ns.synrc.com/music/cast/ko_bx.mp3</guid>
+    <pubDate>Mon, 20 Jan 2019 9:20:00 +0002</pubDate>
+  </item>
+  <item>
+    <title>Представитель Хаскель Комитета</title>
+    <description>@_bravit</description>
+    <link>http://ns.synrc.com/music/cast/_bravit.mp3</link>
+    <guid isPermaLink="true">http://ns.synrc.com/music/cast/_bravit.mp3</guid>
+    <pubDate>Mon, 20 Jan 2019 9:20:00 +0002</pubDate>
+  </item>
+  <item>
+    <title>Мастер Компиляторов</title>
+    <description>@atlanter</description>
+    <link>http://ns.synrc.com/music/cast/atlanter.mp3</link>
+    <guid isPermaLink="true">http://ns.synrc.com/music/cast/atlanter.mp3</guid>
+    <pubDate>Mon, 20 Jan 2018 9:20:00 +0002</pubDate>
+  </item>
+  <item>
+    <title>Директор по внедрению ML моделей</title>
+    <description>@SiliconBangalor</description>
+    <link>http://ns.synrc.com/music/cast/SiliconBangalor.mp3</link>
+    <guid isPermaLink="true">http://ns.synrc.com/music/cast/SiliconBangalor.mp3</guid>
+    <pubDate>Mon, 20 Jan 2018 9:20:00 +0002</pubDate>
+  </item>
+  <item>
+    <title>Автор Лямбда Куба</title>
+    <description>@HenkBarendregt</description>
+    <link>http://ns.synrc.com/music/cast/henk.mp3</link>
+    <guid isPermaLink="true">http://ns.synrc.com/music/cast/henk.mp3</guid>
+    <pubDate>Mon, 20 Jan 2018 9:20:00 +0002</pubDate>
+  </item>
+</channel>
+</rss>
