@@ -8,13 +8,15 @@
   <itunes:author>Namdak Tonpa and Darkproger</itunes:author>
   <itunes:summary>Best People in Internet</itunes:summary>
   <description>Лучшие люди в интернете</description>
-  <itunes:type>serial</itunes:type>
+  <itunes:type>Talk Show</itunes:type>
   <itunes:owner>
     <itunes:name>Подкаст Вовы и Максима</itunes:name>
     <itunes:email>maxim@synrc.com</itunes:email>
   </itunes:owner>
   <itunes:image href="http://podcasts.apple.com/resources/example/hiking_treks/images/cover_art.jpg"/>
-  <itunes:category text="Indoor"/>
+  <itunes:category text="Talk">
+     <itunes:category text="Indoor"/>
+  </itunes:category>
   <itunes:explicit>no</itunes:explicit>
   <item>
      <itunes:episodeType>trailer</itunes:episodeType>
