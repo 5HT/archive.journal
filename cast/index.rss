@@ -26,21 +26,8 @@
      <title>@notorca</title>
      <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/notorca.aac"/>
      <guid>http://ns.synrc.com/music/cast/notorca.aac</guid>
-     <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
+     <pubDate>Mon, 24 Dec 2018 00:00:00 +0002</pubDate>
      <itunes:duration>1:45</itunes:duration>
-     <itunes:explicit>no</itunes:explicit>
-  </item>
-
-  <item>
-     <itunes:episodeType>full</itunes:episodeType>
-     <itunes:title>@mr_mig_by</itunes:title>
-     <itunes:subtitle>Карьерный Бодхисаттва</itunes:subtitle>
-     <itunes:episode>2</itunes:episode>
-     <title>@mr_mig_by</title>
-     <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/mr_mig_by.mp3"/>
-     <guid>http://ns.synrc.com/music/cast/mr_mig_by.mp3</guid>
-     <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
-     <itunes:duration>1:20</itunes:duration>
      <itunes:explicit>no</itunes:explicit>
   </item>
 
@@ -48,12 +35,25 @@
      <itunes:episodeType>full</itunes:episodeType>
      <itunes:title>@ko_bx</itunes:title>
      <itunes:subtitle>Лямбда Тренер</itunes:subtitle>
-     <itunes:episode>3</itunes:episode>
+     <itunes:episode>2</itunes:episode>
      <title>@ko_bx</title>
      <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/ko_bx.mp3"/>
      <guid>http://ns.synrc.com/music/cast/ko_bx.mp3</guid>
-     <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
+     <pubDate>Mon, 31 Dec 2018 00:00:00 +0002</pubDate>
      <itunes:duration>1:31</itunes:duration>
+     <itunes:explicit>no</itunes:explicit>
+  </item>
+
+  <item>
+     <itunes:episodeType>full</itunes:episodeType>
+     <itunes:title>@mr_mig_by</itunes:title>
+     <itunes:subtitle>Карьерный Бодхисаттва</itunes:subtitle>
+     <itunes:episode>3</itunes:episode>
+     <title>@mr_mig_by</title>
+     <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/mr_mig_by.mp3"/>
+     <guid>http://ns.synrc.com/music/cast/mr_mig_by.mp3</guid>
+     <pubDate>Sun, 13 Jan 2019 00:00:00 +0002</pubDate>
+     <itunes:duration>1:20</itunes:duration>
      <itunes:explicit>no</itunes:explicit>
   </item>
 
@@ -65,7 +65,7 @@
      <title>@_bravit</title>
      <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/_bravit.mp3"/>
      <guid>http://ns.synrc.com/music/cast/_bravit.mp3</guid>
-     <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
+     <pubDate>Sun, 20 Jan 2019 00:00:00 +0002</pubDate>
      <itunes:duration>2:25</itunes:duration>
      <itunes:explicit>no</itunes:explicit>
   </item>
@@ -78,7 +78,7 @@
      <title>@atlanter</title>
      <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/atlanter.mp3"/>
      <guid>http://ns.synrc.com/music/cast/atlanter.mp3</guid>
-     <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
+     <pubDate>Fri, 25 Jan 2019 00:00:00 +0002</pubDate>
      <itunes:duration>1:51</itunes:duration>
      <itunes:explicit>no</itunes:explicit>
   </item>
@@ -91,7 +91,7 @@
      <title>@henk</title>
      <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/henk.mp3"/>
      <guid>http://ns.synrc.com/music/cast/henk.mp3</guid>
-     <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
+     <pubDate>Mon, 7 Jan 2019 00:00:00 +0002</pubDate>
      <itunes:duration>0:10</itunes:duration>
      <itunes:explicit>no</itunes:explicit>
   </item>
@@ -104,7 +104,7 @@
      <title>@SiliconBangalor</title>
      <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/SiliconBangalor.mp3"/>
      <guid>http://ns.synrc.com/music/cast/SiliconBangalor.mp3</guid>
-     <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
+     <pubDate>Sat, 2 Feb 2019 00:00:00 +0002</pubDate>
      <itunes:duration>1:52</itunes:duration>
      <itunes:explicit>no</itunes:explicit>
   </item>
