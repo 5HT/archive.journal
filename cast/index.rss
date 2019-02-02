@@ -1,76 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">
 <channel>
-<title>Подкаст Вовы и Максима</title>
-<link>https://tonpa.guru/cast</link>
-<language>en-us</language>
-<copyright></copyright>
-<itunes:subtitle></itunes:subtitle>
-<itunes:author>Namdak Tonpa and Darkproger</itunes:author>
-<itunes:summary>Best People in Internet</itunes:summary>
-<description>Лучшие люди в интернете</description>
-<itunes:type>serial</itunes:type>
-<itunes:owner>
-<itunes:name>Подкаст Вовы и Максима</itunes:name>
-<itunes:email>maxim@synrc.com</itunes:email>
-</itunes:owner>
-<itunes:image href="http://podcasts.apple.com/resources/example/hiking_treks/images/cover_art.jpg"/>
-<itunes:category text="Art">
-<itunes:category text="Indoor"/>
-</itunes:category>
-<itunes:explicit>no</itunes:explicit>
-<item>
-   <itunes:episodeType>trailer</itunes:episodeType>
-   <itunes:title>Автор Вайбера</itunes:title>
-   <title>Автор Вайбера</title>
-   <description>@notorca</description>
-   <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/notorca.mp3"/>
-   <guid>http://ns.synrc.com/music/cast/notorca.mp3</guid>
-   <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
-   <itunes:duration>1:45</itunes:duration>
-   <itunes:explicit>no</itunes:explicit>
-</item>
+  <title>Подкаст Вовы и Максима</title>
+  <link>https://tonpa.guru/cast</link>
+  <language>en-us</language>
+  <copyright>Copyright (c) 2019 Maxim Sokhatsky, Vladimir Kirillov</copyright>
+  <itunes:author>Namdak Tonpa and Darkproger</itunes:author>
+  <itunes:summary>Best People in Internet</itunes:summary>
+  <description>Лучшие люди в интернете</description>
+  <itunes:type>serial</itunes:type>
+  <itunes:owner>
+    <itunes:name>Подкаст Вовы и Максима</itunes:name>
+    <itunes:email>maxim@synrc.com</itunes:email>
+  </itunes:owner>
+  <itunes:image href="http://podcasts.apple.com/resources/example/hiking_treks/images/cover_art.jpg"/>
+  <itunes:category text="Indoor"/>
+  <itunes:explicit>no</itunes:explicit>
   <item>
-    <title>Карьерный Бодхисаттва<title>
-    <description>@mr_mig_by</description>
-    <link>http://ns.synrc.com/music/cast/mr_mig_by.mp3</link>
-    <guid isPermaLink="true">http://ns.synrc.com/music/cast/mr_mig_by.mp3</guid>
-    <pubDate>Mon, 20 Jan 2019 9:20:00 +0002</pubDate>
-  </item>
-  <item>
-    <title>Лямбда Тренер</title>
-    <description>@ko_bx</description>
-    <link>http://ns.synrc.com/music/cast/ko_bx.mp3</link>
-    <guid isPermaLink="true">http://ns.synrc.com/music/cast/ko_bx.mp3</guid>
-    <pubDate>Mon, 20 Jan 2019 9:20:00 +0002</pubDate>
-  </item>
-  <item>
-    <title>Представитель Хаскель Комитета</title>
-    <description>@_bravit</description>
-    <link>http://ns.synrc.com/music/cast/_bravit.mp3</link>
-    <guid isPermaLink="true">http://ns.synrc.com/music/cast/_bravit.mp3</guid>
-    <pubDate>Mon, 20 Jan 2019 9:20:00 +0002</pubDate>
-  </item>
-  <item>
-    <title>Мастер Компиляторов</title>
-    <description>@atlanter</description>
-    <link>http://ns.synrc.com/music/cast/atlanter.mp3</link>
-    <guid isPermaLink="true">http://ns.synrc.com/music/cast/atlanter.mp3</guid>
-    <pubDate>Mon, 20 Jan 2018 9:20:00 +0002</pubDate>
-  </item>
-  <item>
-    <title>Директор по внедрению ML моделей</title>
-    <description>@SiliconBangalor</description>
-    <link>http://ns.synrc.com/music/cast/SiliconBangalor.mp3</link>
-    <guid isPermaLink="true">http://ns.synrc.com/music/cast/SiliconBangalor.mp3</guid>
-    <pubDate>Mon, 20 Jan 2018 9:20:00 +0002</pubDate>
-  </item>
-  <item>
-    <title>Автор Лямбда Куба</title>
-    <description>@HenkBarendregt</description>
-    <link>http://ns.synrc.com/music/cast/henk.mp3</link>
-    <guid isPermaLink="true">http://ns.synrc.com/music/cast/henk.mp3</guid>
-    <pubDate>Mon, 20 Jan 2018 9:20:00 +0002</pubDate>
+     <itunes:episodeType>trailer</itunes:episodeType>
+     <itunes:title>Автор Вайбера</itunes:title>
+     <title>Автор Вайбера</title>
+     <description>@notorca</description>
+     <enclosure length="498537" type="audio/mpeg" url="http://ns.synrc.com/music/cast/notorca.mp3"/>
+     <guid>http://ns.synrc.com/music/cast/notorca.mp3</guid>
+     <pubDate>Mon, 24 Dec 2019 00:00:00 +0002</pubDate>
+     <itunes:duration>1:45</itunes:duration>
+     <itunes:explicit>no</itunes:explicit>
   </item>
 </channel>
 </rss>
