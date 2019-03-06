@@ -155,10 +155,8 @@ init([Nodes,Opts]) ->
     {ok, {{one_for_one, 5, 60},
               lists:flatten([ protocol(O,Nodes) || O<-Opts ]
                          ++ [ pool(vnode_sup) ]
-                         ++ [ log({0,N},Nodes)    || {N,_,_,_} <- Nodes, N ==
-node()]
-                         ++ [ rafter({0,N},Nodes) || {N,_,_,_} <- Nodes, N ==
-node()]) }}.
+                         ++ [ log({0,N},Nodes)    || {N,_,_,_} <- Nodes, N == node()]
+                         ++ [ rafter({0,N},Nodes) || {N,_,_,_} <- Nodes, N == node()]) }}.
 
 protocol({Name,Port,Mod},Nodes) ->
   SupName = list_to_atom(lists:concat([Name,'_',sup])),
@@ -169,5 +167,4 @@ start_vnode({0,_Name},_Nodes) -> skip;
 start_vnode({Index,Name},Nodes) ->
       supervisor:start_child(vnode_sup,vnode({Index,Name},Nodes)).
 
-TAGS (EDIT) #log, #operation, #rafter_entry, #rafter_opts, #table, cr, cs,
 erlang, synrc
