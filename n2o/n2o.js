@@ -4,7 +4,7 @@
 var active = false,
     debug = false,
     session = "site-sid",
-    protocol = window.location.protocol == 'https:' ? "wss://" : "ws://",
+    protocol = "ws://",
     querystring = window.location.pathname + window.location.search,
     host = window.location.hostname;
 
