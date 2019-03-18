@@ -171,7 +171,6 @@ main b {
 figure {
     margin: 50px auto;
     max-width: 100%;
-    width: 850px;
     text-align: center;
 }
 
@@ -200,7 +199,6 @@ header img {
     margin-bottom:-20px;
     width: 100px;
 }
-
 
 figure pre {
     font-family: monospace;
