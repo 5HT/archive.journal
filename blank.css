@@ -49,18 +49,6 @@ nav a:hover {
     border-bottom: 2px solid #00b8cf;
 }
 
-@media(min-width: 550px) {
-    nav {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-    }
-
-    nav a {
-        font-size: 18px;
-        min-width: initial;
-    }
-}
 
 header {
     text-align: center;
@@ -118,11 +106,7 @@ aside a:hover {
     background: rgba(255, 255, 255, 0.3);
 }
 
-
-
-
-main {
-}
+main { }
 
 main section {
     padding: 20px 0px 20px 0px;
@@ -217,11 +201,6 @@ header img {
     width: 100px;
 }
 
-figure img {
-    max-width: 100%;
-    background: white;
-    border: 10px solid #E8E8E8;
-}
 
 figure pre {
     font-family: monospace;
@@ -243,14 +222,32 @@ footer {
     padding: 50px 0 100px 0;
 }
 
-.heart {
-    color: red;
+.desk { display: none; }
+.heart { color: red; }
+li { list-style-position: inside; }
+
+@media(min-width: 550px) {
+
+    figure img {
+        max-width: 100%;
+        background: white;
+        border: 0px solid #E8E8E8;
+    }
+
+    nav {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    nav a {
+        font-size: 18px;
+        min-width: initial;
+    }
 }
 
-  li { list-style-position: inside; }
-  .desk { display: none; }
-
 @media(min-width: 768px) {
+
     body {
         font-size: 18px; // MIDDLE
     }
@@ -276,8 +273,6 @@ footer {
         margin: 40px auto;
     }
 
-
-
     main p {
         margin: 20px auto;
     }
@@ -293,10 +288,17 @@ footer {
     figure code {
         font-size: 16px;
     }
- 
+
+    figure img {
+        max-width: 100%;
+        background: white;
+        border: 10px solid #E8E8E8;
+    }
+
 }
 
 @media(min-width: 1280px) {
+
     .desk { display: inline-block; }
     li { list-style-position: outside; }
     body { font-size: 20px; }
@@ -317,7 +319,6 @@ footer {
         text-align: left;
         font-size: 20px; // BIG
     }
-
 
     aside section:first-child {
         max-width: 650px;
@@ -343,6 +344,12 @@ footer {
 
     main h3 {
         font-size: 44px;
+    }
+
+    figure img {
+        max-width: 100%;
+        background: white;
+        border: 10px solid #E8E8E8;
     }
 
 }
