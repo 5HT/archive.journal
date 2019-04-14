@@ -152,8 +152,18 @@
 9> kvx:all(emails).<br>
 [#emails{id = 1,next = [],prev = [],email = "maxim"},<br>
  #emails{id = 2,next = [],prev = [],email = "doxtop"}]<br>
-        </code>
-        </figure>
+
+10> kvx:add(#writer{id=chain,args=#emails{email="maxim@synrc.com"}}).<br>
+11> kvx:add(#writer{id=chain,args=#emails{email="vlad@synrc.com"}}).<br>
+12> kvx:add(#writer{id=chain,args=#emails{email="doxtop@synrc.com"}}).<br>
+13> kvx:all(chain).<br>
+[#emails{id = 1555244691729330000,next = [],prev = [],
+         email = "maxim@synrc.com"},<br>
+ #emails{id = 1555244699905648000,next = [],prev = [],
+         email = "doxtop@synrc.com"},<br>
+ #emails{id = 1555244696660271000,next = [],prev = [],
+         email = "vlad@synrc.com"}]
+         </p>
 
         <p>Единственный тест на стримы, который проходит:</p>
 
