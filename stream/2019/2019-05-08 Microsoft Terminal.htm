@@ -7,7 +7,7 @@
     <meta name="author" content="Maxim Sokhatsky" />
     <title>2019-05-08</title>
     <link rel="stylesheet" href="https://forms.n2o.space/priv/static/css/forms.css?v=1" />
-    <link rel="stylesheet" href="../../blank.css?v=5" />
+    <link rel="stylesheet" href="../../blank.css?v=6" />
 </head>
 <body>
 <nav>
@@ -17,7 +17,7 @@
 </nav>
 <main>
     <section>
-        <h3>Microsoft Terminal</h3>
+        <h3>wt / Microsoft Terminal</h3>
 
         <p>Самое громкое опен соурс событие Майкрософт на BUILD после первой версии WSL.
            Второе событие WSL2 — настоящее 4.19 Linux ядро на Hyper-V,
@@ -57,7 +57,7 @@
            KERNEL32.DLL, USE32.DLL и GDI32.DLL на win32-api стек с помощью автоматических анализаторов кода,
            это стало начиная с Windows 7, потом был некий шаток в сторону создания всего и вся на WPF,
            но когда поняли что проблемы с латенси не пофиксать, вернулись на старый добрый COM/ActiveX
-           но назвали это WinRT, и скахали что мы работаем со всеми языками. Что нового,
+           но назвали это WinRT, и сказали что мы работаем со всеми языками. Что нового,
            VBA тоже можно было из джаваскрипта вызывать еще в 2000 году. Сейчас WinRT разделяет
            метанформация прилоежний с CLR стеком, и шарит графический язык и его редакторы типа
            Microsoft Blend, с XAML серирализацией и представляет собой просто COM/DCOM/COM+/OLE/ActiveX
@@ -80,7 +80,9 @@
          <figure> <img src="https://devblogs.microsoft.com/wp-content/uploads/sites/33/2019/02/Team-Console.png" width=600></figure>
         <p>
         </p>
+
         <h3>Console Host</h3>
+
         <p>Эта штука со времен Windows NT существует как провайдер для Console API (аналог ncurses)
            клиентов типа FAR или putty.
            Она является главным сервером и именно в нем присутствует линковочное WinNT API для
@@ -88,10 +90,10 @@
            Поэтому как только команде Console API
            понадобится что-то суперважное, всегда можно подхачить Console Host как системный сервис.
            С другой стороны это же и задерживает разработку.
-           Главные компоненты консольного хоста:</p>
+           Компоненты консольного хоста:</p>
 
-        <p>— Входной буфер<br>
-           — Выходной буфер<br>
+        <p>— InputBuffer<br>
+           — OutputBuffer<br>
            — DirectX рендерер<br>
            — GDI рендерер<br>
            — VT Renderer (xterm, telnet)<br>
@@ -99,6 +101,37 @@
            — Server (фронтальное Console API)<br>
            — Сопряжение и ивентинг WinNT IOCTL (бекенд)</p>
 
+       <p>Технически консольный хост выполнен в виде сервера который получает
+          ввод из устройст и перенаправляет его в клиентские приложения, которые используют
+          Console API, а теперь имеет сопряжение и с ConPTY API, которое работает на пайпках и по которых
+          передаётся либо текст ли команды терминала, все в UTF-8. Именно для ConPTY
+          был создан специальный headless режим. У консольного хоста <b>conhost.exe</b>
+          есть следуюющие параметры:</p>
+
+       <p><b>--vtmode</b></b> [xterm|xterm-256color|win-telnet]<br>
+       <p><b>--width</b> [chars] <b>--height</b> [chars]<br>
+       <p><b>--signal</b> [0xID] <b>--server</b> [0xID] — номера HANDLE</p>
+
+       <p><b>--headless</b> — хит сезона для сопряжения с ConPTY пайпами.
+          Создает PSEUDO_WINDOW_CLASS (WS_OVERLAPPEDWINDOW) окно для проксирования
+          ввода в клиентские приложения, типа vim.exe без создания графического окна
+          CONSOLE_WINDOW_CLASS (CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLK).</P>
+
+       <p>NOTE: Графическое окно нового хоста <b>OpenConsole.exe</b> который используется в
+          новом терминале <b>wt</b> поддерживает DirectX и GDI рендер
+          и табы и я надеюсь новое диалоговое окно свойств,
+          а старый поддерживает только одно окно на цепочку вложенных консольных программ.
+          Но даже сейчас пока еще при start в <b>wt</b> запускается старый <b>conhost.exe</b>
+          в отдельном окне. Это должно быть пофиксано глобально на уровне системы и дефаултного терминала.</p>
+
+       <p>Есть еще флаг <b>-ForceV1</b> — эта штука означает легаси терминалы,
+          которые на новых виндовсах уже не работают<br>
+
+       <p>Главное отличие от UNIX архитектуры в том, что вместо пайпов между
+           бинарным потоком между клиентом и сервером и termio форматером,
+           Windows операриует IOTCL пакетами как входящим потоком, а не
+           ESC-последовательностями, поэтому терминальный Windows стек
+           традиционно чуть-чуть длинее чем у UNIX-ов.</p>
 
         <p>Буфера и рендереры являются шаред компонентами, поэтому вы можете юзать
            в своих приложениях. Выбор между DirectX и GDI происходит в специальном
@@ -107,14 +140,28 @@
            Протокол Server можно посмотреть в файле IoSorter.
            Протокол IRenderer или точнее последовательность рендеринга (RenderBase): цвета, скролинг,
            фон, построчная развертка, оверлеи, выделение, курсор, тайтл. IRenderEngine имеет три имплементации:
-           WinTelnet, xterm, xterm256 и различные хуки для Paint.</p>
+           WinTelnet, xterm, xterm256, которые пробрасываются как параметры командной строки и
+           различные хуки для Paint.</p>
 
         <p>— AllocConsole<br>
            — AttachConsole<br>
            — FreeConsole</p>
+
         <p>Так писались такие приложения как FAR.</p>
 
+        <p>Функция <b>wWinMain</b> нового консольного хоста <b>OpenConsole.exe</b>
+           имеет главный свитч для новых и старых консолей:
+           в режиме <b>ConhostV1.dll</b> консольный стартует старый поток ввода-вывода ConsoleIoThread,
+           который через DeviceIoControl читает данные из устройств. Это вообще какое-то говно мамонта.</p>
 
+        <p>В обычном режиме новый консольный хост по-умолчанию создает <b>cmd.exe</b>
+           через CreateProcess, а Input и Ouput стримы берутся из процесса указаного в --server.</p>
+
+        <figure><code>
+  CreateProcessW(NULL, CmdLineMutable.get(), NULL, NULL, TRUE,
+               EXTENDED_STARTUPINFO_PRESENT, NULL, NULL,
+               &StartupInformation.StartupInfo, ProcessInformation.addressof())
+        </code></figure>
         <h3>ConPTY</h3>
 
         <p>Главное отличие от UNIX архитектуры в том, что вместо пайпов между
@@ -133,12 +180,15 @@
            чем через WinNT IOCTL (как обычные ANSI приложения с интерпретацией
            ESC последовательностей). Так этот быстрый пусть можно использовать для sshd
            который конектится напрямую по ConPTY API а не через Console API и IOCTL.</p>
+
         <p>— CreatePseudoConsole<br>
            — ResizePseudoConsole<br>
            — ClosePseudoConsole</p>
 
         <p>Теперь все будут создавать приложения через новый ConPTY API.
-           Даные передаваться могуть через пайпы (CreatePipe).</p>
+           Даные передаваться могуть через пайпы (CreatePipe), по которым передается либо текст
+           либо бинарные управляющие последовательности (очень похоже на вебсокет :).
+           Именно так, в UNIX стиле теперь должны общаться консольные приложения, типа ssh, vim, etc.</p>
 
         <h3>Virtual Terminal</h3>
 
@@ -146,16 +196,25 @@
            Является имплементацией ввода-вывода, логики и ивентинга.
            Тут основные компоненты следующие:</p>
 
-        <p>— TerminalOutput<br>
-           — TermnialInput (keymaps)<br>
+        <p>— TermnialInput (keymaps)<br>
+           — TerminalOutput<br>
            — MouseInput<br>
            — Terminal Parser IStateMachine</p>
 
         <p>Существует две имплементации стейт имашины Input и Ouput, она является средним
            знаменателем всех терминалов в мире и всех контрольных последовательностей
-           разделенных на классы состояний: Ground, ESC, SCI, OSC, SS3. Terminal Input
+           разделенных на классы состояний: TXT (Ground), ESC, SCI, OSC, SS3. Terminal Input
            является элементом Termninal контрола ближе к пользователю, а Terminal Output структуры
-           являются частью сервера ближе к рендерингу.</p>
+           являются частью сервера ближе к рендерингу, они расшифровывают [-язык и.</p>
+
+        <p>Для начала рассмотрим путь при котором виртуальные клавиши VK оттранслированные
+           из NT-шных IOCTL пакетов преобразуются в терминальный поток. За это отвечает
+           модуль TerminalInput который является полем InputBuffer — главного компонента коскольного хоста.
+           Этот модуль содержит keymappings и работы там непочатый край!</p>
+
+        <p>TerminalOutput в свою очередь отвечает за преробразование спец последовательностей
+           в подпрограммы управления буфером. Он является компонентом терминал адаптера который
+           является компонентом SCREEN_INFORMATION, который создаётся для всех не хедлесс окон.</p>
 
         <h3>Terminal Control</h3>
 
@@ -167,14 +226,23 @@
            — Terminal<br>
            — Также IDL для KeyChord, IKeyBinding</p>
 
+        <p>ConhostConnection устанавливает соединение с новым PTY терминалом
+           и создает для него поток ОС. Все это является частью контрольного элемента который
+           может вставлятся в любое приложение, например в Visual Studio Code.</p>
+        <figure><code>
+ CreateConPty(cmdline, startingDirectory,
+              static_cast<short>(_initialCols),
+              static_cast<short>(_initialRows),
+              &_inPipe, &_outPipe,&_signalPipe, &_piConhost);
+        </code></figure>
         <h3>Windows Terminal</h3>
 
         <p>Windows Terminal это UWP XAML С++ остров (технически). Т.е. начиная с XAML Islands
            появилась возможность делать из обычных Win32 приложений UWP приложения. Именно
-           так и написан новый терминал.</p>
-
+           так и написан новый терминал и это наверно третья главная новая фича Windows
+           представленая на BUILD 2019.</p>
         <figure><img src="https://5ht.co/img/windows.terminal.png" width=700></figure>
-        <p>Если вы хотите попробовать <a href="https://github.com/Microsoft/Terminal">Microsoft/Terminal</a>
+        <p>Если вы хотите попробовать <a href="https://github.com/microsoft/Terminal">microsoft/Terminal</a>
            — вам нужны Windows&nbsp;10&nbsp;1903 и Visual&nbsp;Studio&nbsp;2019.</p>
     </section>
 </main>
