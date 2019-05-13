@@ -1,0 +1,83 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Namdak Tonpa" />
+    <title>2019-05-13</title>
+    <link rel="stylesheet" href="../../blank.css" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>STREAM</a>
+    <a href='#'>2019-05-13</a>
+</nav>
+<main>
+    <section>
+        <h3>C++/WinRT Blank</h3>
+
+        <p>TL;DR — Here we will setup dev env and build blank UWP app for WinRT/ARM64.</p>
+
+        <p>In Visual Studio 2019 for C++/WinRT you have only three project templates:<br><br>
+           — Windows Runtime Component;<br>
+           — Blank App;<br>
+           — Core App.</p>
+
+	<h3>PATH</h3>
+ 
+        <p>For console build you need to properly specify all paths both to Windows Kit and
+           Visual Studio folders. I'm doing this every time I installl Windows dev box,
+           unfortunately we are still far from zero dev env creation in 2019 at all platforms.
+           So take this paths when you preffer to manually control everything:</p>
+
+        <p>— C:\Windows\Microsoft.NET\Framework64\v4.0.30319<br>
+           — C:\Program Files (x86)\Windows Kits\10\bin\10.0.18362.0\x64<br>
+           — C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\x64<p>
+
+        <p>The Visuall Studio folder are placed here
+           "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community", so
+           the relative paths are:
+
+        <p>— VC\Tools\MSVC\14.20.27508\bin\Hostx64\x64<br>
+           — MSBuild\Microsoft\VC\v160<br>
+           — MSBuild\Current\Bin</p>
+
+        <h3>XLANG</h3>
+
+        <p>While Core App skeleton is a bit heavy and Runtime Component is not runnable let's show how to build
+           latests Blank UWP application. I assume you're going easy way and use Visual Studio 2019
+           to generate the code. Beside sources of app skeleton (App.cpp and MainPage.cpp) it
+           also generates include files by <b>cppwinrt</b>
+           which is now a part of <b>xlang</b>. This tool reads <b>platform.winmd</b>
+           and <b>windows.winmd</b> metaiformation,
+           and generates <b>winrt/base.h</b> file with whole WinRT macros that includes
+           all legacy pointer conversions. The best way to learn WinRT namespaces is
+           by using .NET CLR tool <b>ildasm</b> as WinRT metainformation is compatible
+           with .NET metainformation defined in ECMA-335.
+           </p>
+
+	<h3>BUILD</h3>
+
+        <p>You can specify the build targets by <b>msbuild</b> arguments:</p>
+        <p><b>msbuild /p:Configuration=Release /p:Platform=x64
+                      /p:PlatformToolset=v142
+                      /p:TargetPlatformVersion=10.0.18362.0
+                      /p:PreferredToolArchitecture=x64</b></p> 
+        
+        <p>After building the binaries you're unable to run the application immediately,
+            first you need to create .appx file with <b>makeappx</b>:</p>
+        
+        <p><b>makeappx pack /d "./ARM/Release/Chat/" /l /p "./Chat.appx"</b></p>
+        <p>And as you guess that's not enough as you need to sign your application
+           with client certificate with $100 of cost enrollment from Microsoft.
+           NOTE: SHA256 is only working option.</p>
+
+        <p><b>signtool sign /fd SHA256 /a /f Chat_TemporaryKey.pfx Chat.appx</b></p> 
+
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
