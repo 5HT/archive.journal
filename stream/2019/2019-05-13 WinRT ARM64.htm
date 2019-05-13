@@ -68,6 +68,8 @@
             'Install-Package Microsoft.Windows.CppWinRT' or with 
             '<b>nuget</b> install Microsoft.Windows.CppWinRT'.</p>
 
+        <p>— <a href="https://github.com/microsoft/xlang">microsoft/xlang</a></p>
+
 	<h3>APPX</h3>
 
         <p>You can specify the build targets by <b>msbuild</b> arguments:</p>
@@ -75,9 +77,12 @@
                       /p:PlatformToolset=v142
                       /p:TargetPlatformVersion=10.0.18362.0
                       /p:PreferredToolArchitecture=ARM</b></p> 
+        <p>The msbuild tool is being distributed over Windows/Microsoft.NET, Windows Kit and Visual Studio channels.
+           It is also available at nuget and github:</p>
+        <p>— <a href="https://github.com/microsoft/msbuild">microsoft/msbuild</a></p>
         
         <p>After building the binaries you're unable to run the application immediately,
-            first you need to create .appx file with <b>makeappx</b>:</p>
+            first you need to create .appx file with <b>makeappx</b> which is a part of Windows Kit:</p>
         
         <p><b>makeappx pack /d "./ARM/Release/Chat/" /l /p "./Chat.appx"</b></p>
         <p>And as you guess that's not enough as you need to sign your application
