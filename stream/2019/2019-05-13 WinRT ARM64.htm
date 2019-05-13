@@ -53,12 +53,13 @@
            but delivered through nuget channel.
            The cppwinrt tool reads platform.winmd
            and windows.winmd metaiformation,
-           and generates winrt/base.h file with whole WinRT macros that includes
-           all legacy pointer conversions. The best way to learn WinRT namespaces is
+           and generates winrt/base.h file with along with whole WinRT API
+           macros which include all legacy pointer conversions.
+           The best way to learn WinRT namespaces is
            by using .NET CLR tool <b>ildasm</b> as WinRT metainformation is compatible
            with .NET and this is defined in ECMA-335.
-            I assume you're going easy way and use Visual Studio 2019
-           to generate the code. But if you're willing to do it yourself:
+           I assume you're going easy way and have used Visual Studio 2019
+           for this code generation. But if you're willing to do this by yourself:
            </p>                            	
 
         <p><b>cppwinrt.exe -base -input 10.0.18362.0 -include winrt</b></p> 
