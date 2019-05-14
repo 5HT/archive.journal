@@ -87,28 +87,35 @@
            Please ensure you're using right binary from your
            host folder 'VC\Tools\MSVC\14.20.27508\bin\Hostx64\x64', if you do cross compilation.
            Here is example fot x64.</p>
+      
         <p><b>cl "Generated Files\module.g.cpp" App.cpp MainPage.cpp pch.cpp
    "Generated Files\XamlTypeInfo.g.cpp" "Generated Files\XamlTypeInfo.Impl.g.cpp" 
    "Generated Files\XamlMetaDataProvider.cpp" 
-   /Fe"Chat.exe" /ZW:nostdlib /MP /MD /TP /EHsc /Gd /GS /GL /Gy- /analyze- /sdl /O2 /Oi /Oy- /bigobj /await
-   /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Zi /nologo /W4 /diagnostics:classic 
+   /c /ZW:nostdlib /MP /TP /EHsc /Gd /GS /GL /sdl /O2 /Oi /Oy- /bigobj /await
+   /fp:precise /Zc:wchar_t /Zc:forScope /W4 /std:c++17 
    /D NDEBUG /D _UNICODE /D UNICODE /D WINAPI_FAMILY=WINAPI_FAMILY_APP
    /AI"C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.18362.0" 
    /AI"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.20.27508\lib\x86\store\references" 
-   /std:c++17 /I".\\" /I"Generated Files\\" 
+   /I".\\" /I"Generated Files\\" 
    /I"C:/Program Files (x86)/Windows Kits/10/Include/10.0.18362.0/um" 
    /I"C:/Program Files (x86)/Windows Kits/10/Include/10.0.18362.0/shared" 
    /I"C:/Program Files (x86)/Windows Kits/10/Include/10.0.18362.0/winrt" 
    /I"C:/Program Files (x86)/Windows Kits/10/Include/10.0.18362.0/ucrt" 
    /I"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.20.27508\include" 
-   /link 
-   /LIBPATH:"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.20.27508\lib\x64" 
-   /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\um\x64" 
-   /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\ucrt\x64"
-   /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\ucrt_enclave\x64"
-   /DYNAMICBASE "WindowsApp.lib" /ENTRY:wWinMain</b></p>
+   </b></p>
 
-         <p>The PE/COFF <b>Chat.exe</b> application on x64 takes 193KB.</p>
+      <p>Link part:</p>
+
+    <p><b>link.exe pch.obj App.obj MainPage.obj module.g.obj XamlMetaDataProvider.obj 
+     XamlTypeInfo.Impl.g.obj XamlTypeInfo.g.obj WindowsApp.lib 
+     /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\um\x64" 
+     /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\ucrt\x64" 
+     /LIBPATH:"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.20.27508\lib\x64" 
+     /DYNAMICBASE /WINMD:NO /SUBSYSTEM:WINDOWS /MACHINE:X64 /APPCONTAINER 
+     /OPT:REF /OPT:ICF /MANIFEST:NO /LTCG:incremental /NXCOMPAT /TLBID:1 
+     /OUT:Chat.exe /ENTRY:wWinMain</b></p>
+        
+        <p>The PE/COFF <b>Chat.exe</b> application on x64 takes 193KB.</p>
 
 	<h3>APPX</h3>
         
