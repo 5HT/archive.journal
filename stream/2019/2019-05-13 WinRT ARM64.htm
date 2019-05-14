@@ -91,7 +91,7 @@
         <p>If you want to build PE/COFF manually, here are command line options.
            Please ensure you're using right binary from your
            host folder 'VC/Tools/MSVC/14.20.27508/bin/Hostx64/ARM64' when you do cross compilation.
-           Here is example for Hostx64/ARM64.</p>
+           Here is example of direct <b>cl</b> invokation for Hostx64/ARM64.</p>
       
         <figure><code>
   set ide="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community"
@@ -112,7 +112,7 @@
      /I"C:\Program Files (x86)/Windows Kits/10/Include/10.0.18362.0/ucrt"    
      </code></figure>
 
-      <p>Linker part:</p>
+      <p>Here is <b>link</b> part:</p>
 
     <figure><code>
   link pch.obj App.obj MainPage.obj module.g.obj XamlMetaDataProvider.obj ^
@@ -124,8 +124,12 @@
        /OPT:REF /LTCG /OPT:ICF /NXCOMPAT /TLBID:1 /OUT:ARM64/Release/Chat/Chat.exe
     </code></figure>
         
-        <p>The PE/COFF <b>Chat.exe</b> application takes 187KB on x64 and 182KB on ARM64.</p>
+        <p>The PE/COFF <b>Chat.exe</b> application takes 187KB on x64 and 182KB on ARM64.
+           You can inspect dependencies with <b>dumpbin</b> tool:</p>
 
+    <figure><code>
+  dumpbin /imports Chat.exe | find ".dll"
+     </code></figure>
 	<h3>APPX</h3>
         
         <p>After building the binaries you're unable to run the application immediately,
