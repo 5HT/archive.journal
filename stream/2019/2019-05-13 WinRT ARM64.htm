@@ -20,12 +20,15 @@
 
         <p>Here we will setup dev env and build blank Universal Windows
            Platform (UWP) app for WinRT/ARM64.
-           In Visual Studio 2019 for C++/WinRT you have only three project templates:
-           1) Windows Runtime Component;
-           2) Blank App;
-           3) Core App.
+           In Visual Studio 2019 for C++/WinRT you have only five project templates:
+           1) Console Application;
+           2) Windows Runtime Component;
+           3) <b>Blank App</b>;
+           4) Core App;
+           5) Desktop Application.
            Core App skeleton is a bit heavy and Runtime Component is not
-           runnable let's show how to build the latest blank UWP application for ARM64.</p>
+           runnable let's show how to build the latest blank UWP
+           application for ARM64.</p>
 
         <p>It's been a time since Windows RT was introduced as hardware,
            where for some reason custom Win32 apps were blocked to run.
@@ -42,9 +45,9 @@
            And we have the pad headliner Surface Go.
            So there is already some room for playing with ARM64 today.
            </p>
-	
+
         <h3>PATH</h3>
- 
+
         <p>For console build, you need properly specified paths to
            both Windows Kit and Visual Studio folders.
            I'm doing this every time I install Windows dev box,
@@ -76,15 +79,15 @@
            WinRT metainformation is compatible with .NET and this is defined
            in ECMA-335. I assume you're going the easy way and have used
            Visual Studio 2019 for this code generation. But if you're willing
-           to do this by yourself here is how:</p>                            	
+           to do this by yourself here is how:</p>
 
         <figure><code>
   cppwinrt.exe -base -input 10.0.18362.0 -include winrt -output "Generated Files"
-        </code></figure> 
+        </code></figure>
 
          <p>NOTE: The latest cppwinrt binary for your host platform
             can be obtained with <b>pwsh</b> and
-            'Install-Package Microsoft.Windows.CppWinRT' or with 
+            'Install-Package Microsoft.Windows.CppWinRT' or with
             '<b>nuget</b> install Microsoft.Windows.CppWinRT'.</p>
 
         <p>— <a href="https://github.com/microsoft/xlang">microsoft/xlang</a></p>
@@ -98,8 +101,8 @@
   msbuild /p:Configuration=Release /p:Platform=ARM64
           /p:PlatformToolset=v142 /p:TargetPlatformVersion=10.0.18362.0
           /p:PreferredToolArchitecture=ARM64
-        </code></figure> 
-        
+        </code></figure>
+
         <p>The msbuild tool is being distributed over Windows/Microsoft.NET, Windows Kit and Visual Studio channels.
            It is also available at nuget and github:</p>
         <p>— <a href="https://github.com/microsoft/msbuild">microsoft/msbuild</a></p>
@@ -108,11 +111,11 @@
            Please ensure you're using right binary from your
            host folder 'VC/Tools/MSVC/14.20.27508/bin/Hostx64/ARM64' when you do cross compilation.
            Here is example of direct <b>cl</b> invokation for Hostx64/ARM64.</p>
-      
+
         <figure><code>
-  set ide="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community"
-  set ref=%ide%\VC\Tools\MSVC\14.20.27508\lib\x86\store\references
-  set inc=%ide%\VC\Tools\MSVC\14.20.27508\include
+ set ide="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community"
+ set ref=%ide%\VC\Tools\MSVC\14.20.27508\lib\x86\store\references
+ set inc=%ide%\VC\Tools\MSVC\14.20.27508\include
 
   cl pch.cpp App.cpp MainPage.cpp ^
      "Generated Files\XamlTypeInfo.g.cpp" "Generated Files\XamlTypeInfo.Impl.g.cpp" ^
@@ -120,26 +123,26 @@
      /c /ZW:nostdlib /EHs /GS /GL /sdl /O2 /Os /bigobj /await ^
      /fp:precise /Zc:wchar_t /Zc:forScope /W4 /std:c++17 ^
      /D NDEBUG /D _UNICODE /D UNICODE /D WINAPI_FAMILY=WINAPI_FAMILY_APP ^
-     /AI"C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.18362.0" /AI%ref% ^
-     /I".\\" /I"Generated Files\\" /I%inc% ^
+     /AI"C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.18362.0" ^
+     /AI%ref% /I".\\" /I"Generated Files\\" /I%inc% ^
      /I"C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um" ^
      /I"C:\Program Files (x86)/Windows Kits/10/Include/10.0.18362.0/shared" ^
      /I"C:\Program Files (x86)/Windows Kits/10/Include/10.0.18362.0/winrt" ^
-     /I"C:\Program Files (x86)/Windows Kits/10/Include/10.0.18362.0/ucrt"    
+     /I"C:\Program Files (x86)/Windows Kits/10/Include/10.0.18362.0/ucrt"
      </code></figure>
 
       <p>Here is <b>link</b> part:</p>
 
     <figure><code>
-  link pch.obj App.obj MainPage.obj module.g.obj XamlMetaDataProvider.obj ^
-       XamlTypeInfo.Impl.g.obj XamlTypeInfo.g.obj WindowsApp.lib ^
-       /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\um\arm64" ^
-       /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\ucrt\arm64" ^
-       /LIBPATH:%ide%\VC\Tools\MSVC\14.20.27508\lib\arm64 ^
-       /DYNAMICBASE /SUBSYSTEM:WINDOWS /MACHINE:ARM64 /APPCONTAINER ^
-       /OPT:REF /LTCG /OPT:ICF /NXCOMPAT /TLBID:1 /OUT:ARM64/Release/Chat/Chat.exe
+ link pch.obj App.obj MainPage.obj module.g.obj XamlMetaDataProvider.obj ^
+      XamlTypeInfo.Impl.g.obj XamlTypeInfo.g.obj WindowsApp.lib ^
+      /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\um\arm64" ^
+      /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\ucrt\arm64" ^
+      /LIBPATH:%ide%\VC\Tools\MSVC\14.20.27508\lib\arm64 ^
+      /DYNAMICBASE /SUBSYSTEM:WINDOWS /MACHINE:ARM64 /APPCONTAINER ^
+      /OPT:REF /LTCG /OPT:ICF /NXCOMPAT /TLBID:1 /OUT:ARM64/Release/Chat/Chat.exe
     </code></figure>
-        
+
         <p>The PE/COFF <b>Chat.exe</b> application takes 187KB on x64 and 182KB on ARM64.
            You can inspect dependencies with <b>dumpbin</b> tool:</p>
 
@@ -147,10 +150,10 @@
   dumpbin /imports ARM64/Release/Chat/Chat.exe | find ".dll"
      </code></figure>
 	<h3>APPX</h3>
-        
+
         <p>After building the binaries you're unable to run the application immediately,
             first you need to create .appx file with <b>makeappx</b> which is a part of Windows Kit:</p>
-        
+
         <figure><code>
   makeappx pack /d "./ARM64/Release/Chat/" /l /p "./Chat.appx"
         </code></figure>
@@ -164,7 +167,7 @@
         </code></figure>
 
         <p>Now you're able to deploy and run app from start menu
-           or send the app to store for review.</p> 
+           or send the app to store for review.</p>
 
         <p>Make this page better: <a href="https://github.com/5ht/tonpa.guru/issues/9">https://github.com/5ht/tonpa.guru/issues/9</a></p>
 
