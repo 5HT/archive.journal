@@ -146,6 +146,16 @@
     <figure><code>
   dumpbin /imports ARM64/Release/Chat/Chat.exe | find ".dll"
      </code></figure>
+
+       <p>You may also want to use other tools as well, not all of them
+          however corrently handle the ARM64 binaries, among tools that do
+          is the free (but not open source) PE File Browser which you
+          could find useful for dependencies tracking (here is example
+          that shows wrong PowerShell winrt module placement and missing VC shared
+          runtime library paths.</p>
+
+    <figure><img src="https://pbs.twimg.com/media/D6jzxUZX4AEonq1?format=png&name=medium"></figure>
+
 	<h3>APPX</h3>
         
         <p>After building the binaries you're unable to run the application immediately,
