@@ -25,11 +25,23 @@
            2) Blank App;
            3) Core App.
            Core App skeleton is a bit heavy and Runtime Component is not
-           runnable let's show how to build latest blank UWP application.</p>
+           runnable let's show how to build latest blank UWP application for ARM64.</p>
+        <p>It's been a time since Windows RT was introduced as a hardware,
+           where for some reason custom Win32 apps was blocked to run.
+           Now with introduction of XAML Islands there is an ability to compile
+           not only Win32 but trully native and compact C++ WinRT applications
+           that can fit 200K code size. In this article I want to show in details
+           the very basic parts of modern Windows 10 application built with C++
+           and most modern API WinRT for most modern platform ARM64.
+           While not so many devices yet presented on the market everyone
+           already feels the potential of ARM64 architecture. And as was reported
+           Lumia 950 devices are able to run full featured Windows 10 Pro
+           for ARM64 in dual boot mode. And we have the pad headliner Surface Go.
+           So there is already some room for playing with ARM64 today.</p>
 	
         <h3>PATH</h3>
  
-        <p>For console build you need to properly specify all paths both to Windows Kit and
+        <p>For console build you need properly specify all the paths to both Windows Kit and
            Visual Studio folders. I'm doing this every time I install Windows dev box,
            unfortunately we are still far from zero dev env creation in 2019 at all platforms.
            So take this paths when you preffer to manually control everything:</p>
