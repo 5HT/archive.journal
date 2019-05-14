@@ -85,13 +85,13 @@
 
         <p>If you want to build PE/COFF by <b>cl/link</b> manually, here are command line options.
            Please ensure you're using right binary from your
-           host folder 'VC\Tools\MSVC\14.20.27508\bin\Hostx64\x64', if you do cross compilation.
-           Here is example for x64.</p>
+           host folder 'VC/Tools/MSVC/14.20.27508/bin/Hostx64/ARM64' when you do cross compilation.
+           Here is example for Hostx64/ARM64.</p>
       
         <p><b>cl pch.cpp App.cpp MainPage.cpp 
    "Generated Files\XamlTypeInfo.g.cpp" "Generated Files\XamlTypeInfo.Impl.g.cpp" 
    "Generated Files\XamlMetaDataProvider.cpp" "Generated Files\module.g.cpp" 
-   /c /MP /ZW:nostdlib /EHs /GS /GL /sdl /O2 /Os /bigobj /await  
+   /c /MP /ZW:nostdlib /favor:ARM64 /EHs /GS /GL /sdl /O2 /Os /bigobj /await  
    /fp:precise /Zc:wchar_t /Zc:forScope /W4 /std:c++17 
    /D NDEBUG /D _UNICODE /D UNICODE /D WINAPI_FAMILY=WINAPI_FAMILY_APP 
    /AI"C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.18362.0" 
@@ -108,10 +108,10 @@
 
     <p><b>link pch.obj App.obj MainPage.obj module.g.obj XamlMetaDataProvider.obj
      XamlTypeInfo.Impl.g.obj XamlTypeInfo.g.obj WindowsApp.lib 
-     /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\um\x64" 
-     /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\ucrt\x64" 
-     /LIBPATH:"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.20.27508\lib\x64" 
-     /DYNAMICBASE /SUBSYSTEM:WINDOWS /MACHINE:X64 /APPCONTAINER
+     /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\um\arm64" 
+     /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\ucrt\arm64" 
+     /LIBPATH:"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.20.27508\lib\arm64" 
+     /DYNAMICBASE /SUBSYSTEM:WINDOWS /MACHINE:ARM64 /APPCONTAINER
      /OPT:REF /OPT:ICF /LTCG /NXCOMPAT /TLBID:1 /OUT:Chat.exe</b></p>
         
         <p>The PE/COFF <b>Chat.exe</b> application takes 187KB on x64 and 158KB on ARM64.</p>
@@ -131,7 +131,7 @@
         <p>Now you're able to deploy and run app from start menu
            or send the app to store for review.</p> 
 
-        <p>Comments as Github Issue: <a href="https://github.com/5ht/tonpa.guru/issues/9">https://github.com/5ht/tonpa.guru/issues/9</a></p>
+        <p>Make this page better: <a href="https://github.com/5ht/tonpa.guru/issues/9">https://github.com/5ht/tonpa.guru/issues/9</a></p>
 
     </section>
 </main>
