@@ -28,7 +28,7 @@
            — GPT: Allocate Partitions<br>
            — EFI: Install EFI Applications<br>
            — BCD: Edit BCD Store<br>
-           — DISM: Install Windows Setup and Drivers<br>
+           — WIM: Apply Windows Image, Drivers and Packages<br>
            — WOA: Do all from the GPT automatically!</p>
 
         <h3>FFU</h3>
@@ -62,7 +62,8 @@
         <figure><img src="https://5ht.co/img/wpinternals.png?v=1"></figure>
 
 	<p>There are only following name and root key hashes combinations (Lumia AA64 models).
-           The code for determining the model could be found in Deployer.Lumia.NetFx namespace.</p> 
+           The code for determining the model could be found in Deployer.Lumia.NetFx namespace.
+           This information is needed to know which drivers should be applied to WMI image.</p> 
 
         <figure><code>
  P6211 427D8FD5A7F227820D5B11BF8C6F7670C0A0622CC61BA95AAEE18F7517FC0B77 (Cityman)
@@ -209,7 +210,7 @@
  bcdedit /store BCD /displayorder %ent% %win% %dev%
        </code></figure>
 
-       <h3>DISM</h3>
+       <h3>WIM</h3>
 
        <p>DISM is the tool for managing WIM images, apply them to partitions,
           patch drivers and service packages.</p>
