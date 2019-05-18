@@ -14,21 +14,44 @@
     <a href='../index.html'>STREAM</a>
     <a href='#'>2019-05-18</a>
 </nav>
-<main>
+4<main>
     <section>
         <h3>Lumia 950 / Windows 10</h3>
 
         <p>This is sequence of Windows built-in commands to perform regular
-           Windows 10 Pro image install onto your Lumia AA64 phones.</p>
+           Windows 10 Pro image install onto your Lumia AA64 phones (Lumia 950 and Lumia 950 XL).</p>
+
+        <h3>FIRMWARE</h3>
+
+        <h3>UNLOCK</h3>
+
+        <p>First we need to unlock the phone.
+           NOTE: Unlocking bootloader will block official Windows Update channel.
+           </p>
 
         <h3>DISKPART</h3>
 
-        <p>After building the binaries you're unable to run the application immediately,
-            first you need to create .appx file with <b>makeappx</b> which is a part of Windows Kit:</p>
+        <p>First</p>
+
+        <p>You can do everything from Disk Management console however for the sake
+           of simplicity here we will use only command line built-in tools from Windows.
+           For Windows 10 setup we will need 3 partitions:</p>
 
         <figure><code>
-  diskpart
+  C:\> diskpart
+
+  list disk
+  select disk
+  create partition efi size=400
+  format fs=fat32 quick label=WoABOOT
+  assign letter I:
+  create partition msr size=128
+  format fs=fat32 quick lobel=Reserved
+  create partition primary
+  format fs=ntfs quick label=Windows
+  assign letter K:
         </code></figure>
+
 
         <h3>EFI</h3>
 
@@ -55,7 +78,6 @@
   bcdedit /store BCD /deletevalue %ent% bootstatuspolicy
   bcdedit /store BCD /deletevalue %ent% bootmenupolicy
         </code></figure>
-
 
         <p>The BCD entry for booting Windows 10 Pro
            from new partition "Windows 10" should be like that:</p>
