@@ -236,8 +236,14 @@
        <figure><code>
  dism /get-WimInfo /wimfile:e:\sources\install.wim
  dism /Apply-Image /ImageFile:e:\sources\install.wim /Index:1 /ApplyDir:K:\
- dism /Image:k:\ /Add-Driver /Driver:"Device Specifics\Talkman" /Recurse
+ dism /Image:k:\ /Add-Driver /Driver:"MSM-8992" /Recurse
+ dism /Image:k:\ /Add-Driver /Driver:"Device Specifics\MMO" /Recurse
+ dism /Image:k:\ /Add-Driver /Driver:"Device Specifics\Talkmam\Common" /Recurse
+ dism /Image:k:\ /Add-Driver /Driver:"Device Specifics\Talkmam\SingleSim" /Recurse
         </code></figure>
+
+        <p>NOTE: also you need to copy root of DPP partition to 'Windows:\DPP' folder location.
+           This is final step, now you can reboot the phone, chose Windows 10 in NTOSLDR and proceed the Windows Setup.</p>
 
         <h3>WoA</h3>
 
