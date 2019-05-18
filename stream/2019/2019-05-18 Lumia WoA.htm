@@ -18,7 +18,8 @@
     <section>
         <h3>Lumia 950 / Windows 10</h3>
 
-        <p></p>
+        <p>This is sequence of Windows built-in commands to perform regular
+           Windows 10 Pro image install onto your Lumia AA64 phones.</p>
 
         <h3>DISKPART</h3>
 
@@ -28,6 +29,8 @@
         <figure><code>
   diskpart
         </code></figure>
+
+        <h3>EFI</h3>
 
         <h3>BCDEDIT</h3>
 
@@ -57,7 +60,6 @@
         <p>The BCD entry for booting Windows 10 Pro
            from new partition "Windows 10" should be like that:</p>
 
-
         <figure><code>
   bcdedit /store BCD /set %win% description "Windows 10"
   bcdedit /store BCD /set %win% device partition=G:
@@ -72,7 +74,7 @@
 
         <figure><code>
   bcdedit /store BCD /set {x} testsigning yes
-  bcdedit /store BCD /set {y} nointegritychecks yes
+  bcdedit /store BCD /set {x} nointegritychecks yes
   bcdedit /store BCD /displayorder %ent% %win% %dev%
         </code></figure>
 
@@ -83,7 +85,10 @@
            NOTE: SHA256 is the only way.</p>
 
         <figure><code>
-  signtool sign /fd SHA256 /a /f Chat_TemporaryKey.pfx Chat.appx
+  dism /get-WimInfo /wimfile:e:\sources\install.wim
+  dism /Apply-Image /ImageFile:e:\sources\install.wim /Index:1 /ApplyDir:K:\
+  dism /Image:k:\ /Add-Driver /Driver:"Device Specifics\Talkman" /Recurse
+  bcdboot k:\windows /l en-US /f UEFI /s I:
         </code></figure>
 
         <h3>WOA</h3>
