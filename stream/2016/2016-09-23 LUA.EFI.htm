@@ -1,0 +1,56 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Namdak Tonpa" />
+    <title>2016-09-23</title>
+    <link rel="stylesheet" href="../../blank.css" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>STREAM</a>
+    <a href='#'>2016-09-23</a>
+</nav>
+<main>
+    <section>
+        <h3>LUA.EFI</h3>
+
+	<p>Я все-таки упоролся и скачал EDK2 от Intel.</p>
+
+<p>Скомпилировал Lua и запустил на FAT32, к сожалению все остальные драйвера FS
+только в режиме Read-Only, а как писать из EFI Shell на HFS+ (встроенный
+драйвер эппловского EFI) пока не нашел как (если кто-то знает скажите мне).</p>
+
+      <figure><code>
+ Shell> type test.lua
+
+ s = string.rep("Q",8000000)
+ f = io.open("lua.bin","a")
+ for i=0,4000/8,1 do f:write(s) end
+ f:close()
+      </code></figure>
+
+	<p> Таким образом концепция Erlang.EFI очень реальная. LUA вот работает, без OS.
+ Дальше буду пробовать всякие TCP/IP, тут столько написали всякого стаффа для
+EFI (Например есть еще Pyhton и какой-то WebServer, я его еще не смотрел).
+Вообщем это намного прикольнее чем свою OS писать. Надо только драйвер для
+блочной GooFS, которая в LING/Xen используется.<p>
+
+	<p>Все знают, что я очень впечатлительный, но по-моему EFI — годная, hackable
+штука, которую можно хачить под clang/gcc/cl.</p>
+
+	<p>P.S. Нашел пацанов у нас, которые по UEFI упарываются.
+И даже полезные диагностические утилиты пишут. Надо им предложить стартап:
+Erlang to EBC Byte Code Compiler. Ну и LING.EFI конечно же, теперь я точно
+уверен как надо LING паковать и запускать.</p>
+
+
+    </section>         
+</main>                
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>                
+</html>                
+
