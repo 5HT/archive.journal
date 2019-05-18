@@ -1,0 +1,101 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Namdak Tonpa" />
+    <title>2019-05-18</title>
+    <link rel="stylesheet" href="../../blank.css" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>STREAM</a>
+    <a href='#'>2019-05-18</a>
+</nav>
+<main>
+    <section>
+        <h3>Lumia 950 / Windows 10 on ARM64</h3>
+
+        <p></p>
+
+        <h3>DISKPART</h3>
+
+        <p>After building the binaries you're unable to run the application immediately,
+            first you need to create .appx file with <b>makeappx</b> which is a part of Windows Kit:</p>
+
+        <figure><code>
+  diskpart
+        </code></figure>
+
+        <h3>BCDEDIT</h3>
+
+        <p>The normal sequence procedure swipe out all BCD and recreate for GUID retrivals.</p>
+
+        <figure><code>
+  bcdedit /store BCD /create /application OSLOADER /d "Lumia 950"      
+  bcdedit /store BCD /create /application OSLOADER /d "Windows 10"     
+  bcdedit /store BCD /create /application BOOTAPP  /d "Developer Menu" 
+        </code></figure>
+
+        <p>The BCD entry for booting Windows 10 Mobile
+           from <b>MainOS</b> partition should be like that:</p>
+
+        <figure><code>
+  bcdedit /store BCD /set %win% description "Lumia 950"
+  bcdedit /store BCD /set %ent% systemroot \windows
+  bcdedit /store BCD /set %ent% path \windows\system32\boot\winload.efi
+  bcdedit /store BCD /set %ent% device partition=F:
+  bcdedit /store BCD /set %ent% osdevice partition=F:
+  bcdedit /store BCD /set %ent% locale en-US
+  bcdedit /store BCD /deletevalue %ent% bootstatuspolicy
+  bcdedit /store BCD /deletevalue %ent% bootmenupolicy
+        </code></figure>
+
+
+        <p>The BCD entry for booting Windows 10 Pro
+           from new partition "Windows 10" should be like that:</p>
+
+
+        <figure><code>
+  bcdedit /store BCD /set %win% description "Windows 10"
+  bcdedit /store BCD /set %win% device partition=G:
+  bcdedit /store BCD /set %win% path \EFI\boot\BootShim.efi
+        </code></figure>
+
+        <figure><code>
+  bcdedit /store BCD /set %dev% device partition=G:
+  bcdedit /store BCD /set %dev% path \Windows\System32\BOOT\developermenu.efi
+  bcdedit /store BCD /set %dev% description "Developer Menu"
+        </code></figure>
+
+        <figure><code>
+  bcdedit /store BCD /set {x} testsigning yes
+  bcdedit /store BCD /set {y} nointegritychecks yes
+  bcdedit /store BCD /displayorder %ent% %win% %dev%
+        </code></figure>
+
+        <h3>DISM</h3>
+
+        <p>And as you guess that's not enough as you need to sign your application
+           client certificate with $100 of cost enrollment from Microsoft.
+           NOTE: SHA256 is the only way.</p>
+
+        <figure><code>
+  signtool sign /fd SHA256 /a /f Chat_TemporaryKey.pfx Chat.appx
+        </code></figure>
+
+        <h3>WOA</h3>
+
+        <p>Now you're able to deploy and run app from start menu
+           or send the app to store for review.</p>
+
+        <p>Make this page better:
+  <a href="https://github.com/5ht/tonpa.guru/issues/9">https://github.com/5ht/tonpa.guru/issues/9</a></p>
+
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
