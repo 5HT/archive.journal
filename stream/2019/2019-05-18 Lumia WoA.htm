@@ -231,7 +231,8 @@
 
        <p>DISM is the tool for managing WIM images, apply them to partitions,
           patch drivers and service packages. WIM is new ISO-9660 from Microsoft created
-          especially for Windows provisioning.</p>
+          especially for Windows provisioning. Assyme that E: drive contains regular
+          ISO image of Windows 10 for ARM64.</p>
 
        <figure><code>
  dism /get-WimInfo /wimfile:e:\sources\install.wim
@@ -242,8 +243,22 @@
  dism /Image:k:\ /Add-Driver /Driver:"Device Specifics\Talkmam\SingleSim" /Recurse
         </code></figure>
 
-        <p>NOTE: also you need to copy root of DPP partition to 'Windows:\DPP' folder location.
-           This is final step, now you can reboot the phone, chose Windows 10 in NTOSLDR and proceed the Windows Setup.</p>
+        <p>Also you need to copy root of DPP partition to 'Windows:\DPP' folder location.
+           This is final step, now you need to temporaly disable dual boot:</p>
+
+       <figure><code>
+ bcdedit /store BCD /set %ent% path dummy
+        </code></figure>
+
+	<p>After then you reboot the phone, chose Windows 10 in NTOSLDR and proceed the Windows Setup.
+           When is's done reboot in the Developers Menu, chose Mass-storage mode and restore dual boot with:
+           </p>
+
+       <figure><code>
+ bcdedit /store BCD /set %ent% path \windows\system32\boot\winload.efi
+        </code></figure>
+
+	<p>Now enjoy your Windows 10 Pro with dual boot in Lumia 950.</p>
 
         <h3>WoA</h3>
 
