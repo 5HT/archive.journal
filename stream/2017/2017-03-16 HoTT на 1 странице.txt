@@ -60,4 +60,3 @@ HoTT на 1 странице
    sId A a = (a, refl A a)
    IdS : (A : U) (F : A -> U) (a0 a1 : A) (p : Id A a0 a1) -> F a0 -> F a1 -> U
    IdS A F a0 a1 p = IdP (F a0) (F a1) (mapOnPath A U F a0 a1 p)
-TAGS (EDIT) cs

@@ -33,5 +33,4 @@ render_template(FullPathToFile,ViewFile,Data) ->
 #dtl{file=code:priv_dir(web) ++ "/templates/dtl_template.html"}
 
 Вот и все собственно, паника по поводу того что в нитрогене плохой темлейтор прекращена.
-TAGS (EDIT) #dtl, cs
 

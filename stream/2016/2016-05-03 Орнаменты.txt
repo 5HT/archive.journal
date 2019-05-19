@@ -11,8 +11,7 @@
 быть всего трех видов:
 
 1) Unit, как в типе Lazy A: () -> A или ленивом Nil: () -> List A.
-2) Fixed Type как в типе первого параметра коснтруктора Cons: A -> List A ->
-List A.
+2) Fixed Type как в типе первого параметра коснтруктора Cons: A -> List A -> List A.
 3) Recursive Type, как в типе второго параметра tail конструктора Cons, или
 второго поля tail рекорда коиндуктивного Stream (они равны в MLTT).
 
@@ -38,7 +37,5 @@ List A.
 и диапазон совместимости.
 
 Как вам такой "внутренний лисп" пространства типов?
-
 _______________
 [1]. https://personal.cis.strath.ac.uk/conor.mcbride/pub/OAAO/LitOrn.pdf
-TAGS (EDIT) cs

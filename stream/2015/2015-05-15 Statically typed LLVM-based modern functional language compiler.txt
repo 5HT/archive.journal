@@ -39,11 +39,8 @@ repeat3 = int -> int -> $67 -> $67.
 main0 = $67.
 $67 = nil + [int|$67].
 
-
-
 New, Better Erlang is coming...
 
 ________________
 [1]. LLVM Output: https://gist.github.com/5HT/401a348636af9acd3a16
-TAGS (EDIT) cs, erlang, l
 

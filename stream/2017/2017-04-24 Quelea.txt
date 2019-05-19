@@ -42,4 +42,3 @@ ______________
 [1]. http://kcsrk.info/papers/quelea_ieee16.pdf
 KC Sivaramakrishnan, Gowtham Kaki, Suresh Jagannathan
 IEEE Data Engineering Bulletin, 39(1): 52 64, March 2016
-TAGS (EDIT) cs

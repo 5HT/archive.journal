@@ -77,4 +77,3 @@ __________
 [5]. http://okmij.org/ftp/ML/first-class-modules/existentials.ml
 [6]. http://mlton.org/TypeIndexedValues
 [7]. http://okmij.org/ftp/ML/first-class-modules/generics.ml
-TAGS (EDIT) cs

@@ -186,5 +186,4 @@ body() ->
             binary_to_list(Build),binary_to_list(Step)) end.
 
 Вот как это выглядит, наш Билд сервер: http://build.synrc.com/
-TAGS (EDIT) #br, #dtl, #h1, #h2, #link, #p, #release, #span, cs
 

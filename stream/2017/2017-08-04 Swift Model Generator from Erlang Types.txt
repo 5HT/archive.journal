@@ -119,4 +119,3 @@ infer(Name,Args,Field)  -> Field ++ ": " ++ keyword(Name,Args,{Field,Args}) ++ "
 simple(A,[{type,_,nil,_},{type,_,Name,Args}],Context) -> keyword(Name,Args,Context);
 simple(A,[{type,_,Name,Args},{type,_,nil,_}],Context) -> keyword(Name,Args,Context);
 simple(_,_,_) -> "AnyObject".
-TAGS (EDIT) cs, n2o, protocols, synrc

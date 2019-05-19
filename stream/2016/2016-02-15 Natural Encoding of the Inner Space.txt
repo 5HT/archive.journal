@@ -73,5 +73,4 @@ lambda, curry, apply и id.
 системе Lean.
 
 ОМ А ХУМ
-TAGS (EDIT) #identifier, cs, exe, om
 

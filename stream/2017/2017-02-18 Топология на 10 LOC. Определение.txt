@@ -13,5 +13,4 @@ Structure topology (A : Type) := {
           full_open: open (full _);
           inter_open: forall u, open u -> forall v, open v -> open (inter A uv) ;
           union_open: forall s, (subset _ s open) -> open (union A s) }.
-TAGS (EDIT) coq, cs, groupoid infinity
 

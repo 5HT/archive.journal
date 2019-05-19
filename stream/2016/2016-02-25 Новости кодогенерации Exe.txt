@@ -21,7 +21,6 @@
 %       (Nil: () → List A)
 %       (Cons: A → List A → List A)
 
-
 > om_extract:scan().
 Active: module loaded: {reloaded,'Bool'}
 Active: module loaded: {reloaded,'List'}
@@ -43,8 +42,5 @@ om_check.beam       om_extract.beam     om_parse.beam
 om_tok.beam
 ok
 
-
-
 Индуктивные обертки вокруг OTP экспериментальные тоже работают.
-TAGS (EDIT) cs, erlang, exe, om
 

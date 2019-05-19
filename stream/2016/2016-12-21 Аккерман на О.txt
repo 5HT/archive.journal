@@ -47,4 +47,3 @@ print(f,(os.clock()-x)*1000000)
 
 $ luajit ack.lua
 125     40721830
-TAGS (EDIT) kernel, voxoz

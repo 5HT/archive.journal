@@ -50,7 +50,5 @@ AST OM на Rust:
 [2]. https://lise-henry.github.io/articles/optimising_strings.html
 [3]. https://github.com/AndyShiue/pts
 [4]. https://github.com/freebroccolo?language=rust&tab=repositories
-[5].
-http://always-learning.timmcnamara.nz/2016/10/15/borrow-checker-escape-hatches/
-TAGS (EDIT) cs, exe, om, rust
+[5]. http://always-learning.timmcnamara.nz/2016/10/15/borrow-checker-escape-hatches/
 

@@ -57,5 +57,4 @@ vec1.iter()
     pshufd      $232, %xmm3, %xmm3
     punpckldq   %xmm3, %xmm2
     paddd       %xmm2, %xmm0
-TAGS (EDIT) cs, kernel, voxoz
 

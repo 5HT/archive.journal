@@ -13,7 +13,6 @@ Suck and Blow
         <li>
             <a href=@{ArticleR articleId} > #{articleTitle article}
 
-
 Вот это пример темплейта из Yesod. Ну гавно же, на такое смотреть, истинный
 неотличимый от ПХП код. Я уже молчу про все эти ASP.NET, PHP, и прочие
 зотоники. Как этот стиль сохраняется и почему его любят, вот что меня
@@ -35,9 +34,7 @@ Suck and Blow
        body
        p $ a ! href "/" $ "back home"
 
-
-Красиво, чётенько. Вот например божественный чат на Erlang с Кометом, Аяксом,
-ХТМЛем:
+Красиво, чётенько. Вот например божественный чат на Erlang с Кометом, Аяксом, ХТМЛем:
 
 body() -> wf:comet_global(fun() -> chat_loop() end, chatroom),
                [#panel { id=chatHistory, class=chat_history },
@@ -78,5 +75,4 @@ XML пишут, функциональные программы, XSLT назыв
 средненько — ( . ) =>
 
 < > — эти символы так и называются Suck and Blow :-)
-TAGS (EDIT) #button, #panel, #span, #textbox, cs
 

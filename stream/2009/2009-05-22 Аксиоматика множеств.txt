@@ -68,5 +68,4 @@ Schema требует начилися Empty Set, выводимого в Separa
 appearing in the axiom schema of Class Comprehension to range over
 proper classes as well as sets. NBG restricts these bound variables
 to sets alone.
-TAGS (EDIT) modeling
 

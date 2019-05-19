@@ -138,4 +138,3 @@ Extraction "extraction/main" main.
 CAS рантаймом и CPS интерпретатором. Проверяйте ваши датасеты сразу на моделях
 заэкстракченых в Rust или OCaml, которые запускаются на seL4, Xen или
 Mac/Linux. Такой стартап, дали бы денег? :-)
-TAGS (EDIT) coinduction, cs, groupoid infinity

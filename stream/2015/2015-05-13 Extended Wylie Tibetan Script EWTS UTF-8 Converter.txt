@@ -53,13 +53,8 @@ tests() ->
     "ཨོཾ་ཨཱཿ་ཧཱུྃ" = tibetan("oM AH hU~M"),
     "ཀློང་ཆེན་སྙིང་ཐིག" = tibetan("klong chen snying thig"),
     "རྣམ་དག་སྟོན་པ" = tibetan("rnam dag ston pa"),
-    "ཨོཾ་ཨཨཿ་ཧཱུྃ་བཛྲ་གུ་རུ་པདྨ་སིདྡྷི་ཧཱུྂ༔" = tibetan("oM aH hU~M badz+ra gu
-ru pad+ma sid+dhi hU~M`:"),
+    "ཨོཾ་ཨཨཿ་ཧཱུྃ་བཛྲ་གུ་རུ་པདྨ་སིདྡྷི་ཧཱུྂ༔" = tibetan("oM aH hU~M badz+ra gu ru pad+ma sid+dhi hU~M`:"),
     ok.
-
-
-
 _________________
 [1]. https://github.com/5HT/wylie/blob/master/src/wylie.erl
-TAGS (EDIT) #0f0b, #0f68, cs, erlang, tibetan, wylie
 

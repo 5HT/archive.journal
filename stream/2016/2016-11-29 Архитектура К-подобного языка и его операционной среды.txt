@@ -69,5 +69,4 @@ $ tree -L 3
     ├── mod.rs
     ├── mul.rs
     └── plus.rs
-TAGS (EDIT) kernel, voxoz
 

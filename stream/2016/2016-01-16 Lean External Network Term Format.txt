@@ -52,9 +52,7 @@ with tree_list : Type.{max 1 l} :=
 #INTRO 10 19          // место конструктора cons
 #EIND
 
-
 _________
 [1]. https://github.com/leanprover/lean/blob/master/doc/export_format.md
 [2]. https://github.com/leanprover/tc Внешний тайпчекер на Хаскеле
-TAGS (EDIT) cs
 

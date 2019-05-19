@@ -31,5 +31,4 @@ Conts: 2
 ASTs: 26
 ENV: (1,6)
 End(Node(Value(VecInt([2, 6, 12]))))
-TAGS (EDIT) cps, kernel
 

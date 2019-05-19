@@ -31,7 +31,6 @@ stream pay DB rate 6% annual of
        calendar DEFR
        fraction '30E/360'
 
-
 Сравните пожалуйста с тем как сейчас представляется амортизационный стаб своп в
 современных информационных системах:
 http://www.fpml.org/spec/fpml-5-0-8-rec-1/html/confirmation/xml/products/interes
@@ -43,4 +42,3 @@ t-rate-derivatives/ird-ex02-stub-amort-swap.xml А это вы еще текст
 
 У меня идея создать бибилиотеку конвертации FpML<->UPL и продавать ее частично
 по продуктам и направлению конвертации. Сработает?
-TAGS (EDIT) banking, cs, derivatives, investment, upl

@@ -17,18 +17,14 @@ What would you say if you'd see following code:
   (C =:= $Z)
 ).
 
-
-
 The first thought comes in the mind is to replace this macro with one-liner:
 
 (X > $a andalso X < $z) orelse (X > $A andalso X < $Z)
-
 
 And really when you put this macro in the body
 
 is_alpha_cow(X) -> ?IS_ALPHA(X).
 is_alpha_bull(X) -> (X >= $a andalso X =< $z) orelse (X >= $A andalso X =< $Z).
-
 
 you receive predicted numbers:
 
@@ -36,7 +32,6 @@ you receive predicted numbers:
 {119,<<>>}
 2> sample::mcow().
 {1598,<<>>}
-
 
 Having measuring functions as follows:
 
@@ -47,7 +42,6 @@ measure_cow(<>) -> is_alpha_cow(B), measure_cow(Bin).
 measure_bull(<<>>) -> <<>>;
 measure_bull(<>) -> is_alpha_bull(B), measure_bull(Bin).
 
-
 However when you put macro inside the guards:
 
 is_alpha_cow(X) when ?IS_ALPHA(X) -> true;
@@ -56,7 +50,6 @@ is_alpha_bull(X) when (X >= $a andalso X =< $z) orelse (X >= $A andalso X =<
 $Z) -> true;
 is_alpha_bull(X) -> false.
 
-
 you receive not only better result than in body, but also the best result of
 [{guard,body}x{cow,bull}] measurement:
 
@@ -64,5 +57,4 @@ you receive not only better result than in body, but also the best result of
 {104,<<>>}
 4> sample:mcow().
 {64,<<>>}
-TAGS (EDIT) erlang
 

@@ -15,24 +15,21 @@ IO и CPU внезапно столько, хоть обожрись, а кол�
 
 http://farmanager.googlecode.com/svn/trunk/unicode_far/findfile.cpp
 
-// Открываем файл
+ // Открываем файл
 
-if(!file.Open(Name, FILE_READ_DATA, FILE_SHARE_READ|
-                    FILE_SHARE_WRITE, nullptr, OPEN_EXISTING,
-FILE_FLAG_SEQUENTIAL_SCAN))
-{
-    return false;
-}
-...
+ if(!file.Open(Name, FILE_READ_DATA, FILE_SHARE_READ|
+                     FILE_SHARE_WRITE, nullptr, OPEN_EXISTING,
+ FILE_FLAG_SEQUENTIAL_SCAN))
+ {
+     return false;
+ }
+ ...
 
     // Основной цикл чтения из файла
     while (!StopEvent.Signaled()
-                && file.Read(readBufferA, (!SearchInFirst || alreadyRead +
-readBufferSize <= SearchInFirst)
+                && file.Read(readBufferA, (!SearchInFirst || alreadyRead + readBufferSize <= SearchInFirst)
                       ? readBufferSize
-                      : static_cast(SearchInFirst - alreadyRead),
-readBlockSize))
-
+                      : static_cast(SearchInFirst - alreadyRead), readBlockSize))
 
 И это всё вызывается из однопоточного и синхронного же FindFiles::DoScanTree,
 первый класс вторая четверть, турбо паскаль под дос, чтение 1.44" на 286.

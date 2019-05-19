@@ -45,4 +45,3 @@ code, or an input to Z3 for finding possible arguments for which it is true!
 ______________
 [1]. https://github.com/conal/concat/issues/4
 [2]. http://conal.net/papers/compiling-to-categories/compiling-to-categories.pdf
-TAGS (EDIT) ccc, smt

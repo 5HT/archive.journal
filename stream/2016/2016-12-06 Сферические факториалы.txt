@@ -185,4 +185,3 @@ fn fac(b: &mut Bencher) {
 test fac      ... bench:      7,702 ns/iter (+/- 376)
 
 7us
-TAGS (EDIT) #fun, kernel, voxoz

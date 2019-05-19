@@ -25,7 +25,6 @@ product(A,B,...) -> {A,B,...}
 sum(A,B,...) -> A | B | ...
 cat(A,B,...) -> Domains(A,B,...), Morphisms(A,B,...) end.
 
-
 Где A,B,... -- конструкторы типов.
 
 Конструкторы Типов
@@ -38,7 +37,6 @@ cat(A,B,...) -> Domains(A,B,...), Morphisms(A,B,...) end.
 string() = list(char) = string/0.
 integer().
 atom().
-
 
 В терминах теории категорий программа на типизированном языке представляет
 собой ориентиированный граф, в котором вершины представляют собой типы
@@ -56,13 +54,10 @@ array(T) = list(list(T)).
 cube(T) = list(array(T)).
 typeCons(A,B,C) = product(sum(A,B),list(C)) = {A | B,list(C)}.
 
-
 Сам тип конструкторов типов можно определить псевдо-сигнатурой алгебраического
 типа sum(fun,...):
 
-type/Arity = product/Arity | sum/Arity | fun/Arity | cat/Arity | list/1 | any/0
-.
-
+type/Arity = product/Arity | sum/Arity | fun/Arity | cat/Arity | list/1 | any/0.
 
 Если у конструктора есть параметры которые неизвестны это означает что этот
 конструктор определяет целый класс типов, т.е. является функцией от других
@@ -75,11 +70,9 @@ mylist = product(list(product/3),sum/2,any()).
 lst = list/1.
 functorArg = type/1.
 
-
 Могут быть типы c частичной параметризацией всех своих параметров:
 
 mixed(T,A) = product(A,any(),sum(T,list(T)),product/3,fun/2,functor(list/1)).
-
 
 Как видите mixed(T,A) практически неотличим от Эрланг фунции, что является
 очевидным и наглядным предствляем лямбда исчисления второго порядка над
@@ -92,11 +85,9 @@ mixed(T,A) = product(A,any(),sum(T,list(T)),product/3,fun/2,functor(list/1)).
 
 fun((A,B,...)->C).
 
-
 Я предлагаю упростить его до
 
 fun(A,B,...,C).
-
 
 где посладний параметр в конструкторе типа это тип возвращаемого значения или
 вовсе он не указывается.
@@ -110,13 +101,11 @@ listmap = fun((Fun::fun(A::X,B::Y),In::list(X))->list(Y)) ->
     io:format("Out: ~p",[Out]),
     Out end.
 
-
 Другие примеры задания сигнатур с помощью конструкторов:
 
 fmap = fun(fun(any,any),list/1).
 listmap = fun(fun(A,B),list(A),list(B)).
 unimap(A,B,T::type/1) = fun(fun(A,B),T(A),T(B)).
-
 
 В Haskell конструкторы типов пишутся с большой буквы (потому что Λ -- уровень
 типов), а функции пишутся с маленькой (потому что λ -- уровень значений), но в
@@ -141,17 +130,14 @@ join = fun(A,B) -> lists:join(A,B) end.
 
 Functor = cat(Type::type/1) -> fmap = fun(fun(A,B),Type(A),Type(B)). end.
 
-
 Экземпляр такого типа можно задать параметризировав такой тип и указав тело:
 
 Listfunctor = Functor(list/1) -> fmap(F,X) -> listmap(F,X). end.
-
 
 После этого инстанс готов к употреблению:
 
 Square = fun(X) -> X * X end.
 Listfunctor:fmap(Square,[1,2,3,4]).
-
 
 Или например этот же модуль Функтор можно использовать для деревьев:
 
@@ -159,9 +145,7 @@ TreeFunctor = Functor(tree/1) ->
     fmap(F,{X}) -> { F(X) };
     fmap(F,{L,R}) -> { fmap(F,{L}), fmap(F,{R}) }. end.
 
-
 Волшебным образом эрланговский код стал типизированным :)
 
 Всем кто дочитал до этого места, спасибо за внимание.
-TAGS (EDIT) cs, typesystems
 

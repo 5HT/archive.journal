@@ -26,5 +26,4 @@ sweep() ->
           Object = pop(DeadObjects)
           free(Object)
     AllObjects = LiveObjects
-TAGS (EDIT) cs
 

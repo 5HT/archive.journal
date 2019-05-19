@@ -56,4 +56,3 @@ $ make
 $ opam repo add coq-released https://groupoid.space/opam
 
 Делаем зависимые лямбда термы ближе к народу!
-TAGS (EDIT) coq, cs, groupoid infinity

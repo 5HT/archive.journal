@@ -31,4 +31,3 @@ Compute bytesToHex
 
 ______________
 [1]. https://www.dropbox.com/s/2dxitkgukmijvfu/coqasm.pdf
-TAGS (EDIT) #0, #10, #x, cs, typesystems

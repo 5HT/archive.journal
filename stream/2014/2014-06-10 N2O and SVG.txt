@@ -22,13 +22,13 @@ N2O and SVG
 есть все социальные логины и системы пейментов. Фактически для каждого проекта
 Sping у нас есть свой аналог:
 
-Spring  Synrc   Description
-Spring Social   AVZ     Социальные системы
-Spring Framework        N2O     Фул стек Веб фрейморк
-Spring Boot     OTP.MK  Управление приложениями
-Spring Data     KVS     Доступ к данным
-Spring AMQP     MQS     Доступ к очередям
-
+Spring            Synrc   Description
+----------------- ------- ------------------------
+Spring Social     AVZ     Социальные системы
+Spring Framework  N2O     Фул стек Веб фрейморк
+Spring Boot       MAD     Управление приложениями
+Spring Data       KVS     Доступ к данным
+Spring AMQP       MQS     Доступ к очередям
 
 Но кроме этого у нас есть другие штуки, например если вы разрабатываете
 JavaScript протоклы мы генерируем JavaScript протокол из Erlang c помощью
@@ -120,4 +120,3 @@ https://imgprx.livejournal.net/05126c10dd3fa8777ba645066da5c7af28981dfa/wJBWvdzv
 https://github.com/synrc/games/issues
 
 Максим
-TAGS (EDIT) cs, erlang, n2o, okey, synrc

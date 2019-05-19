@@ -10,7 +10,5 @@ $ brew install ghc
    $ open http://localhost:8000/sample/client.html
    $ casperjs test tests
 
-
 Фидбеки на канал: https://gitter.im/nponeccop/n2o.hs
-TAGS (EDIT) cs, haskell, n2o
 

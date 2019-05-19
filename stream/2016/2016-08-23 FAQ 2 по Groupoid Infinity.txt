@@ -154,5 +154,4 @@ http://www.functor.se/company/leadership/
 PCC, или мы наперед пишем программы исходя из заданных PCC. Важно тут что для
 программиста — это должно выглядеть как еще один Elixir с кванторами и странным
 синтаксисом или Elm с бекендом в Erlang вместо JavaScript.
-TAGS (EDIT) groupoid infinity
 

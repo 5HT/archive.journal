@@ -1,28 +1,23 @@
 Аксиоматика числа
 
-Аксиоматика Пеано содержит 9 аксиом: 4 аксиомы pure logic, 4 аксиомы
-числа, 1
+Аксиоматика Пеано содержит 9 аксиом: 4 аксиомы pure logic, 4 аксиомы числа, 1
 аксиома математической индукции и два понятия: символ 0 как число и
-символ
-следования следующего числа.
+символ следования следующего числа.
 
 Аксиоматика Пеано:
 Символы: 0, Succesor
 Аксиомы:
+
 1. Reflexive
 2. Symmetric
 3. Transitive
 4. Closed
 5. Base (0 is a number)
 6. Successor (number followed by a number is a number)
-7. Injection (if number is directly follows any two number then these
-numbers
-are equals)
+7. Injection (if number is directly follows any two number then these numbers are equals)
 8. Finite (0 is not followed by any number)
 9. Induction
 
-Замечание: Особых движений тут как бы нет. Если вам надо число,
-просто
+Замечание: Особых движений тут как бы нет. Если вам надо число, просто
 присоедините эту систему аксиом к аксиоматике своей системы.
-TAGS (EDIT) modeling
 

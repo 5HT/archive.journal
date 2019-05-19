@@ -36,9 +36,7 @@ Format. Кроме того я базовую библиотеку постро�
                 (event :init)
                 (wf/info "hello ~p~n" [(main)])))
 
-
 Посвящаю это Пиле, который мне показал Лисп в 2003 году.
 ______________
 [1]. https://github.com/synrc/n2o_sample/blob/master/src/lispchat.jxa
-TAGS (EDIT) cs, joxa, lisp, n2o
 

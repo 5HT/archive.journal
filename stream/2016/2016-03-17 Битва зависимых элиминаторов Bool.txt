@@ -25,8 +25,6 @@ $ cat True
 $ cat False
 λ(Bool : *) → λ(True : Bool) → λ(False : Bool) → False
 
-
-
 И вот жадный элиминатор eif:
 
 $ cat eif
@@ -35,8 +33,6 @@ $ cat eif
 → λ (Y : A)
 → λ (Z : A)
 → X A Y Z
-
-
 
 Если мы скомпилируем его (т.е. сотрем информацию о типах), заэкстрактим в
 эрланг код, вытащим эрланг код и вставим в одну ветку оператор printf
@@ -51,8 +47,6 @@ $ cat eiff
 #Nat/Zero))))))
    (Y)
 
-
-
 Тут мы вызываем условие eiff x y = if x then y + 5 else y. Так вот если
 вытащить ненормализированый эрланг терм и вставить в ветку с Succ printf, то
 при вызове eiff c True и False будет печататься этот printf:
@@ -63,8 +57,6 @@ EIFF
 123> ch:unnat(ch:ap(eiff:eiff(),['Bool':'True'(),'Nat':'Zero'()])).
 EIFF
 5
-
-
 
 Выход к этому лежит через тип Lazy:
 
@@ -77,8 +69,6 @@ $ cat delay
 $ cat force
 \ (a: *) -> \ (force: #Unit/@ -> a) -> a
 
-
-
 Мы переписываем наш eif на ленивый if:
 
 $ cat if
@@ -87,8 +77,6 @@ $ cat if
 → λ (Y : #Unit/@ → A)
 → λ (Z : #Unit/@ → A)
 → X (#Unit/@ → A) Y Z #Unit/Make
-
-
 
 и пример:
 
@@ -106,8 +94,6 @@ $ cat iff
    (#List/Cons #Nat/@ (#Nat/Succ #Nat/Zero) Y))))))))
    (\ (p: #Unit/@) -> #List/length #Nat/@ Y)
 
-
-
 который соотвествует iff x y = if x then list.length [0,0,0,0,0,0,1|y] else
 lists.length y.
 
@@ -115,8 +101,6 @@ lists.length y.
 
 > om:extract("priv/normal/Bool").
 ok
-
-
 
 Теперь вытащим из него код:
 
@@ -127,8 +111,6 @@ beam_lib:chunks("ebin/Bool.beam",[abstract_code]).
 ok
 > io:fwrite("~s~n", [erl_prettypr:format(erl_syntax:form_list(AC9))]).
 
-
-
 Находит там функцию iff и сохраняем в файл iff.erl. Вставляем в ветке с Cons
 io:format("IFF!~n"), и проверяем:
 
@@ -138,19 +120,13 @@ IFF!
 11> ch:unnat(ch:ap(iff:iff(),['Bool':'False'(),'List':'Nil'()])).
 0
 
-
-
 Напоминаю что все происходило с выключенной нормализацией в om_extract:
 
 extract(F,om:fst(om:erase(om:snd(om:parse(om:read(X++"/"++F))))),1)
 
-
-
 если включить нормализацию:
 
 extract(F,om:fst(om:erase(om:normal(om:snd(om:parse(om:read(X++"/"++F)))))),1)
-
-
 
 то даже (!) c Eager IF все работает как нада (т.е. заходит в одну ветку),
 опускаю подробности публикую Матрицу:
@@ -163,18 +139,12 @@ Norm Lazy Cnt
 -    +    1
 -    -    2       (unsatisfied case for runtime, two branch)
 
-
-
 Теперь смотрим как сделано в других языках:
 
-https://github.com/idris-lang/Idris-dev/blob/master/src/IRTS/Compiler.hs#L289-L3
-03
-https://github.com/idris-lang/Idris-dev/blob/master/src/Idris/Elab/Type.hs#L232-
-L248
-https://github.com/idris-lang/Idris-dev/blob/master/src/Idris/Core/Unify.hs#L714
--L717
-https://github.com/idris-lang/Idris-dev/blob/master/src/Idris/Core/Evaluate.hs#L
-123-L140
+https://github.com/idris-lang/Idris-dev/blob/master/src/IRTS/Compiler.hs#L289-L303
+https://github.com/idris-lang/Idris-dev/blob/master/src/Idris/Elab/Type.hs#L232-L248
+https://github.com/idris-lang/Idris-dev/blob/master/src/Idris/Core/Unify.hs#L714-L717
+https://github.com/idris-lang/Idris-dev/blob/master/src/Idris/Core/Evaluate.hs#L123-L140
 
 https://www.cs.ox.ac.uk/projects/utgp/school/idris-tutorial.pdf
 
@@ -192,7 +162,6 @@ explicit use of Force or Delay:
    boolCase True  t e = t
    boolCase False t e = e
 
-
 Т.е. сделано точно также как в Om, или другими словами через добавление обычной
 лямбды () -> A вместо A. Просто зашито в дешугаринге, чтобы программист сам
 force не писал.
@@ -200,5 +169,4 @@ force не писал.
 Вот такая петрушка. NPONECCOP патается копать глубже, но глубже у меня не
 получается, не вижу статей которые опровергали бы эти простые размышления и
 находили более глубокие подводные камни.
-TAGS (EDIT) cs, erlang, om
 

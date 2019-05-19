@@ -148,5 +148,4 @@ start();
 factorial ~p [ 5, [ 120, [] ] ]
 
 Факториал посчитан :) https://github.com/5HT/shen
-TAGS (EDIT) cs, erlang, javascript
 

@@ -162,4 +162,3 @@ emqttd 2.1.1 is running now
 Open http://127.0.0.1:18083/#/websocket with admin:public credentials, Press
 Connect, Subscribe, Send and observe statistics
 http://127.0.0.1:18083/#/overview.
-TAGS (EDIT) mq, voxoz

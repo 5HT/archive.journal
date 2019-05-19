@@ -13,4 +13,3 @@ Inductive ND_proves : list (prop atom) -> prop atom -> Prop :=
 | ND_assumption {Γ P} : In P Γ -> Γ ⊢ P
 | ND_cut {Γ P Q} : Γ ⊢ P -> P :: Γ ⊢ Q -> Γ ⊢ Q
 where "Γ ⊢ P" := (ND_proves Γ P).
-TAGS (EDIT) cs

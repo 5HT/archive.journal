@@ -53,6 +53,4 @@ Cubic Center, в зале Панорама (по ссылке карта, адр
 Для пользователей Windows:
 https://code.google.com/p/msysgit/
 https://github.com/dch/rebar/ -- тут работают эрланг релизы
-CURRENT MOOD blah
-TAGS (EDIT) cs
 

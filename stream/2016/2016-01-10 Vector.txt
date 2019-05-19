@@ -23,5 +23,4 @@ Nat → Nat) → λ(Zero : Nat) → Zero) b) → Vector n a
 *) → b → Vector m b → Vector (λ(Nat : *) → λ(Succ : Nat → Nat) → λ(Zero : Nat)
 → Succ (m Nat Succ Zero)) b) → ∀(Nil : ∀(b : *) → Vector (λ(Nat : *) → λ(Succ :
 Nat → Nat) → λ(Zero : Nat) → Zero) b) → Vector n a
-TAGS (EDIT) #nat, coc, morte, om
 

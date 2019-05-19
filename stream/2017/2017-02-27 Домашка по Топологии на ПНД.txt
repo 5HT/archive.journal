@@ -34,5 +34,4 @@ Record type_quotient (T : Type)
 
 ____________
 [1]. http://ai2-s2-pdfs.s3.amazonaws.com/1704/7a639180e384cea1f183cf9082e7e13f021a.pdf
-TAGS (EDIT) cs
 

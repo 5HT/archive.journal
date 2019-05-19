@@ -106,5 +106,4 @@ last(#operation{body={_,{Sender,Time},_,Tx}},S) ->
 
 Это парвило говорит что делать если обслужена последняя реплика-нода в цепочке.
 Заканчивать как в CR или еще разок волну подтверждающих коммитов, как в XA.
-TAGS (EDIT) #operation, #state, #transaction, #user, cr, erlang, xa
 

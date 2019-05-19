@@ -25,5 +25,4 @@ In EOX VM LING:
  {sasl,"SASL  CXC 138 11","2.3.2"},
  {stdlib,"ERTS  CXC 138 10","1.18.3"},
  {kernel,"ERTS  CXC 138 10","2.15.3"}]
-TAGS (EDIT) cs
 

@@ -12,7 +12,6 @@ rate [ formula ]
 fee [ transaction | month | annual ]
 bonus [ formula ]
 
-
 Вот например как я вижу описание продукта
 
 card M-PLA-CB UAH
@@ -37,7 +36,5 @@ card M-PLA-CB UAH
              rate    M-100002
              penalty M-100003
 
-
 Накидал за ночь: https://github.com/5HT/cards
-TAGS (EDIT) cs
 

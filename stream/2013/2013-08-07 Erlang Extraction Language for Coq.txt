@@ -25,7 +25,5 @@ Scala -- https://bitbucket.org/yoshihiro503/coqincoq_scala
 И совершенно няшное комюнити http://www.proofcafe.org/
 
 P.S.
-http://sole.dimi.uniud.it/~marino.miculan/wordpress/downloads/erlang-coq-synthes
-izer
-TAGS (EDIT) cs, deptypes, typesystems
+http://sole.dimi.uniud.it/~marino.miculan/wordpress/downloads/erlang-coq-synthesizer
 

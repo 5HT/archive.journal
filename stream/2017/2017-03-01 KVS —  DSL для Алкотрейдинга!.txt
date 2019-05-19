@@ -176,5 +176,4 @@ $ git clone git://github.com/spawnproc/ticker && cd ticker
 $ ./mad dep com pla rep
 
 Страница для вопросов и предложений — https://github.com/spawnproc/ticker
-TAGS (EDIT) #io, #order, #schema, #table, #tick, alkotrading, kvs
 

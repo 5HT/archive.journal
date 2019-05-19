@@ -49,4 +49,3 @@ context stop self
 _______
 [1]. https://github.com/dk14/xa (Scala one)
 [2]. https://github.com/spawnproc/xa (Erlang one)
-TAGS (EDIT) 2pc, cs, dtc, scala, xa

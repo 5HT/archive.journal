@@ -34,4 +34,4 @@ CoFixpoint это все очень не просто. Хелоуворлдич�
 Больше нигде коиндукции в IO нет. Катинг едж.
 ____________
 [1] https://www.microsoft.com/en-us/research/wp-content/uploads/2017/03/haskell-linear-submitted.pdf
-TAGS (EDIT) cs
+

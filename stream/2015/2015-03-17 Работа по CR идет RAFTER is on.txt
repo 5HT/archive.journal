@@ -63,7 +63,5 @@ RAFTER FOLLOWER #req_vote
 RAFTER CANDIDATE #vote
 RAFTER LEADER #vote
 
-
 Напоминаю ссылку: https://github.com/spawnproc/cr
-TAGS (EDIT) #req_vote, #vote, cr, cs, erlang, spawnproc, synrc
 

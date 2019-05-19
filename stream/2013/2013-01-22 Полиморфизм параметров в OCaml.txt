@@ -155,5 +155,4 @@ _______________
 [4]. http://alaska-kamtchatka.blogspot.com/2011/09/higher-order-fun.html
 [6]. http://okmij.org/ftp/ML/index.html
 [7]. http://code.google.com/p/deriving/wiki/Introduction
-TAGS (EDIT) cs
 
