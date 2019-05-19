@@ -8,7 +8,6 @@ with tree_list : Type.{max 1 l} :=
 | nil  : tree_list.{l} A
 | cons : tree.{l} A → tree_list.{l} A → tree_list.{l} A
 
-
 Компилируется в такой байткод:
 
 2 #NS 0 l       // терминалы
