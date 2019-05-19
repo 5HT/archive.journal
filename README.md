@@ -1,6 +1,6 @@
 # Namdak Tonpa Blog
 
-These are sources of <a href="//tonpa.guru">tonpa.guru</a>,
+These are sources of <a href="//tonpa.guru">5ht.co</a>,
 personal work-life journal, that was recorded during 2009-2019 years by Maxim Sokhatsky.
 This journal mainly covers three aspects of Maxim's being:
 <a href="//longchenpa.guru">longchenpa.guru</a> (early years),
