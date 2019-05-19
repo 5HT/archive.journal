@@ -35,7 +35,6 @@ Non-empty file - 38 kb
 nginx: 14c
 sgi: 24c (16с without fcgi) ~19c
 
-
 Тут и vhosts и вроде даже полная имплементация FCGI. Мы думаем о PHP
 программистах!
 Автор проекта: http://github.com/AstRonin

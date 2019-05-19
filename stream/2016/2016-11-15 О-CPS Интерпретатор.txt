@@ -23,7 +23,6 @@ Ok(Nil)
 Ok(Nil)
 Ok(Lambda(Nil, Nil))
 
-
 Эти Nil могут либо схлопываться, либо рости при встраиваниях. Например [[]] и
 (()) не изменяются при встраиваниях, а {{}} растет:
 
@@ -34,7 +33,6 @@ Ok(Lambda(Nil, Nil))
 Ok(Nil)
 Ok(Nil)
 Ok(Lambda(Nil, Lambda(Nil, Nil)))
-
 
 Изменяя способ расстановки скобочек можно догадаться какие основные правила
 создания выражений:
@@ -48,7 +46,6 @@ Ok(Nil)
 Ok(Call(Nil, Call(Nil, Nil)))
 Ok(Call(Nil, Call(Nil, Nil)))
 Ok(Call(Lambda(Nil, Nil), Call(Lambda(Nil, Nil), Lambda(Nil, Nil))))
-
 
 Nil можно вызывать друг у друга в цепочке, отлично. Более общее правило:
 аппликация через пробел в любом ближайшем скобочном контексте всегда одинакова:
@@ -72,7 +69,6 @@ Ok(Call(Call(Call(Number(1), Number(2)), Number(3)), Number(4)))
 Ok(Lambda(Nil, Call(Number(1), Lambda(Nil, Call(Number(2), Lambda(Nil,
 Call(Number(3), Lambda(Nil, Number(4)))))))))
 
-
 Если множество в своем списке-носителе содержит присваивания к именам то такой
 множество трактуется как словарь, если список множества — это просто имена — то
 это бинд параметр функции {[x;y;z]...}, если параметр множества если функция
@@ -87,11 +83,8 @@ Call(Number(3), Lambda(Nil, Number(4)))))))))
 
 Ok(Dict(Cons(Number(1), Number(2))))
 Ok(Call(Name("function"), Dict(Cons(Number(1), Number(2)))))
-Ok(Dict(Cons(Adverb(Assign, Name("a"), Number(1)), Adverb(Assign, Name("b"),
-Number(2)))))
-Ok(Lambda(Cons(Name("x"), Name("y")), Verb(Times, Name("x"), Verb(Plus,
-Name("y"), Name("x")))))
-
+Ok(Dict(Cons(Adverb(Assign, Name("a"), Number(1)), Adverb(Assign, Name("b"), Number(2)))))
+Ok(Lambda(Cons(Name("x"), Name("y")), Verb(Times, Name("x"), Verb(Plus, Name("y"), Name("x")))))
 
 Списки тоже можно конкатенейтить через Semicolon, вообще у Semicolon
 максимальный приоритет и она разделяет все экспрешины. Это в сущности одни и те
@@ -109,59 +102,43 @@ Ok(Dict(Cons(Number(1), Cons(Number(2), Cons(Number(3), Number(4))))))
      Ok(Call(Number(1), Call(Number(2), Call(Number(3), Number(4)))))
      Ok(Call(Symbol("a"), Call(Symbol("b"), Call(Symbol("c"), Symbol("d")))))
 
-
 У меня получилась BNF нотация на 13 правил. Что скажете? Можно короче, красивее?
 
 List:      AST = { "(" ")" => AST::Nil, "(" <l:exprlist> ")" => list(l), };
 Dict:      AST = { "[" "]" => AST::Nil, "[" <l:exprlist> "]" => dict(l), };
-
 Lambda:    AST = { "{" <m:exprlist> "}"                      => fun(AST::Nil,m),
                    "{[" <c:namelist> "]" <m:exprlist> "}"    => fun(c,m),
-                   "{" "}"                                   =>
-fun(AST::Nil,AST::Nil)};
+                   "{" "}"                                   => fun(AST::Nil,AST::Nil)};
 
 Call:      AST = { <c:noun> <a:callcont>                     => call(c,a), };
 NameList:  AST = { Name, <o:name> <m:namecont>               => cons(o,m), };
 ExprList:  AST = { ExprCont, Expr, <o:expr> <m:exprcont>     => cons(o,m), };
-
 CallCont:  AST = { Noun, <m:call>                            => m };
 NameCont:  AST = { ";" => AST::Nil, ";" <m:namelist>         => m };
 ExprCont:  AST = { ";" => AST::Nil, ";" <m:exprlist>         => m };
-
-Noun:      AST = { Name, Number, Hexlit, Bool, Symbol, List, Dict, Sequence,
-Lambda, Ioverb };
+Noun:      AST = { Name, Number, Hexlit, Bool, Symbol, List, Dict, Sequence, Lambda, Ioverb };
 Expr:      AST = { Noun, Call, Verbs, Adverbs, };
 
-Verbs:     AST = {           <v:verb>               =>
-verb(v,AST::Nil,AST::Nil),
+Verbs:     AST = {           <v:verb>               => verb(v,AST::Nil,AST::Nil),
                              <v:verb>     <r:expr>  => verb(v,AST::Nil,r),
                    <l:call>  <v:verb>     <r:expr>  => verb(v,l,r),
                    <l:noun>  <v:verb>     <r:expr>  => verb(v,l,r), };
 
-Adverbs:   AST = {           <a:adverb>             =>
-adverb(a,AST::Nil,AST::Nil),
+Adverbs:   AST = {           <a:adverb>             => adverb(a,AST::Nil,AST::Nil),
                              <a:adverb>   <e:expr>  => adverb(a,AST::Nil,e),
                    <l:call>  <a:adverb>   <r:expr>  => adverb(a,l,r),
                    <l:noun>  <a:adverb>   <r:expr>  => adverb(a,l,r), };
 
 Терминалы думаю написать на NOM попробовать, чтобы быстрее парсалось.
 Number:    AST = { <n:r"\d+"> => AST::Number(u64::from_str(n).unwrap()), };
-Hexlit:    AST = { <h:r"0x[a-zA-Z\d]+"> =>
-AST::Number(u64::from_str_radix(&h[2..], 16).unwrap()), };
-Bool:      AST = { <b:r"[01]+b"> =>
-AST::Number(u64::from_str_radix(&b[0..b.len()-1], 2).unwrap()), };
+Hexlit:    AST = { <h:r"0x[a-zA-Z\d]+"> => AST::Number(u64::from_str_radix(&h[2..], 16).unwrap()), };
+Bool:      AST = { <b:r"[01]+b"> => AST::Number(u64::from_str_radix(&b[0..b.len()-1], 2).unwrap()), };
 Name:      AST = { <n:r"[a-zA-Z][-a-zA-Z\d]*"> => AST::Name(String::from(n)), };
-Symbol:    AST = { <s:r"`([a-z][a-z0-9]*)?"> =>
-AST::Symbol(String::from(&s[1..s.len()])), };
+Symbol:    AST = { <s:r"`([a-z][a-z0-9]*)?"> => AST::Symbol(String::from(&s[1..s.len()])), };
 Adverb: Adverb = { <a:r"[\x27:\x5C\x2F]:?"> => Adverb::from_str(a).unwrap(), };
-Verb:     Verb = { <v:r"[+\x2D*$%!&|<>=~,^#_?@.]"> =>
-Verb::from_str(v).unwrap(), };
-Ioverb:    AST = { <i:r"\d+:"> =>
-AST::Ioverb(String::from(i),Box::new(AST::Nil)), };
-Sequence:  AST = { <s:r"\x22(\\.|[^\x5C\x22])*\x22"> =>
-AST::Sequence(String::from(&s[1..s.len()-1])), };
-
-
+Verb:     Verb = { <v:r"[+\x2D*$%!&|<>=~,^#_?@.]"> => Verb::from_str(v).unwrap(), };
+Ioverb:    AST = { <i:r"\d+:"> => AST::Ioverb(String::from(i),Box::new(AST::Nil)), };
+Sequence:  AST = { <s:r"\x22(\\.|[^\x5C\x22])*\x22"> => AST::Sequence(String::from(&s[1..s.len()-1])), };
 
 Этот парсер парсает все исходники К и Q которые мне попадались на глаза,
 включая диалекты типа Kona (K4) и oK.js (K5). Это около 128КБ, включая саму

@@ -42,8 +42,7 @@ pub fn lpv(iter_num: usize, sz: usize) -> usize {
     let sums: Vec<_> = (0..iter_num)
         .map(|_| {
             let x: Vec<_> = (0..sz).map(|i| i).collect();
-            let y: Vec<_> = x.iter().zip(x.iter().skip(1)).map(|(x, y)| x +
-y).collect();
+            let y: Vec<_> = x.iter().zip(x.iter().skip(1)).map(|(x, y)| x + y).collect();
             (0..sz).step_by(100).map(|i| y[i]).sum()
         })
         .collect();
@@ -69,7 +68,6 @@ $ time ./main-lpa
 real    0m0.107s
 user    0m0.096s
 sys     0m0.012s
-
 
 Теперь сишечка:
 
@@ -112,9 +110,7 @@ real    0m0.129s
 user    0m0.100s
 sys     0m0.028s
 
-
 Теперь божественная "неоптимизированная" ГеАшЦешечка
-
 
 {-# LANGUAGE ParallelListComp #-}
 import Control.Monad
@@ -128,9 +124,7 @@ main = times 20 (compute 1000000) >>= print
 compute n = do
     let xs = [0 .. (n-1)]
         ys = [x+k | x <- xs | k <- drop 1 xs]
-    return $ sum $ map snd $ filter fst [((i`mod`100)==0,y) | y <- ys | i <-
-[0,1..]]
-
+    return $ sum $ map snd $ filter fst [((i`mod`100)==0,y) | y <- ys | i <- [0,1..]]
 
 $ ghc -O3 -o main-hs ./main-hs.hs
 $ time ./main-hs
@@ -144,57 +138,30 @@ sys     0m0.004s
 По требованию трудящихся на арену выходит божественный ЛуаДЖИТик:
 
 ffi=require('ffi')
-
 jit.opt.start("hotloop=5", "loopunroll=100", "instunroll=100")
-
 jit.flush()
-
-
-
 local ct=ffi.typeof('int64_t[?]')
 
-
-
 function lpa(size, iter_num)
-
     local sum
-
     for e=0,size-1 do
-
         sum=0LL
-
         local x=ffi.new(ct, iter_num)
-
         for i=0,iter_num-1 do
-
             x[i]=i
-
         end
-
         local y=ffi.new(ct, iter_num-1)
-
         for i=0,iter_num-2 do
-
             y[i]=x[i]+x[i+1]
-
         end
-
         for i=0,iter_num-1,100 do
-
             sum = sum + y[i]
-
         end
-
     end
-
     return sum
-
 end
 
-
-
 print(lpa(20, 1000000))
-
 os.exit(1)
 
 $ time luajit lpa.lua
@@ -203,7 +170,6 @@ $ time luajit lpa.lua
 real    0m0.099s
 user    0m0.032s
 sys     0m0.064s
-
 
 Swift и Go -- ниже дна (С++). Поэтому эту хуйню даже ставить на машину не буду.
 Свифт лично мне нравится и желаю ему взросления, но его не будет так как Apple
@@ -224,7 +190,6 @@ LuaJIT 2.1       99
 Rust Arrays     107
 GHC             115
 C++             119
-
 
 С Новым Годом, Сережа и Лев!
 Всем желаю успешного байтойобства и глубокого аппликативного фьюжена в 2017!

@@ -36,7 +36,6 @@ vis(a,d)
 ∀a,b,c,d.txn{a,b}{c,d} ∧ so(a,b) ∧ vis(c,a) ∧ sameobj(d,b)⇒vis(d,b)
 ∀a,b,c,d.txn{a,b}{c,d} ∧ vis(c,a) ∧ sameobj(d,b)⇒vis(d,b)
 
-
 ШИВА-РАМА-КРИШНА-Н!
 ______________
 [1]. http://kcsrk.info/papers/quelea_ieee16.pdf

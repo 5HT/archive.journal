@@ -9,15 +9,10 @@ ___________
 [1]. http://ns.synrc.com:8108
 [2]. https://github.com/synrc/adm
 
-
-
 Language       LOC
 ------------- ----
 CSS            148
 Javascript/D3   49
 HTML            53
 Erlang         144
-
-
-Feedbacks are welcome. Как хотите так и будет.
 

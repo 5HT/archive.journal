@@ -43,9 +43,6 @@ Written writer1: rate 144 MB/s messages 38833 in 2 sec
 Written writer2: rate 147 MB/s messages 38278 in 2 sec
 Written writer1: rate 147 MB/s messages 35481 in 2 sec
 
-
-
-
 ecirca надо хачить так как там пословное управление буфером, поэтому я вернулся
 к накапливаю бинарей в очередях потоков эрланга (так все делают), но по
 прежнему подумываю о каком-то непрерывном массиве, который мы знаем как быстро

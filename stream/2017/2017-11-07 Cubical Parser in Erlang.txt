@@ -176,7 +176,6 @@ listObject (A: U) : U
                      {sigma,{tele,[{id,45,[...]}],{app,{app,...},{...}},[]},
                             {id,48,"Unit"}}}}]}
 
-
 В тред приглашаются специалисты по LALR парсерам.
 _______________
 [1]. https://github.com/groupoid/infinity/blob/master/src/cub_parser.yrl

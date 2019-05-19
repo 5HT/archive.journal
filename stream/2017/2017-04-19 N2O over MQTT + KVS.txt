@@ -48,7 +48,6 @@ load(Env) ->
     emqttd:hook('message.delivered', fun ?MODULE:on_delivered/3, [Env]),
     emqttd:hook('message.acked', fun ?MODULE:on_acked/3, [Env]).
 
-
 Вообщем-то это все, что нужно знать людям, которые принимают решения.
 Инструкция для mad хипстеров не признающих rebar, mix и hex:
 
@@ -157,7 +156,6 @@ emqttd 2.1.1 is running now
 19:17:25.904 [info] Application mad started on node nonode@nohost
 19:17:25.957 [info] Application sh started on node nonode@nohost
 19:17:26.043 [info] Application syslog started on node nonode@nohost
-
 
 Open http://127.0.0.1:18083/#/websocket with admin:public credentials, Press
 Connect, Subscribe, Send and observe statistics
