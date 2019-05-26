@@ -79,17 +79,10 @@
 	</code></figure>
 
 	<figure><code>
- sudo apt-get --allow-insecure-repositories update
+ sudo apt-get update
+ sudo apt-get upgrade
  sudo apt-get install mc build-essential inotify-tools
- sudo apt-get --reinstall install libssl-dev libncurses5-dev libncurses5 libtinfo5
-	</code></figure>
-
-	<p>It could be that for reinstall following packages
-        <b>build-essentials</b>, <b>libssl-dev</b>, <b>libncurses5-dev</b> you will
-           need to use aptitude. </p>
-
-	<figure><code>
- sudo aptitude -f install libssl-dev
+ sudo apt-get install libssl-dev libncurses5-dev libncurses5 libtinfo5
 	</code></figure>
 
 	<h3>ERL</h3>
