@@ -62,7 +62,8 @@
 
 	<figure><code>
  APT { Ignore { "gpg-pubkey"; } };
- APT { Get { AllowUnauthenticated "1"; }; };
+ APT { Get { AllowUnauthenticated "yes"; }; };
+ Acquire::AllowInsecureRepositories "yes";
 	</code></figure>
 
         <p>And also specify in <b>/etc/apt/sources.list</b> bionic
