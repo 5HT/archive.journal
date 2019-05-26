@@ -38,7 +38,7 @@
            then apply drivers over vanialla Windows 10 ARM64.</p>
 
 	<p>— <a href="https://github.com/WOA-Project/WOA-Deployer-Lumia">WOA-Project/WOA-Deployer-Lumia</a> — 2.5.4</p>
-                       
+
 	<h3>WIN</h3>
 
 	<p>After flashing USB perform regular Windows Setup procedure and set up
@@ -51,6 +51,8 @@
            in <b>gpedit.msc</b>, disable Windows Update, Windows Search, everything you find allocation CPU or
            MEM in <b>taskmngr.exe</b>. After all preparation you should see at most 5-10% CPU consumption,
            as GPU drivers is not accessible on RP3B+.</p>
+
+	<figure><img src="https://pbs.twimg.com/media/D7hK8qLWwAE-TVH?format=jpg&name=medium" width=600></figure>
 
 	<h3>WSL</h3>
 
@@ -87,21 +89,22 @@
         <p>Now we need to use <b>kerl<p> the Erlang builder. Set config in <b>~/.kerlrc</b>:</p>
 
 	<figure><code>
- KERL_CONFIGURE_OPTIONS="--enable-threads --enable-smp-support --without-javac --enable-kernel-poll"
+ KERL_CONFIGURE_OPTIONS="--enable-threads --enable-smp-support \
+                         --without-javac --enable-kernel-poll"
 	</code></figure>
 
 	<p>It will take hours to build Erlang on RP3B+!</p>
 
 	<figure><img src="https://pbs.twimg.com/media/D7Lr8_6XoAA-sA-?format=png&name=medium" width=600></figure>
-	                                                                         
+
 	<figure><img src="https://pbs.twimg.com/media/D7Lr5wrXkAI7A1J?format=png&name=medium" width=600></figure>
 
         <p>Fix typo, introduce changes or put like for this page at:
         <a href="https://github.com/5HT/tonpa.guru/blob/master/stream/2019/2019-05-22%20RP3B+%20WoA.htm">RP3B+ WoA</a><br>
         Discuss: <a href="https://github.com/5ht/tonpa.guru/issues/11">https://github.com/5ht/tonpa.guru/issues/11</a></p>
-                       
-    </section>         
-</main>                
+
+    </section>
+</main>
 <footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
-</body>                
-</html>                
+</body>
+</html>
