@@ -30,7 +30,6 @@
            — ERL: Install Erlang<br>
         </p>
 
-
         <p>First of all I want to say even if you bought the device with radiators, SD card, and power adapter,
            this is still if not enough in case you don't have SD card reader. The general idea is that
            WoA Deployer takes original WIM image and by using DISM commands, first apply this image to SD card,
@@ -44,7 +43,15 @@
 
 	<h3>WIN</h3>
 
+	<p>After flashing USB perform regular Windows Setup procedure and set up to boot from USB always at first in EFI.</p>
+
 	<h3>PERF</h3>
+
+        <p>As for Windows this is personal preferences, but in reality RP3B+ is better to use <b>cmd.exe</b> as a Shell
+           instead of <b>explorer.exe</b>. Also diable any GPU GUI effects, disable Windows Defender
+           in <b>gpedit.msc</b>, disable Windows Update, Windows Search, everything you find allocation CPU or
+           MEM in <b>taskmngr.exe</b>. After all preparation you should see at most 5-10% CPU consumption,
+           as GPU drivers is not accessible on RP3B+.</p>
 
 	<h3>WSL</h3>
 
