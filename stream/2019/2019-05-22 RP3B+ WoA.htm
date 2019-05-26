@@ -66,10 +66,16 @@
 	</code></figure>
 
         <p>And also specify in <b>/etc/apt/sources.list</b> bionic
-           ports with existing ARM64 binaries:</a>
+           ports with existing ARM64 binaries. NOTE: please use three lines
+           for bionic, bionic-update, and bionic-security with all combination
+           of channels: main, restricted, universe, multiverse.
+           Just ignore GPG errors during output.
+           The key to success is [trusted=1] option here!</a>
 
 	<figure><code>
- deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ bionic main universe
+ deb [trusted=1] http://ports.ubuntu.com/ubuntu-ports/ bionic main universe
+ deb [trusted=1] http://ports.ubuntu.com/ubuntu-ports/ bionic-updates main
+ deb [trusted=1] http://ports.ubuntu.com/ubuntu-ports/ bionic-security main
 	</code></figure>
 
 	<figure><code>
