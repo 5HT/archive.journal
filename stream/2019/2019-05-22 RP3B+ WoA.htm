@@ -69,9 +69,7 @@
         <p>And also specify in <b>/etc/apt/sources.list</b> bionic
            ports with existing ARM64 binaries. NOTE: please use three lines
            for bionic, bionic-update, and bionic-security with all combination
-           of channels: main, restricted, universe, multiverse.
-           Just ignore GPG errors during output.
-           The key to success is <b>[trusted=1]</b> option here!</a>
+           of channels: main, restricted, universe, multiverse.</p>
 
 	<figure><code>
  deb [trusted=1] http://ports.ubuntu.com/ubuntu-ports/ bionic main universe
@@ -81,6 +79,11 @@
 
 	<figure><code>
  sudo apt-get update
+	</code></figure>
+
+           <p>During update just ignore all the GPG errors at the end.</p>
+
+	<figure><code>
  sudo apt-get upgrade
  sudo apt-get install mc build-essential inotify-tools
  sudo apt-get install libssl-dev libncurses5-dev libncurses5 libtinfo5
