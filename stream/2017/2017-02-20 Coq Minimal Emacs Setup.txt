@@ -24,5 +24,4 @@ $ opam search coq | wc -l
 I use default emacs from brew
 $ brew info emacs
 emacs: stable 25.1 (bottled), devel 25.2-rc1, HEAD
-TAGS (EDIT) coq, groupoid infinity
 

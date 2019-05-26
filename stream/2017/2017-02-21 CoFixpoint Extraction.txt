@@ -30,4 +30,3 @@ CoInductive t (E : Effect.t) : Type -> Type :=
   | Let : forall (A B : Type), t E A -> (A -> t E B) -> t E B
   | Split : forall (A : Type), t E A -> t E A -> t E A
   | Join : forall (A B : Type), t E A -> t E B -> t E (A * B).
-TAGS (EDIT) cs. cofixpoint, groupoid infinity

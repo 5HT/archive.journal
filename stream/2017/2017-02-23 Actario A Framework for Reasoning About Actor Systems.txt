@@ -17,5 +17,4 @@ end.
 
 _______________
 [1] http://amutake.github.io/actario/AGERE2015.pdf
-TAGS (EDIT) cofixpoint, cs, groupoid infinity
 

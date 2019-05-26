@@ -9,10 +9,7 @@ ax4 : [∀(i:I).0⊔x=x=x⊔0 ∧ 1⊔x=1=x⊔1].
 ax5 : [∀(i:I). cof(i=0) ∧ cof(i=1)]
 ax6 : [∀(φψ:Ω). cofφ⇒cofψ⇒cof(φ∨ψ)]
 ax7 : [∀(φψ:Ω). cofφ⇒(φ⇒cofψ)⇒cof(φ∧ψ)].
-
-
 ____________________________
 [1] https://www.cl.cam.ac.uk/~rio22/pdf/Fields-talk.pdf
 [2] http://drops.dagstuhl.de/opus/volltexte/2016/6564/pdf/LIPIcs-CSL-2016-24.pdf
 [3] http://www.cl.cam.ac.uk/~rio22/agda/cubical-topos/root.html
-TAGS (EDIT) cs, groupoid infinity

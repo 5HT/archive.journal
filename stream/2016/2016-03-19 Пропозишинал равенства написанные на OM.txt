@@ -18,7 +18,6 @@ $ cat Equ/refl
 $ cat Equ/theorem
 (\ (x : #Equ/@ #Nat/@ #Nat/Zero #Nat/Zero) -> x) (#Equ/refl #Nat/@ #Nat/Zero)
 
-
 Если попытаться прочекать 0 и 1:
 
 $ om type a "(\ (x : #Equ/@ #Nat/@ #Nat/Zero (#Nat/Succ #Nat/Zero)) -> x)
@@ -38,7 +37,6 @@ $ om fst erase a "(\ (x : #Equ/@ #Nat/@ #Nat/Zero #Nat/Zero) -> x) (#Equ/refl
             {{"λ",{'Succ',0}},
              {any,{{"λ",{'Zero',0}},{any,{var,{'Zero',0}}}}}}}}}}
 
-
 Ну и для полноты картины равенство Лейбница (пользовать также):
 
 $ cat Leibnitz/@
@@ -53,7 +51,6 @@ $ cat Leibnitz/refl
 → λ (a: T)
 → λ (Equ: \/ (a : T) -> #Prop)
 → (\(x: #Prop) -> \ (t: x) -> t) (Equ a)
-
 
 В этой кодирвке мы избались от 1-тапла и термы более компактные.
 
@@ -76,5 +73,4 @@ $ cat Frege/intro
 \(g : p -> q) ->
 \(pp : p) ->
 f pp (g pp)
-TAGS (EDIT) #equ, #nat, #prop, cs, erlang, om
 

@@ -11,9 +11,7 @@ NAMO LAMBDA GARBHA
          (nil: () → list A)
          (cons: A → list A → list A)
 
-
-этот список компилируется как известно в три терма "List/Type", "List/Nil" и
-"List/Cons".
+этот список компилируется как известно в три терма "List/Type", "List/Nil" и "List/Cons".
 
   λ (a: *)
 → ∀ (List: *)
@@ -51,7 +49,6 @@ NAMO LAMBDA GARBHA
 → λ (Nil: List)
 → Nil
 
-
 Теперь скомпилируем это в Эрланг, удалив немножко информации о типах — 1 в 1
 кодирование (хелперы вверху):
 
@@ -68,9 +65,7 @@ nil  () ->                          fun (Cons) -> fun (Nil) -> Nil end end.
 cons () -> fun (A) -> fun (List) -> fun (Cons) -> fun (Nil) ->
 ap(Cons,[A,ap(List,[Cons,Nil])]) end end end end.
 
-
 Микробенчмарки:
-
 
 L = lists:seq(1,1000000),
 io:format("Pack/Unpack 100 000 Inductive List: ~p~n",
@@ -79,8 +74,6 @@ io:format("Pack/Unpack 100 000 Inductive List: ~p~n",
 > c(ch), ch:main().
 > Pack/Unpack 1 000 000 Inductive List: {1107583,'_'}
 
-
 В пасспорт: roll/unroll идуктивного списка из 1 млн элементов ~ 1 секунда.
 Средний и понятный результат.
-TAGS (EDIT) cs, erlang, exe, om
 

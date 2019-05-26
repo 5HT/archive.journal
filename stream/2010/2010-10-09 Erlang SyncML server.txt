@@ -52,5 +52,4 @@ iserve_request(C, Req) ->
         end.
 
 Репозиторий проекта на http://synrc.com/repository/sync/server
-TAGS (EDIT) cs
 

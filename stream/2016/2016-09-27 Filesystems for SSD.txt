@@ -47,5 +47,4 @@ FTL (Flast Translation Layer), и если файловая система не 
 _______________
 [1]. http://www.linux-mtd.infradead.org/doc/ubidesign/ubidesign.pdf
 [2]. https://www.usenix.org/system/files/conference/fast15/fast15-paper-lee.pdf
-TAGS (EDIT) kvs, ssd, streams
 

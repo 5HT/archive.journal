@@ -77,5 +77,4 @@ cpl>simp fact.s.s.s.s.0
     s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.0.!
 :1 -> nat
 cpl>
-TAGS (EDIT) cs
 

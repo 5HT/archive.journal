@@ -46,5 +46,4 @@ as we totally rely on Erlang compiler foundation. The Idris idea of having the
 one language for both reasoning and general programming is present in our
 pipeline. Code extraction is just type erasure and holes (typed Effects in a
 form of Free Monad) fulfilling.
-TAGS (EDIT) cs, erlang, lambda, pi
 

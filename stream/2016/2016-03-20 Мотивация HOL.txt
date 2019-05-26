@@ -24,5 +24,4 @@ natural deduction logic (Church used a Hilbert-style formal system). However,
 this inheritance is, in my opinion, entirely good.
 
 https://www.cl.cam.ac.uk/~mjcg/papers/HolHistory.pdf
-TAGS (EDIT) cs
 

@@ -20,5 +20,4 @@ implement any transport under nitrogen. Thats why websocket port of nitrogen
 comes so easy and later XHR fallback with Bullet implemented in couple minutes.
 Doing that within previous wf_core codebase would be impossible. And doing this
 in cowboy and bullet callbacks makes N2O aware of any transports.
-TAGS (EDIT) n2o
 

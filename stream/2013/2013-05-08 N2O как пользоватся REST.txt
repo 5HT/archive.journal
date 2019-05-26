@@ -65,5 +65,4 @@ curl -GET http://localhost:8000/rest/users/doxtop
 <td></td></tr>
 
 Смотрите примеры на https://github.com/synrc/n2o
-TAGS (EDIT) #user, cs
 

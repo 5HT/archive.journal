@@ -16,7 +16,6 @@ Erlang [ling-0.3.2]
 Eshell V6.3  (abort with ^G)
 1>
 
-
 LING идет вместе с railing — это штука типа rebar или mad, но которая может
 создавать только образы LING с vmling.o и встроенной файловой системой. По
 умолчанию LING включает только два приложения stdlib и kernel. И то без priv
@@ -48,8 +47,6 @@ io:format("~s~n",[binary_to_list(element(2,file:read_file("/boot/local.map")))])
 /erlang/lib/mad/ebin /mad
 /erlang/lib/sh/ebin /sh
 /erlang/lib/mnesia-4.12.3/ebin /mnesia
-
-
 
 Проблема в том, что в start.boot который берется из поставки Erlang/OTP умеет
 загружать только kernel и stdlib и чтобы писать загрузчик приложений во
@@ -104,15 +101,12 @@ element(3,binary_to_term(element(2,file:read_file("/boot/start.boot")))) ].
 ["$ROOT/lib/kernel/ebin",
  "$ROOT/lib/stdlib/ebin"]
 
-
-
 Как видно здесь происходит вызов приложений, похоже мы можем просто вписывать
 операции запуска приложений как описанов в apply операциях:
 
  {apply,{application,start_boot,[kernel,permanent]}},
  {apply,{application,start_boot,[stdlib,permanent]}},
  {apply,{c,erlangrc,[]}},
-
 
 Кстати здесь видно backdoor эрланговый, при запуске виртуальной машины BEAM,
 всегда вызывается c:erlangrc(). Я думаю что в LING это можно пофиксать, и не
@@ -145,7 +139,6 @@ Prio | Point                              | Conn       |  Fid | Type
 
 3> os:type().
 {xen,ling}
-
 
 Пишет {xen,ling} но должно писать {posix,ling}. Пока буду заниматься
 формированием файловой системы для LING бандла. Итого mad в скором времени
@@ -189,8 +182,6 @@ mipsel-ling-elf-objcopy --info
           mips symbolsrec verilog tekhex binary ihex
         plugin symbolsrec verilog tekhex binary ihex
 
-
-
 gcc-5.1 прекрасно собирается clang, так что думаю можно еще xen_86 сборку
 перевести на crosstool-ng. Что касается драйвера последовтельного порта и
 startup.s, то придется понатыкивать с SDK примеров к CI20, тав вроде в arm
@@ -203,4 +194,3 @@ arch
 ├── mips
 ├── posix_x86
 └── xen_x86
-TAGS (EDIT) cs, erlang, ling, mips, posix

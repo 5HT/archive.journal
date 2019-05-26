@@ -99,5 +99,4 @@ points() -> cowboy_router:compile([{'_', [ {"/[...]", n2o_stream, []} ]}]).
 
 А в это время, конкуренты N2O, формат агностик протокол WAMP уже есть на сайте
 IETF. Может создать драфт и себе, man pages, вот это все?
-TAGS (EDIT) #cx, n2o, synrc
 

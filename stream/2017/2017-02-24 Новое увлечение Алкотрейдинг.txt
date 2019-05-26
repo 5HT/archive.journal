@@ -20,5 +20,4 @@ HFT в Биткоинах не нужен, поэтому любой ваш PHP 
 нами!
 
 https://github.com/spawnproc/ticker
-TAGS (EDIT) alkotrading
 

@@ -9,7 +9,6 @@ equation x y =
     0 <= x - 3 + 7 * y &&
     (x == y || y + 20 == x + 30)
 
-
 Here's how I run the solver:
 
     res <- evalZ3With Nothing opts $ do
@@ -27,7 +26,6 @@ Here's how I run the solver:
         Just sol -> do
             putStrLn $ "Solution: " ++ show sol
 
-
 And here's the result, which also show you the equation we submitted to Z3:
 
 (let ((a!1 (ite (<= 0 (+ (- x!0 3) (* 7 y!1)))
@@ -37,7 +35,6 @@ And here's the result, which also show you the equation we submitted to Z3:
 
 Solution: [-8,2]
 
-
 Now with one function, I have either a predicate that I can use in Haskell
 code, or an input to Z3 for finding possible arguments for which it is true!
 </pre>
@@ -45,4 +42,3 @@ code, or an input to Z3 for finding possible arguments for which it is true!
 ______________
 [1]. https://github.com/conal/concat/issues/4
 [2]. http://conal.net/papers/compiling-to-categories/compiling-to-categories.pdf
-TAGS (EDIT) ccc, smt

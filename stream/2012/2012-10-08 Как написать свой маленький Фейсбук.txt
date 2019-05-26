@@ -100,5 +100,4 @@ volume create vol replica и у вас кластер, который будет
 
 Вот и весь секрет успеха: Riak, GProc, RabbitMQ, Nitrogen, Cowboy, GlusterFS.
 Если вам нужен свой фейсбук обращайтесь в http://synrc.com.
-TAGS (EDIT) cs
 

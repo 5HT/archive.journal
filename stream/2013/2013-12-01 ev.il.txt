@@ -29,9 +29,8 @@ C#. Я себе сразу представляю как меня спрашив
 4. event: Delegate.Combine/Remove
 5. yield: IEnumerator
 6. async: CompilerServices.AsyncStateMachine
-...
 
-еще много чего нет, но вот это первое в голову пришло. yield пример разбивает
+и т.д. и еще много чего нет, но вот это первое в голову пришло. yield пример разбивает
 секции методов на точки входа, так же приблизительно работает и async,
 используя стейт машину. Вообще CompilerService это такой набор тулов, которые
 используются для генерации кода фиксированым наборов макросов (синтаксического
@@ -71,8 +70,7 @@ C#. Я себе сразу представляю как меня спрашив
 
 .typedef class [mscorlib] System.Delegate as delegate
 .class public sealed Event extends [mscorlib] System.MulticastDelegate {
-    .method public specialname void .ctor(object 'object', native int 'method')
-runtime { }
+    .method public specialname void .ctor(object 'object', native int 'method') runtime { }
     .method public virtual void Invoke(string Msg) runtime { }
 }
 
@@ -107,12 +105,9 @@ runtime { }
 С#, а даже и лучше.
 
 _______________
-[1]. Компилятор языка Io — http://iolanguage.com (ссылка на мою CLR версию
-внизу)
+[1]. Компилятор языка Io — http://iolanguage.com (ссылка на мою CLR версию внизу)
 [2]. Компилятор PL/1 — https://github.com/devaspot/pl (мой курсач в институте)
-[3]. Компилятор Lisp — https://github.com/devaspot/lisp (писали в 2003 году,
-еще до DLR)
+[3]. Компилятор Lisp — https://github.com/devaspot/lisp (писали в 2003 году, еще до DLR)
 
 Ну так на синьйора думаю покатит :)
-TAGS (EDIT) windows
 

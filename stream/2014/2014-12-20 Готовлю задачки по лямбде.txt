@@ -41,5 +41,4 @@ COPY   = input ? c -> output -> c,
     THREE  = PLUS ONE TWO,
     FOUR   = MINUS (TIMES THREE TWO) (PLUS ONE ONE),
     EIGHT  = PLUS FOUR FOUR
-TAGS (EDIT) cs
 

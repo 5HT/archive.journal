@@ -88,5 +88,4 @@ Haskell->Agda, OCaml->Coq) переход к исчислению констру
 
 _____________
 http://synrc.com/publications/cat/
-TAGS (EDIT) cs
 

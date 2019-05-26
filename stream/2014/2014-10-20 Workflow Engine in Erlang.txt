@@ -162,13 +162,7 @@ action({request,'Process'}, Proc) ->
 action({request,'Final'}, Proc) ->
     {reply,Proc}.
 
-
-
 Enterprise is fun again :-)
 ______________________________
-[1]. М.Сохацкий. Архитектура и программирование систем управления
-бизнес-процессами.
+[1]. М.Сохацкий. Архитектура и программирование систем управления бизнес-процессами.
 [2]. SpawnProc BPE Erlang Workflow Engine.
-TAGS (EDIT) #endevent, #history, #messageevent, #payment_notification,
-#process, #sequenceflow, #servicetask, #user, #usertask, bpe, cs, erlang,
-spawnproc, synrc

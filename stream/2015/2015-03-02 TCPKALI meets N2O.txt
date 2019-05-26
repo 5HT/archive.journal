@@ -50,5 +50,4 @@ Test duration: 10.0012 s.
 
 Цифры говно на локалхосте, но это не главное :-)
 tcpkali с сегодняшнего дня работает с cowboy thanks to LIONET
-TAGS (EDIT) erlang, n2o, tcpkali, websocket
 

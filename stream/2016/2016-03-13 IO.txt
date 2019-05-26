@@ -11,7 +11,6 @@ First true pure free IO monad as inductive type in Erlang:
   98,1,99,111,40,103,100,0,13,110,111,110,111,100,101,64,
   110,111,104,111,115,116,0,0,1,22,0,0,0,0,0>>
 
-
 $ cat Monad
 
 λ(a : *) → λ(cmd : #Cmd/@ #IO/@ a) → cmd (#IO/@ a) (λ(b : *) → #IO/[>>=] b a)
@@ -108,7 +107,6 @@ $ om print type a "#IO/Monad"
 → IO))))))
 ok
 
-
 $ om print fst erase a "#IO/Monad"
 ( λ cmd
 → ((cmd ( λ m
@@ -144,5 +142,4 @@ $ om print fst erase a "#IO/Monad"
 → ( λ Pure_
 → (Pure_ _x)))))))
 ok
-TAGS (EDIT) #cmd, #io, #string, cs, erlang, om
 

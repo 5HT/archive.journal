@@ -12,7 +12,6 @@ Sheaves in Topology.pdf
 TOPOLOGY AND GROUPOIDS.pdf
 Topological groupoids.pdf
 Алгебраическая топология.pdf
-
 Falconer K. Fractal geometry.djvu
 Halmosh P. Gilbertovo prostranstvo v zadachah (Mir, 1970) (.djvu
 Klingenberg V. Lekcii o zamknutyh geodesicheskih (Mir, 1982.djvu

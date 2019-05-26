@@ -8,7 +8,6 @@ with tree_list : Type.{max 1 l} :=
 | nil  : tree_list.{l} A
 | cons : tree.{l} A → tree_list.{l} A → tree_list.{l} A
 
-
 Компилируется в такой байткод:
 
 2 #NS 0 l       // терминалы
@@ -52,9 +51,7 @@ with tree_list : Type.{max 1 l} :=
 #INTRO 10 19          // место конструктора cons
 #EIND
 
-
 _________
 [1]. https://github.com/leanprover/lean/blob/master/doc/export_format.md
 [2]. https://github.com/leanprover/tc Внешний тайпчекер на Хаскеле
-TAGS (EDIT) cs
 

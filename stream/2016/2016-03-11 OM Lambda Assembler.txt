@@ -21,7 +21,6 @@ Erlang Factory. Скоро вы сможете забыть про лямбда 
     A = *{i} : *{i+1}
     R = *{i} -> *{j} : *{max i j}
 
-
 Детальное описание этих параметров смотрите в Lambda Calculi with Types Хенка
 Барендрегта, а также статью Henk: Intermediate Language Саймона Пайтона и Эрика
 Мейера. Таким образом, можно говорить о том, что Ом в своей теоритической
@@ -33,7 +32,6 @@ Erlang Factory. Скоро вы сможете забыть про лямбда 
 плагин emacs для Lean, быстро пробуйте и сравните с коковским ProofGeneral.
 Небо и земля! Мы в Lean тестируем термы и строим метамодель кодировщика --
 фибрационные диалгебры и взятие их лимитов.
-
 
 > 'List':
 '(<=<)'/0      '(<|>)'/0      '(=<<)'/0      '(>=>)'/0      '(>>=)'/0
@@ -54,8 +52,6 @@ module_info/0  module_info/1
 '0'/0          'Just'/0       'Nothing'/0    empty/0        map/0
 module_info/0  module_info/1  pure/0
 
-
-
 Напоминаю как пользоваться OM:
 
 $ brew install erlang
@@ -73,7 +69,6 @@ $ ./om
 $ om modes list
 ["girard","hurkens","hurkens-src","normal","setoids"]
 
-
 Ом обладает набором комбинаторов, которые вы можете выстраивать в пайп:
 
 $ om help me
@@ -89,7 +84,6 @@ $ om help me
  {mode,[name],"select metaverse folder."},
  {modes,[],"list all metaverses."}]
 
-
 Покажем на примере:
 
 $ om fst erase a "#List/Cons" , mode normal
@@ -101,7 +95,6 @@ ok
                    {any,{app,{{app,{{var,{'Cons',0}},{var,{'Head',0}}}},
                               {app,{{app,{{var,{'Tail',0}},{var,{'Cons',0}}}},
                                     {var,{'Nil',0}}}}}}}}}}}}}}
-
 
 Сам Ом, будучи консольной утилитой, имеет также встроенный шел (Эрланг шелл).
 Просто запустите его без параметров.
@@ -116,7 +109,6 @@ $ om
 > om:snd(om:erase(om:a("#DEP.AND"))).
 {star,1}
 
-
 Надеюсь вам понравится! Все это стало возможным благодаря ZEIT_RAFFER и
 NPONECCOP, которые непокладая сил думают над устройством внутреннего языка
 пространства :-)
@@ -124,5 +116,4 @@ NPONECCOP, которые непокладая сил думают над уст
 __________________
 [1]. http://groupoid.space/pts/pure
 [2]. https://github.com/groupoid/om
-TAGS (EDIT) #dep, cs, erlang, om
 

@@ -37,19 +37,16 @@ interface Object {
       boolean non_existent();
       boolean is_equivalent ( in Object);
       unsigned long hash( in unsigned long);
-      void create_request ( in Context,in Identifier, in NVList, inout
-NamedValue, out Request,in Flags);
+      void create_request ( in Context,in Identifier, in NVList, inout NamedValue, out Request,in Flags);
       Policy get_policy ( in PolicyType);
       DomainManagersList get_domain_managers ();
-      Object set_policy_overrides(in PolicyList,in SetOverrideType) raises
-(InvalidPolicies);
+      Object set_policy_overrides(in PolicyList,in SetOverrideType) raises (InvalidPolicies);
       Policy get_client_policy( in PolicyType type);
       boolean validate_connection(out PolicyList);
       Object get_component ();
       string respository_id();
       ORB get_orb();
 };
-
 
 В Java этот список несколько сузили до 11 методов.
 
@@ -65,7 +62,6 @@ NamedValue, out Request,in Flags);
      void    wait(long timeout)
      void    wait(long timeout, int nanos)
 
-
 Вот количество объектов в результирующей программе и ее полей если посчитать и
 померять, то эти числа в своих измерениях показывают сложность системы очень
 наглядно. Почему в функциональном мире все с высокой горы наблюдают за ООП,
@@ -75,7 +71,6 @@ NamedValue, out Request,in Flags);
 
 #container{id,top,count}
 #iterator{id,version,container,feed_id,prev,next,feeds,guard,etc}
-
 
 Для подсчета нам не важно каких типов эти поля у объектов, потому что в
 объективной реальности программы работают с удаленной информацией о типах,
@@ -92,7 +87,6 @@ public @interface Entity {
    boolean      selectBeforeUpdate
 }
 
-
 Там еще вот такие штуки есть незнаю как их классифицировать, но подсчитать
 точно нужно:
 
@@ -103,7 +97,6 @@ public @interface Entity {
 @OneToOne, @OneToMany, @ManyToOne, @ManyToMany
 @GeneratedValue
 
-
 KVS
 2 records
 12 fields
@@ -113,5 +106,4 @@ JPA
 27 specifiers
 
 Как-то так, вообщем.
-TAGS (EDIT) cs, jpa, kvs
 

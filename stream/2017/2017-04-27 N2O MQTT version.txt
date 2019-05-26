@@ -15,4 +15,3 @@ $ cloc .
 580
 
 https://github.com/synrc/mqtt
-TAGS (EDIT) mqtt, n2o, synrc

@@ -31,10 +31,8 @@ xhr_url(url);
 transports = [$ws,$xhr];
 
 function xhr_header(request) {
-request.setRequestHeader('Content-Type','application/x-www-form-urlencoded;
-charset=utf-8'); }
-function xhr_url(url) { return url.replace('ws:', 'http:').replace('wss:',
-'https:'); }
+request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=utf-8'); }
+function xhr_url(url) { return url.replace('ws:', 'http:').replace('wss:', 'https:'); }
 function xhr_close() { $conn.onclose(); clearInterval(heartbeat); }
 function xhr_send(data) { return xhr('POST',data); }
 function xhr_receive(data) { if (data.length != 0)
@@ -43,11 +41,9 @@ function xhr(method,data) {
     var request = new XMLHttpRequest();
     request.open(method,$conn.url,true);
     xhr_header(request);
-    request.onload = function() { console.log(request.response);
-xhr_receive(request.response); };
+    request.onload = function() { console.log(request.response); xhr_receive(request.response); };
     request.send(data);
     return true; }
-
 
 Уверен вы найдете массу причин, по которым этот код хуйня, а этот —
 произведение искусства. Только знайте, что ваш порядковый номер будет при этом
@@ -96,8 +92,6 @@ http://5ht.co/ftp.htm Поддерживает докачку и обрывы с
 сервера, занимает 80 строк кода. Можно портировать на чистый ковбой, если есть
 мозг. Вообще имея 80 строк рабочего кода, можно портировать куда угодно.
 
-
-
 Эту хуйню написал DOXTOP, за что храни его Лямбдагарбха, здоровья ему и
 долголетия. Он счас на Scala пишет с чуваками которые любят Java, поэтому
 здоровье ему понадобится.
@@ -140,19 +134,15 @@ function int(b) { return b==1?sx.getUint8(ix++):sx.getInt32((a=ix,ix+=4,a)); };
 function dec(d) { sx=new DataView(d);ix=0;
 if(sx.getUint8(ix++)!==131)throw("BERT?"); return din(); };
 function str(b) { var dv,sz=(b==2?sx.getUint16(ix):sx.getInt32(ix));ix+=b;
-                  var r=sx.buffer.slice(ix,ix+=sz); return b==2?utf8_dec(r):r;
-};
+                  var r=sx.buffer.slice(ix,ix+=sz); return b==2?utf8_dec(r):r; };
 function run(b) { var sz=(b==1?sx.getUint8(ix):sx.getUint32(ix)),r=[]; ix+=b;
-                  for(var i=0;i<sz;i++) r.push(din()); if(b==4)ix++; return r;
-};
-function din()  { var c=sx.getUint8(ix++),x; switch(c) { case 97:
-x=[int,1];break;
+                  for(var i=0;i<sz;i++) r.push(din()); if(b==4)ix++; return r; };
+function din()  { var c=sx.getUint8(ix++),x; switch(c) { case 97: x=[int,1];break;
                   case 98:  x=[int,4]; break; case 100: x=[str,2]; break;
                   case 110: x=[big,1]; break; case 111: x=[big,4]; break;
                   case 104: x=[run,1]; break; case 107: x=[str,2]; break;
                   case 108: x=[run,4]; break; case 109: x=[str,4]; break;
                   default:  x=[nop,0]; } return {t:c,v:x[0](x[1])};};
-
 
 Энкодер не намного длинее, 30 LOC всего. Внимательно почитайте, а потом
 загляните в BERT.js.
@@ -166,5 +156,4 @@ x=[int,1];break;
 кто, а сам NPONECCOP. Так шо вы осторожнее набрасывайте.
 
 Пост написан специально для DOXTOP, чтобы он улыбнулся и выздоровел :-)
-TAGS (EDIT) cs, erlang, phoenix
 

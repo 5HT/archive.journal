@@ -19,7 +19,6 @@ created for region DEFAULT with BEFORE_IMAGES
 
 GTM>
 
-
 Так шо как тут проверить сколько йобильйонов транзакций в наносекунду оно
 перемолит?
 
