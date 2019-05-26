@@ -54,9 +54,43 @@
 
 	<h3>WSL</h3>
 
-        <p>As WSL2 just released we need to tune up a bit <b>apt.conf</b>:</p> 
+        <p>As WSL2 just released we need to tune up a bit <b>/etc/apt/apt.conf</b>:</p> 
+
+	<figure><code>
+ APT { Ignore { "gpg-pubkey"; } };
+ APT { Get { AllowUnauthenticated "1"; }; };
+	</code></figure>
+
+        <p>And also specify in <b>/etc/apt/sources.list</b> bionic
+           ports with existing ARM64 binaries:</a>
+
+	<figure><code>
+ deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ bionic main universe restricted multiverse
+	</code></figure>
+
+	<figure><code>
+ sudo apt-get --allow-insecure-repositories update
+ sudo apt-get install mc build-essential
+ sudo apt-get --reinstall install libssl-dev libncurses5-dev libncurses5 libtinfo5
+	</code></figure>
+
+	<p>It could be that for reinstall following packages
+        <b>build-essentials</b>, <b>libssl-dev</b>, <b>libncurses5-dev</b> you will
+           need to use aptitude. </p>
+
+	<figure><code>
+ sudo aptitude -f install libssl-dev
+	</code></figure>
 
 	<h3>ERL</h3>
+
+        <p>Now we need to use <b>kerl<p> the Erlang builder. Set config in <b>~/.kerlrc</b>:</p>
+
+	<figure><code>
+ KERL_CONFIGURE_OPTIONS="--enable-threads --enable-smp-support --without-javac --enable-kernel-poll"
+	</code></figure>
+
+	<p>It will take hours to build Erlang on RP3B+!</p>
 
 	<figure><img src="https://pbs.twimg.com/media/D7Lr8_6XoAA-sA-?format=png&name=medium" width=600></figure>
 	                                                                         
