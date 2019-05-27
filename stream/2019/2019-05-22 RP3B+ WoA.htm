@@ -19,26 +19,28 @@
         <h3>Raspberry Pi 3 B+ WoA</h3>
 
         <p>This is a sequence of steps to create an Erlang development
-           environment inside Windows Subsystem for Linux on Rapsberry Pi 3 B+.</p>
+           environment inside Windows Subsystem for Linux on Rapsberry Pi 3 B+.
+           I'm using Windows 10 Insider 1903 build 18895 for both AMD64 and ARM64
+           host and device platforms.</p>
 
         <h3>TOC</h3>
 
-        <p>— WoA: Install Windows on SD card<br>
+        <p>— WOA: Install Windows on SD card<br>
            — WIN: Setup Windows<br>
            — PERF: Tune up Performance<br>
            — WSL: Install Linux<br>
            — ERL: Install Erlang<br>
         </p>
 
-	<h3>WoA</h3>
+	<h3>WOA</h3>
 
-        <p>First of all I want to say even if you bought the device with radiators, SD card, and power adapter,
-           this is still if not enough in case you don't have SD card reader. The general idea is that
-           WoA Deployer takes original WIM image and by using DISM commands, first apply this image to SD card,
-           then apply drivers over vanialla Windows 10 ARM64.</p>
+  <p>First of all I want to say even if you bought the device with radiators, SD card, and power adapter,
+     this is still is not enough, you'll need SD card reader. The general idea is that
+     WoA Deployer takes original WIM image and by using DISM commands, first apply this image to SD card,
+     then apply drivers over vanilla Windows 10 Pro ARM64.</p>
 
-	<p>— <a href="https://github.com/WOA-Project/WOA-Deployer-Lumia">WOA-Project/WOA-Deployer-Lumia</a> — 2.5.4</p>
-                       
+	<p>— <a href="https://github.com/WOA-Project/WOA-Deployer-Rpi">WOA-Project/WOA-Deployer-Rpi</a> — 2.1.1</p>
+
 	<h3>WIN</h3>
 
 	<p>After flashing USB perform regular Windows Setup procedure and set up
@@ -48,26 +50,72 @@
 
         <p>As for Windows this is personal preferences, but in reality RP3B+ is better to use <b>cmd.exe</b> as a Shell
            instead of <b>explorer.exe</b>. Also diable any GPU GUI effects, disable Windows Defender
-           in <b>gpedit.msc</b>, disable Windows Update, Windows Search, everything you find allocation CPU or
-           MEM in <b>taskmngr.exe</b>. After all preparation you should see at most 5-10% CPU consumption,
-           as GPU drivers are not accessible on RP3B+.</p>
+           in <b>gpedit.msc</b>, disable Windows Update, Windows Search, everything you find allocated too much CPU or
+           MEM in <b>taskmgr.exe</b>. After all preparations you should see at most 10% CPU consumption in idle
+           as GPU drivers is not accessible in RP3B+ WoA yet.</p>
+
+	<figure><img src="https://pbs.twimg.com/media/D7hK8qLWwAE-TVH?format=jpg&name=medium" width=600></figure>
 
 	<h3>WSL</h3>
 
-        <p>As WSL2 just released we need to tune up a bit <b>apt.conf</b>:</p> 
+        <p>First of all install Ubuntu 18.04 Bionic Beaver from Windows Store.
+           It could be painful but doable.
+           As WSL2 just released we need to tune up a bit <b>/etc/apt/apt.conf</b>:</p> 
+
+	<figure><code>
+ APT { Ignore { "gpg-pubkey"; } };
+ APT { Get { AllowUnauthenticated "yes"; }; };
+ Acquire::AllowInsecureRepositories "yes";
+	</code></figure>
+
+        <p>And also specify in <b>/etc/apt/sources.list</b> bionic
+           ports with existing ARM64 binaries. NOTE: please use three lines
+           for bionic, bionic-update, and bionic-security with all combination
+           of channels: main, restricted, universe, multiverse.</p>
+
+	<figure><code>
+ deb [trusted=1] http://ports.ubuntu.com/ubuntu-ports/ bionic main universe
+ deb [trusted=1] http://ports.ubuntu.com/ubuntu-ports/ bionic-updates main
+ deb [trusted=1] http://ports.ubuntu.com/ubuntu-ports/ bionic-security main
+	</code></figure>
+
+    <p>Now you can do apt update and upgrade:</p>
+
+	<figure><code>
+ sudo apt update
+ sudo apt upgrade
+	</code></figure>
+
+           <p>During update just ignore all the GPG errors at the end.</p>
+
+	<figure><code>
+ sudo apt install mc build-essential inotify-tools
+ sudo apt install libssl-dev libncurses5-dev libncurses5 libtinfo5
+	</code></figure>
 
 	<h3>ERL</h3>
 
+        <p>Now we need to use <b>kerl</b>, the Erlang builder. Set config in <b>~/.kerlrc</b>:</p>
+
+	<p>— <a href="https://github.com/kerl/kerl">kerl/kerl</a></p>
+
+	<figure><code>
+ KERL_CONFIGURE_OPTIONS="--enable-threads --enable-smp-support \
+                         --without-javac --enable-kernel-poll"
+	</code></figure>
+
+	<p>It will take hours to build Erlang on RP3B+!</p>
+
 	<figure><img src="https://pbs.twimg.com/media/D7Lr8_6XoAA-sA-?format=png&name=medium" width=600></figure>
-	                                                                         
+
 	<figure><img src="https://pbs.twimg.com/media/D7Lr5wrXkAI7A1J?format=png&name=medium" width=600></figure>
 
         <p>Fix typo, introduce changes or put like for this page at:
         <a href="https://github.com/5HT/tonpa.guru/blob/master/stream/2019/2019-05-22%20RP3B+%20WoA.htm">RP3B+ WoA</a><br>
         Discuss: <a href="https://github.com/5ht/tonpa.guru/issues/11">https://github.com/5ht/tonpa.guru/issues/11</a></p>
-                       
-    </section>         
-</main>                
+
+    </section>
+</main>
 <footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
-</body>                
-</html>                
+</body>
+</html>
