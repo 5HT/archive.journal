@@ -46,7 +46,7 @@
  100007f54:  00 00 80 52     mov w0, #0
  100007f58:  a0 c3 1f b8     stur    w0, [x29, #-4]
  100007f5c:  e0 03 08 aa     mov x0, x8
- 100007f60:  06 00 00 94     bl  #24 <dyld_stub_binder+0x100007f78>
+ 100007f60:  06 00 00 94     bl  #24 &lt;dyld_stub_binder+0x100007f78&gt;
  100007f64:  a9 c3 5f b8     ldur    w9, [x29, #-4]
  100007f68:  e0 03 09 aa     mov x0, x9
  100007f6c:  fd 7b 41 a9     ldp x29, x30, [sp, #16]
@@ -59,14 +59,13 @@
 [[sub,sp,sp,32],
  [stp,x29,x30,[sp,16]],
  [add,x29,sp,16],
- [mov,w0,0],
  [adrp,x8,0],
  [add,x8,x8,4008],
- [stur,wzr,[x29,-4]],
- [str,w0,[sp,8]],
+ [mov,w0,0],
+ [stur,w0,[x29,-4]],
  [mov,x0,x8],
- [bl,24,['0x100007f78']],
- [ldr,w9,[sp,8]],
+ [bl,[24,'0x100007f78']],
+ [ldur,w9,[x29,-4]],
  [mov,x0,x9],
  [ldp,x29,x30,[sp,16]],
  [add,sp,sp,32],
