@@ -86,11 +86,11 @@
      N2O.reg(:n2o.sid())
      NITRO.clear (:history)
      NITRO.update(:upload,  upload())
-     NITRO.update(:heading, h2(id: :heading, body: room))
+     NITRO.update(:heading, h2(id:     :heading, body: room))
      NITRO.update(:logout,  button(id: :logout,
-                            postback: :logout, body: "Logout"))
-     NITRO.update(:send,    button(id: :send, body: "Chat",
-                            postback: :chat, source: [:message]))
+                            postback:  :logout,  body: "Logout"))
+     NITRO.update(:send,    button(id: :send,    body: "Chat",
+                            postback:  :chat,  source: [:message]))
 
      Enum.each KVX.all(room), fn {:msg,_,u,m} -> event({:client,{u,m}}) end
  end
