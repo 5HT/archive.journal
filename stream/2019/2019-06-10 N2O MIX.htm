@@ -121,16 +121,17 @@
 
         <figure><code>
  def event(:chat) do
-      room = N2O.session(:room)
-      usr  = N2O.user()
-      msg  = NITRO.q(:message)
-      KVX.save(KVX.add(writer(KVX.writer(room),
+     room = N2O.session(:room)
+     usr  = N2O.user()
+     msg  = NITRO.q(:message)
+     KVX.save(KVX.add(writer(KVX.writer(room),
                   args: {:msg,KVX.seq([],[]),usr,msg})))
-      N2O.send({:topic,room},client(data: {usr,msg}))
+     N2O.send({:topic,room},client(data: {usr,msg}))
  end
         </code></figure>
 
-        <p>Next version of MAD will be able to produce Elixir skeleton code.</p>
+        <p>Next version of MAD will be able to produce Elixir skeleton code.
+           The sources of working SAMPLE ported to Elixir is here:</p>
 
         <p>— <a href="https://github.com/o7/sample">o7/sample</a><br></p>
 
