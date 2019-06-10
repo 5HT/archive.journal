@@ -19,12 +19,12 @@
         <h3>N2O MIX</h3>
 
         <p>Yeah, that's right, we released a new version of N2O for Elixir.
-           Generally speaking it was already so long time ago, I just dropped Elixir
+           Generally speaking, it was already so long time ago, I just dropped Elixir
            support for a focusing on something meaningful at least at Erlang side.</p>
 
-        <p>By full N2O Elixir support I mean Erlang records autoimport with module usage,
-           and proxying, recolouring calls from :n2o.sid() to N2O.sid() e.g. Also we
-           assume mix.exs contains corrent application entry point definition and
+        <p>By full N2O Elixir support I mean Erlang records auto import with module usage,
+           and proxying, recoloring calls from :n2o.sid() to N2O.sid() e.g. Also we
+           assume mix.exs contains application entry point definition and
            other vital stuff but no more! As N2O came from the land of keeping ass clean,
            we encourage only vital macros at the bottom of the Sample.Index page:</p>
 
@@ -33,8 +33,9 @@
       use N2O, with: [:kvx, :n2o, :nitro]
         </code></figure>
 
-        <p>The actual page that contains direct embedding of N2O JavaScript SDK
-           is following and is included as a static file for cowboy serving:</p>
+        <p>The actual page that contains direct embedding of N2O JavaScript SDK from CDN
+           is following and is included as a static file for cowboy serving (could also
+           be obtained from CDN):</p>
 
         <p>HTML:</p>
 
