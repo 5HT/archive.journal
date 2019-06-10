@@ -77,7 +77,8 @@
         <h3>INIT</h3>
 
         <p>The code that mounts JavaScript postback events that delivers source DOM
-           information to server is follow:</p>
+           information to server is here. On connect page should sent <b>'N2O'</b> init marker
+           that calls the <b>:init</b> case of <b>event</b> function in Sample.index module:</p>
 
         <figure><code>
  def event(:init) do
