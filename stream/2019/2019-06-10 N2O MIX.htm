@@ -30,8 +30,45 @@
            we encourage only vital macros at the top of the Sample.Index page:</p>
 
         <figure><code>
-  defmodule Sample.Index do
-      use N2O, with: [:kvx, :n2o, :nitro]
+ defmodule Sample.Index do
+       use N2O, with: [:kvx, :n2o, :nitro]
+        </code></figure>
+
+        <p>The minimal <b>sys.config</b> in Elixir <b>config.exs</b> syntax will have only
+           proper KVX setup for custom DB layer (using <b>kvx_st</b> as a custom stream backend implementation for RocksDB), NITRO protocol and Sample.Routes.</p>
+
+        <figure><code>
+ config :n2o,
+   protocols: [:n2o_nitro],
+   routes: Sample.Routes
+
+ config :kvx,
+   dba: :kvx_rocks,
+   dba_st: :kvx_st,
+   schema: [:kvx,:kvx_stream]
+        </code></figure>
+
+        <p>We are using plain binary pattern match as a fastest way of routing,
+           but you may use any code at this level:</p>
+
+        <figure><code>
+ defmodule Sample.Routes do
+    import N2O
+
+   def finish(state, cx), do: {:ok, state, cx}
+   def init(state, ctx) do
+       %{path: p} = cx(ctx,:req)
+       {:ok, state, cx(ctx, path: p, module: route_prefix(p))}
+   end
+
+   def route_prefix(<<"/ws/", p::binary>>), do: route(p)
+   def route_prefix(<<"/",    p::binary>>), do: route(p)
+   def route_prefix(p),                     do: route(p)
+
+   def route(<<>>),                         do: Sample.Login
+   def route(<<"app/index", _::binary>>),   do: Sample.Index
+   def route(<<"app/login", _::binary>>),   do: Sample.Login
+   def route(_),                            do: Sample.Login
         </code></figure>
 
         <p>The actual page that contains direct embedding of N2O JavaScript SDK from CDN
@@ -58,7 +95,7 @@
  &lt;/main&gt;
         </code></figure>
 
-        <p>JavaScript:</p>
+        <p>JavaScript CDN <b>ws.n2o.space</b>:</p>
 
         <figure><code>
  &lt;script src='https://ws.n2o.space/priv/utf8.js'&gt;&lt;/script&gt;
