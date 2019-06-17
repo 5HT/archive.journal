@@ -150,23 +150,24 @@
 
     <h3>APPENDIX A</h3>
  
-       <p>Here are A64 ISA main 153 cases:</p>
+       <p>Here are A64 ISA main 152 cases for 11-bit pattern matching.
+          To fulfill the gaps we'll need additional bits lookup as we do for SIMD cases.</p>
 
         <p><font face="monospace" size=3 style="white-space: pre;">
  +---------------------= 32/64-bit
  |
- |   +-----------------= S
- |   | +-+-+-+---------= Opcode
- |   | 0 0 0 0 --------= UDF
- |   | 0 0 0 1 --------= N/A
- |   | 0 0 1 x --------= N/A
- |   | 1 0 0 x --------= Data Processing Immediate
- |   | 1 0 1 x --------= Branching, System, Exceptions
- |   | x 1 x 0 --------= Loads and Stores
- |   | x 1 0 1 --------= Data Processing Register
- |   | x 1 1 1 --------= Data Processing Scalar FPU and SIMD
- |   | | | | |
- |   | | | | |
+ |
+ |     +-+-+-+---------= Opcode
+ |     0 0 0 0 --------= UDF
+ |     0 0 0 1 --------= N/A
+ |     0 0 1 x --------= N/A
+ |     1 0 0 x --------= Data Processing Immediate
+ |     1 0 1 x --------= Branching, System, Exceptions
+ |     x 1 x 0 --------= Loads and Stores
+ |     x 1 0 1 --------= Data Processing Register
+ |     x 1 1 1 --------= Data Processing Scalar FPU and SIMD
+ |     | | | |
+ |     | | | |
  7 6 5 4 3 2 1 0 7 6 5 4 3 2 1 0 7 6 5 4 3 2 1 0 7 6 5 4 3 2 1 0
  +-------------+ +-------------+ +-------------+ +-------------+
  |     MSB     | |             | |             | |     LSB     |
