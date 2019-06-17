@@ -148,6 +148,255 @@
         </code></figure>
         <p>— <a href="https://github.com/5HT/a64">5HT/a64</a><br></p>
 
+    <h3>APPENDIX A</h3>
+ 
+       <p>Here are A64 disassembly main 240 cases:</p>
+
+        <p><font face="monospace" size=3>
+ x 0 0 0 1 0 1 1 0 0 1 % C6.2.001 ADC<br>
+ x 0 1 1 1 0 1 0 0 0 0 % C6.2.002 ADCS<br>
+ x 0 0 0 1 0 1 1 0 0 1 % C6.2.003 ADD (extended register)<br>
+ x 0 0 1 0 0 0 1 0 s _ % C6.2.004 ADD (immediate) % C6.2.173 MOV (to/from SP)<br>
+ x 0 0 0 1 0 1 1 s s 0 % C6.2.005 ADD (shifted register)<br>
+ x 0 1 0 1 0 1 1 0 0 1 % C6.2.006 ADDS (extended register) % C6.2.53 CMN (extended register)<br>
+ x 0 1 1 0 0 0 1 0 s _ % C6.2.007 ADDS (immediate) % C6.2.54 CMN (immediate)<br>
+ x 0 1 0 1 0 1 1 s s 0 % C6.2.008 ADDS (shifted register) % C6.2.55 CMN (shifted register)<br>
+ 0 i i 1 0 0 0 0 _ _ _ % C6.2.009 ADR<br>
+ 1 i i 1 0 0 0 0 _ _ _ % C6.2.010 ADRP<br>
+ x 0 0 1 0 0 1 0 0 n _ % C6.2.011 AND (immediate)<br>
+ x 0 0 0 1 0 1 0 s s 0 % C6.2.012 AND (shifted register)<br>
+ x 1 1 1 0 0 1 0 0 n _ % C6.2.013 ANDS (immediate) % C6.2.307 TST (immediate)<br>
+ x 1 1 0 1 0 1 0 s s 0 % C6.2.014 ANDS (shifted register) % C6.2.308 TST (shifted register)<br>
+ x 0 0 1 1 0 1 0 1 1 0 % C6.2.015 ASR (register) % C6.2.17 ASRV<br>
+ x 0 0 1 0 0 1 1 0 n _ % C6.2.016 ASR (immediate) % C6.2.219 SBFIZ % C6.2.220 SBFM<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;% C6.2.221 SBFX % C6.2.298 SXTB % C6.2.299 SXTH % C6.2.300 SXTW<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.018 AT<br>
+ 1 1 0 1 1 0 1 0 1 1 0 % C6.2.019 AUTDA, AUTDZA<br>
+ 1 1 0 1 1 0 1 0 1 1 0 % C6.2.020 AUTDB, AUTDZB<br>
+ 1 1 0 1 1 0 1 0 1 1 0 % C6.2.021 AUTIA, AUTIA1716, AUTIASP, AUTIAZ, AUTIZA<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.021 AUTIA, AUTIA1716, AUTIASP, AUTIAZ, AUTIZA<br>
+ 1 1 0 1 1 0 1 0 1 1 0 % C6.2.022 AUTIB, AUTIB1716, AUTIBSP, AUTIBZ, AUTIZB<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.022 AUTIB, AUTIB1716, AUTIBSP, AUTIBZ, AUTIZB<br>
+ 0 1 0 1 0 1 0 0 _ _ _ % C6.2.023 B.cond<br>
+ 0 0 0 1 0 1 _ _ _ _ _ % C6.2.024 B<br>
+ x 0 1 1 0 0 1 1 0 n _ % C6.2.025 BFC % C6.2.26 BFI % C6.2.27 BFM % C6.2.28 BFXIL<br>
+ x 0 0 0 1 0 1 0 s s 1 % C6.2.029 BIC (shifted register)<br>
+ x 1 1 0 1 0 1 0 s s 1 % C6.2.030 BICS (shifted register)<br>
+ 1 0 0 1 0 1 _ _ _ _ _ % C6.2.031 BL<br>
+ 1 1 0 1 0 1 1 0 0 0 1 % C6.2.032 BLR<br>
+ 1 1 0 1 0 1 1 z 0 0 1 % C6.2.033 BLRAA, BLRAAZ, BLRAB, BLRABZ<br>
+ 1 1 0 1 0 1 1 0 0 0 0 % C6.2.034 BR<br>
+ 1 1 0 1 0 1 1 z 0 0 0 % C6.2.035 BRAA, BRAAZ, BRAB, BRABZ<br>
+ 1 1 0 1 0 1 0 0 0 0 1 % C6.2.036 BRK<br>
+ 0 0 0 0 1 0 0 0 1 i 1 % C6.2.037 CASB, CASAB, CASALB, CASLB<br>
+ 0 1 0 0 1 0 0 0 1 i 1 % C6.2.038 CASH, CASAH, CASALH, CASLH<br>
+ 0 x 0 0 1 0 0 0 0 i 1 % C6.2.039 CASP, CASPA, CASPAL, CASPL<br>
+ 1 x 0 0 1 0 0 0 1 i 1 % C6.2.040 CAS, CASA, CASAL, CASL<br>
+ x 0 1 1 0 1 0 1 _ _ _ % C6.2.041 CBNZ<br>
+ x 0 1 1 0 1 0 0 _ _ _ % C6.2.042 CBZ<br>
+ x 0 1 1 1 0 1 0 0 1 0 % C6.2.043 CCMN (immediate)<br>
+ x 0 1 1 1 0 1 0 0 1 0 % C6.2.044 CCMN (register)<br>
+ x 1 1 1 1 0 1 0 0 1 0 % C6.2.045 CCMP (immediate)<br>
+ x 1 1 1 1 0 1 0 0 1 0 % C6.2.046 CCMP (register)<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.047 CFINV<br>
+ x 0 0 1 1 0 1 0 1 0 0 % C6.2.048 CINC % C6.2.66 CSINC % C6.2.64 CSET<br>
+ x 1 0 1 1 0 1 0 1 0 0 % C6.2.049 CINV % C6.2.65 CSETM % C6.2.67 CSINV<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.050 CLREX<br>
+ x 1 0 1 1 0 1 0 1 1 0 % C6.2.051 CLS<br>
+ x 1 0 1 1 0 1 0 1 1 0 % C6.2.052 CLZ<br>
+ x 1 1 0 1 0 1 1 0 0 1 % C6.2.056 CMP (extended register) % C6.2.291 SUBS (extended register)<br>
+ x 1 1 1 0 0 0 1 0 s _ % C6.2.057 CMP (immediate) % C6.2.292 SUBS (immediate)<br>
+ x 1 1 0 1 0 1 1 s s 0 % C6.2.058 CMP (shifted register) % C6.2.293 SUBS (shifted register) % C6.2.188 NEGS<br>
+ x 1 0 1 1 0 1 0 1 0 0 % C6.2.059 CNEG % C6.2.68 CSNEG<br>
+ x 0 0 1 1 0 1 0 1 1 0 % C6.2.060 CRC32B, CRC32H, CRC32W, CRC32X<br>
+ x 0 0 1 1 0 1 0 1 1 0 % C6.2.061 CRC32CB, CRC32CH, CRC32CW, CRC32CX<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.062 CSDB<br>
+ x 0 0 1 1 0 1 0 1 0 0 % C6.2.063 CSEL<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.069 DC<br>
+ 1 1 0 1 0 1 0 0 1 0 1 % C6.2.070 DCPS1<br>
+ 1 1 0 1 0 1 0 0 1 0 1 % C6.2.071 DCPS2<br>
+ 1 1 0 1 0 1 0 0 1 0 1 % C6.2.072 DCPS3<br>
+ 1 1 0 1 0 1 0 0 1 0 1 % C6.2.073 DMB<br>
+ 1 1 0 1 0 1 1 0 1 0 1 % C6.2.074 DRPS<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.075 DSB<br>
+ x 1 0 0 1 0 1 0 s s 1 % C6.2.076 EON (shifted register)<br>
+ x 1 0 1 0 0 1 0 0 n _ % C6.2.077 EOR (immediate)<br>
+ x 1 0 0 1 0 1 0 s s 0 % C6.2.078 EOR (shifted register)<br>
+ 1 1 0 1 0 1 1 0 1 0 0 % C6.2.079 ERET<br>
+ 1 1 0 1 0 1 1 0 1 0 0 % C6.2.080 ERETAA, ERETAB<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.081 ESB<br>
+ x 0 0 1 0 0 1 1 1 n 0 % C6.2.082 EXTR % C6.2.214 ROR (immediate)<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.083 HINT<br>
+ 1 1 0 1 0 1 0 0 0 1 0 % C6.2.084 HLT<br>
+ 1 1 0 1 0 1 0 0 0 0 0 % C6.2.085 HVC<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.086 IC<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.087 ISB<br>
+ 0 0 1 1 1 0 0 0 a r 1 % C6.2.088 LDADDB, LDADDAB, LDADDALB, LDADDLB % C6.2.233 STADDB, STADDLB<br>
+ 0 1 1 1 1 0 0 0 a r 1 % C6.2.089 LDADDH, LDADDAH, LDADDALH, LDADDLH % C6.2.234 STADDH, STADDLH<br>
+ 1 x 1 1 1 0 0 0 a r 1 % C6.2.090 LDADD, LDADDA, LDADDAL, LDADDL % C6.2.235 STADD, STADDL<br>
+ 1 x 1 1 1 0 0 0 1 0 1 % C6.2.091 LDAPR<br>
+ 0 0 1 1 1 0 0 0 1 0 1 % C6.2.092 LDAPRB<br>
+ 0 1 1 1 1 0 0 0 1 0 1 % C6.2.093 LDAPRH<br>
+ 1 x 0 1 1 0 0 1 0 1 0 % C6.2.094 LDAPUR<br>
+ 0 0 0 1 1 0 0 1 0 1 0 % C6.2.095 LDAPURB<br>
+ 0 1 0 1 1 0 0 1 0 1 0 % C6.2.096 LDAPURH<br>
+ 0 0 0 1 1 0 0 1 1 i 0 % C6.2.097 LDAPURSB<br>
+ 0 1 0 1 1 0 0 1 1 i 0 % C6.2.098 LDAPURSH<br>
+ 1 0 0 1 1 0 0 1 1 0 0 % C6.2.099 LDAPURSW<br>
+ 1 x 0 0 1 0 0 0 1 1 0 % C6.2.100 LDAR<br>
+ 0 0 0 0 1 0 0 0 1 1 0 % C6.2.101 LDARB<br>
+ 0 1 0 0 1 0 0 0 1 1 0 % C6.2.102 LDARH<br>
+ 1 x 0 0 1 0 0 0 0 1 1 % C6.2.103 LDAXP<br>
+ 1 x 0 0 1 0 0 0 0 1 0 % C6.2.104 LDAXR<br>
+ 0 0 0 0 1 0 0 0 0 1 0 % C6.2.105 LDAXRB<br>
+ 0 1 0 0 1 0 0 0 0 1 0 % C6.2.106 LDAXRH<br>
+ 0 0 1 1 1 0 0 0 a r 1 % C6.2.107 LDCLRB, LDCLRAB, LDCLRALB, LDCLRLB % C6.2.236 STCLRB, STCLRLB<br>
+ 0 1 1 1 1 0 0 0 a r 1 % C6.2.108 LDCLRH, LDCLRAH, LDCLRALH, LDCLRLH % C6.2.237 STCLRH, STCLRLH<br>
+ 1 x 1 1 1 0 0 0 a r 1 % C6.2.109 LDCLR, LDCLRA, LDCLRAL, LDCLRL % C6.2.238 STCLR, STCLRL<br>
+ 0 0 1 1 1 0 0 0 a r 1 % C6.2.110 LDEORB, LDEORAB, LDEORALB, LDEORLB % C6.2.239 STEORB, STEORLB<br>
+ 0 1 1 1 1 0 0 0 a r 1 % C6.2.111 LDEORH, LDEORAH, LDEORALH, LDEORLH % C6.2.240 STEORH, STEORLH<br>
+ 1 x 1 1 1 0 0 0 a r 1 % C6.2.112 LDEOR, LDEORA, LDEORAL, LDEORL % C6.2.241 STEOR, STEORL<br>
+ 0 0 0 0 1 0 0 0 1 1 0 % C6.2.113 LDLARB<br>
+ 0 1 0 0 1 0 0 0 1 1 0 % C6.2.114 LDLARH<br>
+ 1 x 0 0 1 0 0 0 1 1 0 % C6.2.115 LDLAR<br>
+ x 0 1 0 1 0 0 0 0 1 _ % C6.2.116 LDNP<br>
+ x 0 1 0 1 0 0 0 1 1 _ % C6.2.117 LDP<br>
+ 0 1 1 0 1 0 0 i i 1 _ % C6.2.118 LDPSW<br>
+ 1 x 1 1 1 0 0 i 0 1 i % C6.2.119 LDR (immediate)<br>
+ 0 x 0 1 1 0 0 0 _ _ _ % C6.2.120 LDR (literal)<br>
+ 1 x 1 1 1 0 0 0 0 1 1 % C6.2.121 LDR (register)<br>
+ 1 1 1 1 1 0 0 0 m s 1 % C6.2.122 LDRAA, LDRAB<br>
+ 0 0 1 1 1 0 0 i 0 1 i % C6.2.123 LDRB (immediate)<br>
+ 0 0 1 1 1 0 0 0 0 1 1 % C6.2.124 LDRB (register)<br>
+ 0 1 1 1 1 0 0 i 0 1 i % C6.2.125 LDRH (immediate)<br>
+ 0 1 1 1 1 0 0 0 0 1 1 % C6.2.126 LDRH (register)<br>
+ 0 0 1 1 1 0 0 i 1 i i % C6.2.127 LDRSB (immediate)<br>
+ 0 0 1 1 1 0 0 0 1 i 1 % C6.2.128 LDRSB (register)<br>
+ 0 1 1 1 1 0 0 i 1 x i % C6.2.129 LDRSH (immediate)<br>
+ 0 1 1 1 1 0 0 0 1 x 1 % C6.2.130 LDRSH (register)<br>
+ 1 0 1 1 1 0 0 i 1 0 i % C6.2.131 LDRSW (immediate)<br>
+ 1 0 0 1 1 0 0 0 _ _ _ % C6.2.132 LDRSW (literal)<br>
+ 1 0 1 1 1 0 0 0 1 0 1 % C6.2.133 LDRSW (register)<br>
+ 0 0 1 1 1 0 0 0 a r 1 % C6.2.134 LDSETB, LDSETAB, LDSETALB, LDSETLB % C6.2.263 STSETB, STSETLB<br>
+ 0 1 1 1 1 0 0 0 a r 1 % C6.2.135 LDSETH, LDSETAH, LDSETALH, LDSETLH % C6.2.264 STSETH, STSETLH<br>
+ 1 x 1 1 1 0 0 0 a r 1 % C6.2.136 LDSET, LDSETA, LDSETAL, LDSETL % C6.2.265 STSET, STSETL<br>
+ 0 0 1 1 1 0 0 0 a r 1 % C6.2.137 LDSMAXB, LDSMAXAB, LDSMAXALB, LDSMAXLB % C6.2.266 STSMAXB, STSMAXLB<br>
+ 0 1 1 1 1 0 0 0 a r 1 % C6.2.138 LDSMAXH, LDSMAXAH, LDSMAXALH, LDSMAXLH % C6.2.267 STSMAXH, STSMAXLH<br>
+ 1 x 1 1 1 0 0 0 a r 1 % C6.2.139 LDSMAX, LDSMAXA, LDSMAXAL, LDSMAXL % C6.2.268 STSMAX, STSMAXL<br>
+ 0 0 1 1 1 0 0 0 a r 1 % C6.2.140 LDSMINB, LDSMINAB, LDSMINALB, LDSMINLB % C6.2.269 STSMINB, STSMINLB<br>
+ 0 1 1 1 1 0 0 0 a r 1 % C6.2.141 LDSMINH, LDSMINAH, LDSMINALH, LDSMINLH % C6.2.270 STSMINH, STSMINLH<br>
+ 1 x 1 1 1 0 0 0 a r 1 % C6.2.142 LDSMIN, LDSMINA, LDSMINAL, LDSMINL % C6.2.271 STSMIN, STSMINL<br>
+ 1 x 1 1 1 0 0 0 0 1 0 % C6.2.143 LDTR<br>
+ 0 0 1 1 1 0 0 0 0 1 0 % C6.2.144 LDTRB<br>
+ 0 1 1 1 1 0 0 0 0 1 0 % C6.2.145 LDTRH<br>
+ 0 0 1 1 1 0 0 0 1 x 0 % C6.2.146 LDTRSB<br>
+ 0 1 1 1 1 0 0 0 1 x 0 % C6.2.147 LDTRSH<br>
+ 1 0 1 1 1 0 0 0 1 0 0 % C6.2.148 LDTRSW<br>
+ 0 0 1 1 1 0 0 0 a r 1 % C6.2.149 LDUMAXB, LDUMAXAB, LDUMAXALB, LDUMAXLB % C6.2.275 STUMAXB, STUMAXLB<br>
+ 0 1 1 1 1 0 0 0 a r 1 % C6.2.150 LDUMAXH, LDUMAXAH, LDUMAXALH, LDUMAXLH % C6.2.276 STUMAXH, STUMAXLH<br>
+ 1 x 1 1 1 0 0 0 a r 1 % C6.2.151 LDUMAX, LDUMAXA, LDUMAXAL, LDUMAXL % C6.2.277 STUMAX, STUMAXL<br>
+ 0 0 1 1 1 0 0 0 a r 1 % C6.2.152 LDUMINB, LDUMINAB, LDUMINALB, LDUMINLB % C6.2.278 STUMINB, STUMINLB<br>
+ 0 1 1 1 1 0 0 0 a r 1 % C6.2.153 LDUMINH, LDUMINAH, LDUMINALH, LDUMINLH % C6.2.279 STUMINH, STUMINLH<br>
+ 1 x 1 1 1 0 0 0 a r 1 % C6.2.154 LDUMIN, LDUMINA, LDUMINAL, LDUMINL % C6.2.280 STUMIN, STUMINL<br>
+ 1 x 1 1 1 0 0 0 0 1 0 % C6.2.155 LDUR<br>
+ 0 0 1 1 1 0 0 0 0 1 0 % C6.2.156 LDURB<br>
+ 0 1 1 1 1 0 0 0 0 1 0 % C6.2.157 LDURH<br>
+ 0 0 1 1 1 0 0 0 1 x 0 % C6.2.158 LDURSB<br>
+ 0 1 1 1 1 0 0 0 1 x 0 % C6.2.159 LDURSH<br>
+ 1 0 1 1 1 0 0 0 1 0 0 % C6.2.160 LDURSW<br>
+ 1 x 0 0 1 0 0 0 0 1 1 % C6.2.161 LDXP<br>
+ 1 x 0 0 1 0 0 0 0 1 0 % C6.2.162 LDXR<br>
+ 0 0 0 0 1 0 0 0 0 1 0 % C6.2.163 LDXRB<br>
+ 0 1 0 0 1 0 0 0 0 1 0 % C6.2.164 LDXRH<br>
+ x 0 0 1 1 0 1 0 1 1 0 % C6.2.165 LSL (register) % C6.2.167 LSLV<br>
+ x 1 0 1 0 0 1 1 0 n _ % C6.2.166 LSL (immediate) % C6.2.169 LSR (immediate) % C6.2.309 UBFIZ % C6.2.310 UBFM <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;% C6.2.311 UBFX % C6.2.319 UXTB % C6.2.320 UXTH<br>
+ x 0 0 1 1 0 1 0 1 1 0 % C6.2.168 LSR (register) % C6.2.170 LSRV<br>
+ x 0 0 1 1 0 1 1 0 0 0 % C6.2.171 MADD % C6.2.185 MUL<br>
+ x 0 0 1 1 0 1 1 0 0 0 % C6.2.172 MNEG % C6.2.184 MSUB<br>
+ x 0 0 1 0 0 1 0 1 h w % C6.2.174 MOV (inverted wide immediate) % C6.2.179 MOVN<br>
+ x 1 0 1 0 0 1 0 1 h w % C6.2.175 MOV (wide immediate) % C6.2.180 MOVZ<br>
+ x 0 1 1 0 0 1 0 0 n _ % C6.2.176 MOV (bitmask immediate) % C6.2.193 ORR (immediate)<br>
+ x 0 1 0 1 0 1 0 0 0 0 % C6.2.177 MOV (register)<br>
+ x 1 1 1 0 0 1 0 1 h w % C6.2.178 MOVK<br>
+ 1 1 0 1 0 1 0 1 0 0 1 % C6.2.181 MRS<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.182 MSR (immediate)<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.183 MSR (register)<br>
+ x 0 1 0 1 0 1 0 s s 1 % C6.2.186 MVN % C6.2.192 ORN (shifted register)<br>
+ x 1 0 1 1 0 1 0 0 0 0 % C6.2.189 NGC % C6.2.217 SBC<br>
+ x 1 1 1 1 0 1 0 0 0 0 % C6.2.190 NGCS % C6.2.218 SBCS<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.191 NOP<br>
+ 1 1 0 1 1 0 1 0 1 1 0 % C6.2.195 PACDA, PACDZA % C6.2.196 PACDB, PACDZB<br>
+ 1 0 0 1 1 0 1 0 1 1 0 % C6.2.197 PACGA<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.198 PACIA, PACIA1716, PACIASP, PACIAZ, PACIZA<br>
+ 1 1 0 1 1 0 1 0 1 1 1 % C6.2.199 PACIB, PACIB1716, PACIBSP, PACIBZ, PACIZB<br>
+ 1 1 1 1 1 0 0 1 1 0 _ % C6.2.200 PRFM (immediate)<br>
+ 1 1 0 1 1 0 0 0 _ _ _ % C6.2.201 PRFM (literal)<br>
+ 1 1 1 1 1 0 0 0 1 0 1 % C6.2.202 PRFM (register)<br>
+ 1 1 1 1 1 0 0 0 1 0 0 % C6.2.203 PRFUM<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.204 PSB CSYNC % C6.2.205 PSSBB<br>
+ x 1 0 1 1 0 1 0 1 1 0 % C6.2.206 RBIT<br>
+ 1 1 0 1 0 1 1 0 0 1 0 % C6.2.207 RET % C6.2.208 RETAA, RETAB<br>
+ x 1 0 1 1 0 1 0 1 1 0 % C6.2.209 REV % C6.2.210 REV16 % C6.2.212 REV64<br>
+ 1 1 0 1 1 0 1 0 1 1 0 % C6.2.211 REV32<br>
+ 1 0 1 1 1 0 1 0 0 0 0 % C6.2.213 RMIF<br>
+ x 0 0 1 1 0 1 0 1 1 0 % C6.2.215 ROR (register) % C6.2.216 RORV % C6.2.222 SDIV<br>
+ 0 0 1 1 1 0 1 0 0 0 0 % C6.2.223 SETF8, SETF16<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.224 SEV % C6.2.225 SEVL<br>
+ 1 0 0 1 1 0 1 1 0 0 1 % C6.2.226 SMADDL % C6.2.231 SMULL<br>
+ 1 1 0 1 0 1 0 0 0 0 0 % C6.2.227 SMC<br>
+ 1 0 0 1 1 0 1 1 0 0 1 % C6.2.228 SMNEGL % C6.2.229 SMSUBL<br>
+ 1 0 0 1 1 0 1 1 0 1 0 % C6.2.230 SMULH<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.232 SSBB<br>
+ 0 0 0 0 1 0 0 0 1 0 0 % C6.2.242 STLLRB % C6.2.243 STLLRH<br>
+ 1 x 0 0 1 0 0 0 1 0 0 % C6.2.244 STLLR % C6.2.245 STLR<br>
+ 0 0 0 0 1 0 0 0 1 0 0 % C6.2.246 STLRB<br>
+ 0 1 0 0 1 0 0 0 1 0 0 % C6.2.247 STLRH<br>
+ 1 x 0 1 1 0 0 1 0 0 0 % C6.2.248 STLUR<br>
+ 0 0 0 1 1 0 0 1 0 0 0 % C6.2.249 STLURB<br>
+ 0 1 0 1 1 0 0 1 0 0 0 % C6.2.250 STLURH<br>
+ 1 x 0 0 1 0 0 0 0 0 1 % C6.2.251 STLXP<br>
+ 1 x 0 0 1 0 0 0 0 0 0 % C6.2.252 STLXR<br>
+ 0 0 0 0 1 0 0 0 0 0 0 % C6.2.253 STLXRB<br>
+ 0 1 0 0 1 0 0 0 0 0 0 % C6.2.254 STLXRH<br>
+ x 0 1 0 1 0 0 0 0 0 _ % C6.2.255 STNP<br>
+ x 0 1 0 1 0 0 0 1 0 _ % C6.2.256 STP<br>
+ 1 x 1 1 1 0 0 i 0 0 _ % C6.2.257 STR (immediate)<br>
+ 1 x 1 1 1 0 0 0 0 0 1 % C6.2.258 STR (register)<br>
+ 0 0 1 1 1 0 0 i 0 0 _ % C6.2.259 STRB (immediate)<br>
+ 0 0 1 1 1 0 0 0 0 0 1 % C6.2.260 STRB (register)<br>
+ 0 1 1 1 1 0 0 i 0 0 _ % C6.2.261 STRH (immediate)<br>
+ 0 1 1 1 1 0 0 0 0 0 1 % C6.2.262 STRH (register)<br>
+ 1 x 1 1 1 0 0 0 0 0 0 % C6.2.272 STTR<br>
+ 0 0 1 1 1 0 0 0 0 0 0 % C6.2.273 STTRB<br>
+ 0 1 1 1 1 0 0 0 0 0 0 % C6.2.274 STTRH<br>
+ 1 x 1 1 1 0 0 0 0 0 0 % C6.2.281 STUR<br>
+ 0 0 1 1 1 0 0 0 0 0 0 % C6.2.282 STURB<br>
+ 0 1 1 1 1 0 0 0 0 0 0 % C6.2.283 STURH<br>
+ 1 x 0 0 1 0 0 0 0 0 1 % C6.2.284 STXP<br>
+ 1 x 0 0 1 0 0 0 0 0 0 % C6.2.285 STXR<br>
+ 0 0 0 0 1 0 0 0 0 0 0 % C6.2.286 STXRB<br>
+ 0 1 0 0 1 0 0 0 0 0 0 % C6.2.287 STXRH<br>
+ x 1 0 0 1 0 1 1 0 0 1 % C6.2.288 SUB (extended register)<br>
+ x 1 0 1 0 0 0 1 0 s _ % C6.2.289 SUB (immediate)<br>
+ x 1 0 0 1 0 1 1 s s 0 % C6.2.290 SUB (shifted register) % C6.2.187 NEG (shifted register)<br>
+ 1 1 0 1 0 1 0 0 0 0 0 % C6.2.294 SVC<br>
+ 0 0 1 1 1 0 0 0 a r 1 % C6.2.295 SWPB, SWPAB, SWPALB, SWPLB<br>
+ 0 1 1 1 1 0 0 0 a r 1 % C6.2.296 SWPH, SWPAH, SWPALH, SWPLH<br>
+ 1 x 1 1 1 0 0 0 a r 1 % C6.2.297 SWP, SWPA, SWPAL, SWPL<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.301 SYS<br>
+ 1 1 0 1 0 1 0 1 0 0 1 % C6.2.302 SYSL<br>
+ x 0 1 1 0 1 1 1 _ _ _ % C6.2.303 TBNZ<br>
+ x 0 1 1 0 1 1 0 _ _ _ % C6.2.304 TBZ<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.305 TLBI % C6.2.306 TSB CSYNC<br>
+ 0 0 0 0 0 0 0 0 0 0 0 % C6.2.312 UDF<br>
+ x 0 0 1 1 0 1 0 1 1 0 % C6.2.313 UDIV<br>
+ 1 0 0 1 1 0 1 1 1 0 1 % C6.2.314 UMADDL % C6.2.318 UMULL % C6.2.315 UMNEGL % C6.2.316 UMSUBL<br>
+ 1 0 0 1 1 0 1 1 1 1 0 % C6.2.317 UMULH<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.321 WFE % C6.2.322 WFI<br>
+ 1 1 0 1 1 0 1 0 1 1 0 % C6.2.323 XPACD, XPACI, XPACLRI<br>
+ 1 1 0 1 0 1 0 1 0 0 0 % C6.2.324 YIELD<br>
+    </font></p>
     </section>
 </main>
 <footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
