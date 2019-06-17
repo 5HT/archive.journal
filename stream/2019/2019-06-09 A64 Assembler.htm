@@ -150,7 +150,7 @@
 
     <h3>APPENDIX A</h3>
  
-       <p>Here are A64 disassembly main 154 cases:</p>
+       <p>Here are A64 ISA main 154 cases:</p>
 
         <p><font face="monospace" size=3>
  <b>0 0 0 0 0 0 0 0 0 0 0 % C6.2.312 UDF</b><br>
@@ -353,6 +353,59 @@
  1 1 1 1 1 0 0 0 m s 1 % C6.2.122 LDRAA, LDRAB<br>
  1 1 1 1 1 0 0 1 1 0 _ % C6.2.200 PRFM (immediate)<br>
     </font></p>
+
+    <h3>APPENDIX B</h3>
+
+    <p>Advanced SIMD and FPU ISA aka NEON:</p>
+
+        <p><font face="monospace" size=3>
+0 x 0 s 1 1 1 0 s s 1 ... 0 | 1 0 1 1 1 0 % C7.2.001 ABS<br>
+0 x 0 s 1 1 1 0 s s 1 ... _ | 1 0 0 0 0 1 % C7.2 002 ADD (vector)<br>
+0 x 0 0 1 1 1 0 s s 1 ... _ | 0 1 0 0 0 0 % C7.2.003 ADDHN, ADDHN2<br>
+0 1 0 1 1 1 1 0 s s 1 ... 1 | 1 0 1 1 1 0 % C7.2.004 ADDP (scalar)<br>
+0 x 0 0 1 1 1 0 s s 1 ... _ | 1 0 1 1 1 1 % C7.2.005 ADDP (vector)<br>
+0 x 0 0 1 1 1 0 s s 1 ... 1 | 1 0 1 1 1 0 % C7.2.006 ADDV<br>
+0 1 0 0 1 1 1 0 0 0 1 ... 0 | 0 1 0 1 1 0 % C7.2.007 AESD - AES single round decryption.<br>
+0 1 0 0 1 1 1 0 0 0 1 ... 0 | 0 1 0 0 1 0 % C7.2.008 AESE - AES single round encryption.<br>
+0 1 0 0 1 1 1 0 0 0 1 ... 0 | 0 1 1 1 1 0 % C7.2.009 AESIMC - AES inverse mix columns.<br>
+0 1 0 0 1 1 1 0 0 0 1 ... 0 | 0 1 1 0 1 0 % C7.2.010 AESMC - AES mix columns.<br>
+0 x 0 0 1 1 1 0 0 0 1 ... _ | 0 0 0 1 1 1 % C7.2.011 AND (vector)<br>
+1 1 0 0 1 1 1 0 0 0 1 ... _ | 0 _ _ _ _ _ % C7.2.012 BCAX<br>
+0 x 1 0 1 1 1 1 0 0 0 ... c | x x x 1 0 1 % C7.2.013 BIC (vector, immediate)<br>
+0 x 0 0 1 1 1 0 0 1 1 ... _ | 0 0 0 1 1 1 % C7.2.014 BIC (vector, register)<br>
+0 x 1 0 1 1 1 0 s s 1 ... _ | 1 0 1 0 0 0 % C7.2.352 UMLSL, UMLSL2 (vector)<br>
+0 x 0 0 1 1 1 0 0 0 0 ... _ | 0 0 1 1 1 1 % C7.2.353 UMOV<br>
+0 x 1 0 1 1 1 1 s s i ... _ | 1 0 1 0 h 0 % C7.2.354 UMULL, UMULL2 (by element)<br>
+0 x 1 0 1 1 1 0 s s 1 ... _ | 1 1 0 0 0 0 % C7.2.355 UMULL, UMULL2 (vector)<br>
+0 x 1 0 1 1 1 0 s s 1 ... _ | 0 0 0 0 1 1 % C7.2.356 UQADD<br>
+0 x 1 0 1 1 1 0 s s 1 ... _ | 0 1 0 1 1 1 % C7.2.357 UQRSHL<br>
+0 x 1 0 1 1 1 1 0 _ _ ... _ | 1 0 0 1 1 1 % C7.2.358 UQRSHRN, UQRSHRN2<br>
+0 x 1 i 1 1 1 1 0 _ _ ... _ | 0 1 1 1 0 1 % C7.2.359 UQSHL (immediate)<br>
+0 x 1 i 1 1 1 0 s s 1 ... _ | 0 1 0 0 1 1 % C7.2.360 UQSHL (register)<br>
+0 x 1 0 1 1 1 1 0 _ _ ... _ | 1 0 0 1 0 1 % C7.2.361 UQSHRN, UQSHRN2<br>
+0 x 1 i 1 1 1 0 s s 1 ... _ | 0 0 1 0 1 1 % C7.2.362 UQSUB - Unsigned saturating Subtract.<br>
+0 x 1 i 1 1 1 0 s s 1 ... 1 | 0 1 0 0 1 0 % C7.2.363 UQXTN, UQXTN2 - Unsigned saturating extract Narrow.<br>
+0 x 0 0 1 1 1 0 1 s 1 ... 1 | 1 1 0 0 1 0 % C7.2.364 URECPE - Unsigned Reciprocal Estimate.<br>
+0 x 1 0 1 1 1 0 s s 1 ... _ | 0 0 0 1 0 1 % C7.2.365 URHADD Unsigned Rounding Halving Add.<br>
+0 x 1 i 1 1 1 0 s s 1 ... _ | 0 1 0 1 0 1 % C7.2.366 URSHL - Unsigned Rounding Shift Left (register).<br>
+0 1 1 1 1 1 1 1 0 _ _ ... _ | 0 0 1 0 0 1 % C7.2.367 URSHR - Unsigned Rounding Shift Right (immediate).<br>
+0 x 1 0 1 1 1 0 1 s 1 ... 1 | 1 1 0 0 1 0 % C7.2.368 URSQRTE - Unsigned Reciprocal Square Root Estimate.<br>
+0 1 1 1 1 1 1 1 0 _ _ ... _ | 0 0 1 1 0 1 % C7.2.369 URSRA<br>
+0 1 1 1 1 1 1 0 s s 1 ... _ | 0 1 0 0 0 1 % C7.2.370 USHL - Unsigned Shift Left (register).<br>
+0 x 1 0 1 1 1 1 0 _ _ ... 0 | 1 0 1 0 0 1 % C7.2.371 USHLL, USHLL2 % C7.2.377 UXTL, UXTL2<br>
+0 1 1 1 1 1 1 1 0 _ _ ... _ | 0 0 0 0 0 1 % C7.2.372 USHR - Unsigned Shift Right (immediate).<br>
+0 x 1 s 1 1 1 0 s s 1 ... 0 | 0 0 0 1 1 1 % C7.2.373 USQADD<br>
+0 1 1 1 1 1 1 1 0 _ _ ... _ | 0 0 0 1 0 1 % C7.2.374 USRA<br>
+0 x 1 0 1 1 1 0 s s 1 ... _ | 0 0 1 0 0 0 % C7.2.375 USUBL, USUBL2<br>
+0 x 1 0 1 1 1 0 s s 1 ... _ | 0 0 1 1 0 0 % C7.2.376 USUBW, USUBW2 - Unsigned Subtract Wide.<br>
+0 x 0 0 1 1 1 0 s s 0 ... _ | 0 0 0 1 1 0 % C7.2.378 UZP1 - Unzip vectors (primary).<br>
+0 x 0 0 1 1 1 0 s s 0 ... _ | 0 1 0 1 1 0 % C7.2.379 UZP2 - Unzip vectors (secondary).<br>
+1 1 0 0 1 1 1 0 1 0 0 ... _ | _ _ _ _ _ _ % C7.2.380 XAR - Exclusive OR and Rotate.<br>
+0 x 0 0 1 1 1 0 s s 1 ... 1 | 0 0 1 0 1 0 % C7.2.381 XTN, XTN2 - Extract Narrow.<br>
+0 x 0 0 1 1 1 0 s s 0 ... _ | 0 0 1 1 1 0 % C7.2.382 ZIP1 - Zip vectors (primary).<br>
+0 x 0 0 1 1 1 0 s s 0 ... _ | 0 1 1 1 1 0 % C7.2.383 ZIP2 - Zip vectors (secondary).<br>
+    </font></p>
+
     </section>
 </main>
 <footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
