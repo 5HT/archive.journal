@@ -29,6 +29,33 @@
 
         <p>— <a href="https://github.com/synrc/bpe">synrc/bpe</a> 4.6</p>
 
+   <p><font face="monospace" size=5 style="white-space: pre;">
+ > :kvx.all(:writer)
+ [
+   {:writer, :process, 16, [], [], []},
+   {:writer, {:hist, '1561056330367647000'}, 15, [], [], []},
+   {:writer, {:hist, '1561061446450590000'}, 7, [], [], []},
+   {:writer, {:hist, '1561063062377234000'}, 2, [], [], []},
+   {:writer, {:hist, '1561063089087944000'}, 3, [], [], []},
+   {:writer, {:hist, '1561063600278637000'}, 5, [], [], []},
+   {:writer, {:hist, '1561066121676452000'}, 1, [], [], []},
+   {:writer, {:hist, '1561066124717319000'}, 4, [], [], []},
+   {:writer, {:hist, '1561073251255155000'}, 2, [], [], []}
+ ]
+ 
+ > :kvx.all({:hist, '1561063062377234000'})
+ [
+   {:hist, 0, :feed, [], [], [], [],
+    "IBAN Account", {:event, :Init}, [],
+    {{2019, 6, 20}, {23, 37, 42}}},
+   {:hist, 1, :feed, [], [], [], [],
+    "IBAN Account", {:task, :Init}, [],
+    {{2019, 6, 20}, {23, 37, 52}}}
+ ]
+
+    </font></p>
+
+
     </section>
 </main>
 <footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
