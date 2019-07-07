@@ -37,7 +37,7 @@
            Если добавить бесплатный ASN.1 компилятор и 80% GSM трафика проходяшего через этот язык
            станет понятно, что выбор этот безальтернативен.</p>
 
-   <p><font face="monospace" size=5 style="white-space: pre;">
+   <p><font face="monospace" size=4 style="white-space: pre;">
   <a href="https://n2o.dev">SYNRC</a>       <a href="https://n2o.space">ENTERPRISE</a>  <a href="https://o7.network">O7</a>          TRUSTED CA
   ----------- ----------- ----------- ----------- 
   active      acc         bud         n2o.dev
@@ -70,12 +70,48 @@
            устанавливать наши системы на монолитах, исключение разве что уместно для CA ауторити
            он же Identity Server, в качестве которого можно использовать in house LDAP сервер SYNRC.</p>
 
+   <p><font face="monospace" size=4 style="white-space: pre;">
+> :supervisor.which_children(:n2o)
+[
+  {{:tcp, '/ldap/tcp/4'}, #PID<0.985.0>, :worker, [:n2o_tcp]},
+  {{:tcp, '/ldap/tcp/3'}, #PID<0.984.0>, :worker, [:n2o_tcp]},
+  {{:tcp, '/ldap/tcp/2'}, #PID<0.983.0>, :worker, [:n2o_tcp]},
+  {{:tcp, '/ldap/tcp/1'}, #PID<0.982.0>, :worker, [:n2o_tcp]},
+  {{:ws, '/chat/ws/4'}, #PID<0.985.0>, :worker, [:n2o_ws]},
+  {{:ws, '/chat/ws/3'}, #PID<0.984.0>, :worker, [:n2o_ws]},
+  {{:ws, '/chat/ws/2'}, #PID<0.983.0>, :worker, [:n2o_ws]},
+  {{:ws, '/chat/ws/1'}, #PID<0.982.0>, :worker, [:n2o_ws]},
+  {{:mqtt, '/erp/mqtt/4'}, #PID<0.977.0>, :worker, [:n2o_mqtt]},
+  {{:mqtt, '/erp/mqtt/3'}, #PID<0.976.0>, :worker, [:n2o_mqtt]},
+  {{:mqtt, '/erp/mqtt/2'}, #PID<0.975.0>, :worker, [:n2o_mqtt]},
+  {{:mqtt, '/erp/mqtt/1'}, #PID<0.974.0>, :worker, [:n2o_mqtt]},
+  {{:mqtt, '/bpe/mqtt/4'}, #PID<0.977.0>, :worker, [:n2o_mqtt]},
+  {{:mqtt, '/bpe/mqtt/3'}, #PID<0.976.0>, :worker, [:n2o_mqtt]},
+  {{:mqtt, '/bpe/mqtt/2'}, #PID<0.975.0>, :worker, [:n2o_mqtt]},
+  {{:mqtt, '/bpe/mqtt/1'}, #PID<0.974.0>, :worker, [:n2o_mqtt]},
+  {{:caching, 'timer'}, #PID<0.969.0>, :worker, [:n2o]}
+]
+    </font></p>
+
         <p>В качестве системы хранения мы используем локальные BTree таблицы под
            управлением <strike>bdb</strike>, <strike>leveldb</strike>, rocksdb
            как делали наши деды в Fox Pro и Paradox. А распределенеые транзакции делаем в духе выделеного
            сервера как Microsoft DTSC COM+. Таким образом вы получаете сразу нормальное (CoSQL) представление всех цепочек,
            и любому программисту будет понятна система управления ими, при условии, что он знает что такое BTree.
            А распределенным коммитом вы управляете сами и сами выбираете протокол оракула.</p>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+> :kvs.all :writer
+[
+  {:writer, '/bpe/proc', 2, [], [], []},
+  {:writer, '/erp/group', 1, [], [], []},
+  {:writer, '/erp/partners', 7, [], [], []},
+  {:writer, '/acc/synrc/Kyiv', 3, [], [], []},
+  {:writer, '/chat/5HT', 1, [], [], []},
+  {:writer, '/bpe/hist/1562187187807717000', 16, [], [], []},
+  {:writer, '/bpe/hist/1562192587632329000', 1, [], [], []}
+]
+    </font></p>
 
         <p>Да мы предлагаем вам чуть более прямой и непосредственный путь кодирования данных, для
            совершения продвинутого репортинга вы по прежнему будете должны иметь офлайновые бекофис системы
