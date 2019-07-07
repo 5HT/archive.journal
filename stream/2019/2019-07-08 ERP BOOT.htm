@@ -1,0 +1,62 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Namdak Tonpa"/>
+    <title>2019-07-08</title>
+    <link rel="stylesheet" href="../../blank.css"/>
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2019-07-08</a>
+</nav>
+<main>
+    <section>
+        <h3>Сайнерси Энтерпрайзинг<br>Часть 2. Пусконаладка Предприятия</h3>
+        <p>В этой статье я расскажу как мы организовываем данные о самом предприятии
+           и как мы совершаем навигаю по ним с помощью библиотеки KVS.</p>
+
+    </section>
+    <section>
+        <h3>INTRO</h3>
+        <p>ERP BOOT или пусконаладка преприятия — это процес заполнения первичных
+           словарей таблиц и всякой фундаментальной информации. Главным образом это отображение
+           иерархической, организационной структуры предприятия. От работника предприятия на рабочем месте
+           используя систему управления предприятиям, его бреча, его локальной компании работающей
+           по юридическим законам страны, и далее до группы международных компании с офисами в разныз странах мира,
+           и возможно даже до синдикатов транснациональныз корпораций. В зависимости от того какую структу вы хотите
+           так вы организовываете первичные фиды.</p>
+
+        <p>Рассмотрим пример: компания Quanterall, главный подрядчик Aethernity, имеет офисы в
+           Софии, Варне (главный офис компании) и Пловдиве. Сама компания совершает операции только в Болгарии,
+           поэтому группа состоит из одной компании.</p>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+GroupOrgs    = [ #'Organization'{name="Quanterall",  url="quanterall.com"} ].
+HeadBranches = [ #'Branch'{loc=#'Loc'{city="Varna",  country="BG"}},
+                 #'Branch'{loc=#'Loc'{city="Sophia", country="BG"}},
+                 #'Branch'{loc=#'Loc'{city="Plovdiv",country="BG"}} ].
+    </font></p>
+
+        <p>Добавляем сейчас и впредь данные с помощью обычных list комбинаторов:</p>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+case kvs:get(writer,"/erp/group") of
+     {ok,_} -> skip;
+     {error,_} ->
+         lists:map(fun(X) -> kvs:append(X,"/erp/quanterall") end, HeadBranches),
+         lists:map(fun(X) -> kvs:append(X,"/erp/group") end, GroupOrgs) end.
+
+    </font></p>
+
+    </section>
+    <section>
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
