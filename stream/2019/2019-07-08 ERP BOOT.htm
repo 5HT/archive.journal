@@ -141,12 +141,12 @@ defmodule PLM.Mixfile do
       version: "0.7.1",
       elixir: "~> 1.8.1",
       description: "PLM Product Lifecycle Management",
-      deps: [{:erp, "~> 0.7.6"}]
+      deps: [{:bpe, "~> 4.7.3"}, {:erp, "~> 0.7.6"}]
     ]
   end
   def application(),
     do: [mod: {PLM.Application, []},
-         applications: [:rocksdb, :kvs, :erp]]
+         applications: [:rocksdb, :kvs, :bpe, :erp]]
 end
     </font></p>
 
