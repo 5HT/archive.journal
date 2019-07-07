@@ -22,7 +22,7 @@
 
     </section>
     <section>
-        <h3>INTRO</h3>
+        <h3>Создание Рутовых Фидов</h3>
         <p>ERP BOOT или пусконаладка преприятия — это процес заполнения первичных
            словарей таблиц и всякой фундаментальной информации. Главным образом это отображение
            иерархической, организационной структуры предприятия. От работника предприятия на рабочем месте
@@ -45,14 +45,56 @@ HeadBranches = [ #'Branch'{loc=#'Loc'{city="Varna",  country="BG"}},
         <p>Добавляем сейчас и впредь данные с помощью обычных list комбинаторов:</p>
 
    <p><font face="monospace" size=4 style="white-space: pre;">
-case kvs:get(writer,"/erp/group") of
-     {ok,_} -> skip;
-     {error,_} ->
-         lists:map(fun(X) -> kvs:append(X,"/erp/quanterall") end, HeadBranches),
-         lists:map(fun(X) -> kvs:append(X,"/erp/group") end, GroupOrgs) end.
-
+-module(erp).
+-compile(export_all).
+boot() ->
+  case kvs:get(writer,"/erp/group") of
+    {ok,_} -> skip;
+    {error,_} ->
+      lists:map(fun(X) -> kvs:append(X,"/erp/quanterall") end, HeadBranches),
+      lists:map(fun(X) -> kvs:append(X,"/erp/group") end, GroupOrgs) end.
     </font></p>
+        <p>За работу с данными отвечает библиотека KVS, как работать с ней читайте в предыдущих
+           выпусках журнала:</p>
+          <p>— <a href="https://tonpa.guru/stream/2019/2019-04-13%20Новая%20версия%20KVX.htm">2019-04-13 Новая Версия KVS</a><br>
+          — <a href="https://github.com/synrc/kvs">synrc/kvs</a></p>
+    </section>
+    <section>
+        <h3>Генерация клиентов и валидаторов</h3>
+        <p>Схемы мы храним в цепочках для каждой таблицы поэтому валиаторы
+           способны траверсить и по предыдущих схемах. Схема включает в себя
+           всю типовую информацию для таблиц С-структур, которые используются
+           в качестве основного типа данных в качесве пейлоада для базы данных.
+           Наши драйвера используют BERT кодировку. Все кто писали сложные системы
+           согласились с тем, что данные в сторадже должны быть типизированны,
+           это потом вы уже можете использовать словари и JSON для транспортировки,
+           но валидаторы и генераторы SDK лучше писать по типовым спецификациям.
+           В Erlang это выглядит так:</p>
+   <p><font face="monospace" size=4 style="white-space: pre;">
+-type locationType() :: normal | extra.
 
+-record('Loc',   { id          = kvs:seq([],[]) :: [] | term(),
+                   code        = [] :: [] | term(),
+                   country     = [] :: [] | binary(),
+                   city        = [] :: [] | binary(),
+                   address     = [] :: [] | binary(),
+                   type        = [] :: locationType() }).
+
+-record('Branch',   { id     = kvs:seq([],[]) :: [] | term(),
+                      loc    = [] :: [] | #'Loc'{} }).
+
+-record('Organization', { name        = [] :: [] | binary(),
+                          url         = [] :: [] | string(),
+                          location    = [] :: [] | #'Loc'{},
+                          type        = [] :: term() }).
+    </font></p>
+          <p>Другими словами в типовых спецификациях есть суммы и мы можем генерировать
+             хоть Haskell спецификации, причем делать это на стадии компиляции.
+             Пример набора парс трансформаций для генерации JavaScript, Swift и даже Protobuf
+             спецификаций вы можете найти в этой библиотеке:</p>
+          <p>— <a href="https://github.com/synrc/bert">synrc/bert</a></p>
+          <p>Там же находится генератор валидаторов для самого языка Erlang.
+             Почему в поставке языка отсувствует такая библиотека — тот ещё вопрос!</p>
     </section>
     <section>
     </section>
