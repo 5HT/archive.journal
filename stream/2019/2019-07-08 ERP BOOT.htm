@@ -23,8 +23,7 @@
     </section>
     <section>
         <h3>Создание схемы<br>
-            Генерация SDK для клиетов<br>
-            Генерация валидаторов</h3>
+            Генерация SDK и валидаторов</h3>
         <p>Схемы мы храним в цепочках для каждой таблицы поэтому валиаторы
            способны траверсить и по предыдущих схемах. Схема включает в себя
            всю типовую информацию для таблиц С-структур, которые используются
@@ -37,39 +36,39 @@
    <p><font face="monospace" size=4 style="white-space: pre;">
 -type locationType() :: normal | extra.
 
--record('Loc',   { id          = kvs:seq([],[]) :: [] | term(),
-                   code        = [] :: [] | term(),
-                   country     = [] :: [] | binary(),
-                   city        = [] :: [] | binary(),
-                   address     = [] :: [] | binary(),
-                   type        = [] :: locationType() }).
+-record('Loc',          { id          = kvs:seq([],[]) :: [] | term(),
+                          code        = [] :: [] | term(),
+                          country     = [] :: [] | binary(),
+                          city        = [] :: [] | binary(),
+                          address     = [] :: [] | binary(),
+                          type        = [] :: locationType() }).
 
--record('Branch',   { id     = kvs:seq([],[]) :: [] | term(),
-                      loc    = [] :: [] | #'Loc'{} }).
+-record('Branch',       { id          = kvs:seq([],[]) :: [] | term(),
+                          loc         = [] :: [] | #'Loc'{} }).
 
--record('Inventory',   { id          = [] :: [] | binary(),
-                         name        = [] :: [] | binary(),
-                         branch      = [] :: [] | #'Branch'{},
-                         type        = [] :: term() }).
+-record('Inventory',    { id          = [] :: [] | binary(),
+                          name        = [] :: [] | binary(),
+                          branch      = [] :: [] | #'Branch'{},
+                          type        = [] :: term() }).
 
 -record('Organization', { name        = [] :: [] | binary(),
                           url         = [] :: [] | string(),
                           location    = [] :: [] | #'Loc'{},
                           type        = [] :: term() }).
 
--record('Person',      { id         = kvs:seq([],[]) :: [] | term(),
-                         cn          = [] :: [] | binary(),
-                         name        = [] :: [] | binary(),
-                         displayName = [] :: [] | binary(),
-                         location    = [] :: #'Loc'{},
-                         type        = [] :: term() }).
+-record('Person',       { id          = kvs:seq([],[]) :: [] | term(),
+                          cn          = [] :: [] | binary(),
+                          name        = [] :: [] | binary(),
+                          displayName = [] :: [] | binary(),
+                          location    = [] :: #'Loc'{},
+                          type        = [] :: term() }).
 
 
--record('Employee',    { id          = kvs:seq([],[]) :: [] | binary(),
-                         person      = [] :: [] | #'Person'{},
-                         org         = [] :: [] | #'Organization'{},
-                         branch      = [] :: [] | #'Branch'{},
-                         type        = [] :: term() }).
+-record('Employee',     { id          = kvs:seq([],[]) :: [] | binary(),
+                          person      = [] :: [] | #'Person'{},
+                          org         = [] :: [] | #'Organization'{},
+                          branch      = [] :: [] | #'Branch'{},
+                          type        = [] :: term() }).
 
     </font></p>
           <p>Другими словами в типовых спецификациях есть суммы и мы можем генерировать
@@ -132,6 +131,67 @@ boot() ->
     </section>
     <section>
         <h3>Пример</h3>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+defmodule PLM.Mixfile do
+  use Mix.Project
+  def project() do
+    [
+      app: :plm,
+      version: "0.7.1",
+      elixir: "~> 1.8.1",
+      description: "PLM Product Lifecycle Management",
+      deps: [{:erp, "~> 0.7.6"}]
+    ]
+  end
+  def application(),
+    do: [mod: {PLM.Application, []},
+         applications: [:rocksdb, :kvs, :erp]]
+end
+    </font></p>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+> :kvs.all :writer
+[
+  {:writer, '/erp/group', 1, [], [], []},
+  {:writer, '/erp/partners', 7, [], [], []},
+  {:writer, '/plm/products', 2, [], [], []},
+  {:writer, '/erp/quanterall', 3, [], [], []},
+  {:writer, '/plm/NYNJA/income', 5, [], [], []},
+  {:writer, '/plm/CATALX/income', 12, [], [], []},
+  {:writer, '/plm/NYNJA/outcome', 5, [], [], []},
+  {:writer, '/plm/CATALX/outcome', 12, [], [], []},
+  {:writer, '/acc/quanterall/Varna', 23, [], [], []},
+  {:writer, '/acc/quanterall/Sophia', 9, [], [], []},
+  {:writer, '/plm/NYNJA/investments', 2, [], [], []},
+  {:writer, '/acc/quanterall/Plovdiv', 3, [], [], []},
+  {:writer, '/plm/CATALX/investments', 4, [], [], []}
+]
+
+> :kvs.feed '/erp/group'
+[{:Organization, 'Quanterall', 'quanterall.com', [], []}]
+
+> :kvs.feed '/erp/quanterall'
+[
+  {:Branch, '1562329445378242000',
+   {:Loc, '1562329445378243000', [], 'BG', 'Plovdiv', [], []}},
+  {:Branch, '1562329445378241000',
+   {:Loc, '1562329445378242000', [], 'BG', 'Sophia', [], []}},
+  {:Branch, '1562329445378234000',
+   {:Loc, '1562329445378240000', [], 'BG', 'Varna', [], []}}
+]
+
+> :kvs.feed '/erp/partners'
+[
+  {:Organization, 'Catalx Exchange Inc.', 'catalx.io', [], []},
+  {:Organization, 'HistoricalPark', [], [], []},
+  {:Organization, 'NYNJA, Inc.', 'nynja.io', [], []},
+  {:Organization, 'Intralinks', [], [], []},
+  {:Organization, 'SwissEMX', [], [], []},
+  {:Organization, 'FiaTech', [], [], []},
+  {:Organization, '3Stars', [], [], []}
+]
+    </font></p>
     </section>
 </main>
 <footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
