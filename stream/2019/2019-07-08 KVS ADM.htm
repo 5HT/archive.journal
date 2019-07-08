@@ -92,17 +92,20 @@ emd
 -include_lib("nitro/include/nitro.hrl").
 -include_lib("kvs/include/cursors.hrl").
 
+% 1
 event(session)   -> nitro:update(session, #span{body = n2o:sid()});
+% 2
 event(enode)     -> nitro:update(enode,   #span{body = lists:concat([node()])});
+% 3
 event({link,Id}) -> nitro:clear(feeds),
                     lists:map(fun(T)->
                     nitro:insert_bottom(feeds,
                       #panel{body=nitro:compact(T)}) end,
                     kvs:feed(Id));
-
+% 4
 event(init)      -> [ begin nitro:clear(X), self() ! {direct,X}
                       end || X <- [writers,session,enode] ];
-
+% 5
 event(writers)   -> [ nitro:insert_bottom(writers,
                       #panel{body = [#link{body = Id,
                        postback = {link,Id}}," (" ++ nitro:to_list(C) ++ ")"]})
