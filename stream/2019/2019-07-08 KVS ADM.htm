@@ -1,0 +1,137 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Namdak Tonpa"/>
+    <title>2019-07-08</title>
+    <link rel="stylesheet" href="../../blank.css"/>
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2019-07-08</a>
+</nav>
+<main>
+    <section>
+        <h3>Сайнерси Энтерпрайзинг<br>Часть 3. Эксплорер Данных</h3>
+        <p>В этой статье я расскажу как написать простую админку для KVS
+           на NITRO и N2O на 5 строчек!.</p>
+
+    </section>
+    <section>
+        <h3>Elixir прелюдия</h3>
+
+        <h4>coinfig/config.exs:</h4>
+   <p><font face="monospace" size=4 style="white-space: pre;">
+use Mix.Config
+
+config :n2o,
+  pickler: :n2o_secret,
+  mq: :n2o_syn,
+  port: 8043,
+  mqtt_services: ['/erp', '/plm'],
+  ws_services: ['/chat'],
+  upload: "./priv/static",
+  protocols: [:n2o_nitro, :n2o_ftp, :bpe_n2o],
+  routes: PLM.Routes
+
+config :kvs,
+  dba: :kvs_rocks,
+  dba_st: :kvs_st,
+  schema: [:kvs, :kvs_stream, :bpe_metainfo]
+      </font></p>
+
+        <h4>mix.exs:</h4>
+   <p><font face="monospace" size=4 style="white-space: pre;">
+defmodule PLM.Mixfile do
+  use Mix.Project
+
+  def project() do
+    [
+      app: :plm,
+      version: "0.7.1",
+      elixir: "~> 1.8.1",
+      description: "PLM Product Lifecycle Management",
+      deps: deps()
+    ]
+  end
+
+  def application() do
+    [
+      mod: {PLM.Application, []},
+      applications: [:ranch, :cowboy, :rocksdb, :kvs, :syn, :erp, :bpe, :n2o]
+    ]
+  end
+
+  def deps() do
+    [
+      {:ex_doc, "~> 0.20.2", only: :dev},
+      {:cowboy, "~> 2.5.0"},
+      {:rocksdb, "~> 1.2.0"},
+      {:n2o, "~> 6.7.1"},
+      {:syn, "~> 1.6.3"},
+      {:kvs, "~> 6.7.4"},
+      {:erp, "~> 0.7.6"},
+      {:bpe, "~> 4.7.3"},
+      {:nitro, "~> 4.7.3"}
+    ]
+  end
+emd
+    </font></p>
+
+    </section>
+    <section>
+    <h3>Nitrogen Web Framework</h3>
+        <h4>src/events/kvs_adm.erl</h4>
+   <p><font face="monospace" size=4 style="white-space: pre;">
+event(init)      -> [ begin nitro:clear(X), 
+                            elf() ! {direct,X}
+                      end || X <- [writers,session,enode] ];
+
+event(session)   -> nitro:update(session, #span{body = n2o:sid()});
+event(enode)     -> nitro:update(enode,   #span{body = lists:concat([node()])});
+event({link,Id}) -> nitro:clear(feeds),
+                    lists:map(fun(T)->
+                    nitro:insert_bottom(feeds,
+                      #panel{body=nitro:compact(T)}) end,
+                    kvs:feed(Id));
+
+event(writers)   -> [ nitro:insert_bottom(writers,
+                      #panel{body = [#link{body = Id,
+                       postback = {link,Id}}," (" ++ nitro:to_list(C) ++ ")"]})
+                   || #writer{id = Id, count = C} <- kvs:all(writer) ];
+event(_) -> [].
+    </font></p>
+
+
+        <h4>lib/routes.ex</h4>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+defmodule PLM.Routes do
+  use N2O, with: [:n2o, :nitro]
+
+  def finish(state, context), do: {:ok, state, context}
+
+  def init(state, context) do
+    %{path: path} = cx(context, :req)
+    {:ok, state, cx(context, path: path, module: route_prefix(path))}
+  end
+
+  defp route_prefix(<<"/ws/", p::binary>>), do: route(p)
+  defp route_prefix(<<"/", p::binary>>), do: route(p)
+  defp route_prefix(path), do: route(path)
+
+  def route(<<"kvs", _::binary>>), do: :kvs_adm
+  def route(<<"app/kvs", _::binary>>), do: :kvs_adm
+  def route(_), do: :kvs_adm
+end
+    </font></p>
+    <figure><img src="https://pbs.twimg.com/media/D-6YMKfXUAInb6o?format=jpg&name=large"/></figure  >
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
