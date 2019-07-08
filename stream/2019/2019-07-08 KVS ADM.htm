@@ -32,11 +32,11 @@ config :n2o,
   pickler: :n2o_secret,
   mq: :n2o_syn,
   port: 8043,
-  proto: :chat_server
+  proto: CHAT.Server
   mqtt_services: ['erp', 'plm'],
   ws_services: ['chat'],
   upload: "./priv/static",
-  protocols: [:n2o_nitro, :n2o_ftp, :bpe_n2o, :chat_txt],
+  protocols: [:n2o_heart, :n2o_nitro, :n2o_ftp, :bpe_n2o, CHAT.TXT],
   routes: PLM.Routes
 
 config :kvs,
@@ -63,16 +63,17 @@ defmodule PLM.Mixfile do
   def application() do
     [
       mod: {PLM.Application, []},
-      applications: [:ranch, :cowboy, :rocksdb, :kvs, :syn, :erp, :bpe, :n2o]
+      applications: [:ranch, :cowboy, :rocksdb, :kvs, :syn, :erp, :bpe, :n2o, :chat]
     ]
   end
 
   def deps() do
     [
       {:ex_doc, "~> 0.20.2", only: :dev},
+      {:asn1ex, github: "vicentfg/asn1ex", only: :dev},
       {:cowboy, "~> 2.5.0"},
       {:rocksdb, "~> 1.2.0"},
-      {:chat, "~> 3.7.1"},
+      {:chat, "~> 3.7.2"},
       {:n2o, "~> 6.7.1"},
       {:syn, "~> 1.6.3"},
       {:kvs, "~> 6.7.4"},
