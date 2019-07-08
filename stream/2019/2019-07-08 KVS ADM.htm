@@ -87,6 +87,11 @@ emd
     <h3>Nitrogen Web Framework</h3>
         <h4>src/events/kvs_adm.erl</h4>
    <p><font face="monospace" size=4 style="white-space: pre;">
+-module(kvs_adm).
+-compile(export_all).
+-include_lib("nitro/include/nitro.hrl").
+-include_lib("kvs/include/cursors.hrl").
+
 event(init)      -> [ begin nitro:clear(X), 
                             elf() ! {direct,X}
                       end || X <- [writers,session,enode] ];
