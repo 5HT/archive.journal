@@ -33,8 +33,8 @@ config :n2o,
   mq: :n2o_syn,
   port: 8043,
   proto: :chat_server
-  mqtt_services: ['/erp', '/plm'],
-  ws_services: ['/chat'],
+  mqtt_services: ['erp', 'plm'],
+  ws_services: ['chat'],
   upload: "./priv/static",
   protocols: [:n2o_nitro, :n2o_ftp, :bpe_n2o, :chat_txt],
   routes: PLM.Routes
