@@ -135,44 +135,44 @@ Ok(Dict(Cons(Number(1), Cons(Number(2), Cons(Number(3), Number(4))))))
 <p>У меня получилась BNF нотация на 13 правил. Что скажете? Можно короче, красивее?</p>
 
    <p><font face="monospace" size=4 style="white-space: pre;">
-List:      AST = { "(" ")" => AST::Nil, "(" <l:exprlist> ")" => list(l), };
-Dict:      AST = { "[" "]" => AST::Nil, "[" <l:exprlist> "]" => dict(l), };
-Lambda:    AST = { "{" <m:exprlist> "}"                      => fun(AST::Nil,m),
-                   "{[" <c:namelist> "]" <m:exprlist> "}"    => fun(c,m),
+List:      AST = { "(" ")" => AST::Nil, "(" &lt;l:exprlist> ")" => list(l), };
+Dict:      AST = { "[" "]" => AST::Nil, "[" &lt;l:exprlist> "]" => dict(l), };
+Lambda:    AST = { "{" &lt;m:exprlist> "}"                      => fun(AST::Nil,m),
+                   "{[" &lt;c:namelist> "]" &lt;m:exprlist> "}"    => fun(c,m),
                    "{" "}"                                   => fun(AST::Nil,AST::Nil)};
 
-Call:      AST = { <c:noun> <a:callcont>                     => call(c,a), };
-NameList:  AST = { Name, <o:name> <m:namecont>               => cons(o,m), };
-ExprList:  AST = { ExprCont, Expr, <o:expr> <m:exprcont>     => cons(o,m), };
-CallCont:  AST = { Noun, <m:call>                            => m };
-NameCont:  AST = { ";" => AST::Nil, ";" <m:namelist>         => m };
-ExprCont:  AST = { ";" => AST::Nil, ";" <m:exprlist>         => m };
+Call:      AST = { &lt;c:noun> &lt;a:callcont>                     => call(c,a), };
+NameList:  AST = { Name, &lt;o:name> &lt;m:namecont>               => cons(o,m), };
+ExprList:  AST = { ExprCont, Expr, &lt;o:expr> &lt;m:exprcont>     => cons(o,m), };
+CallCont:  AST = { Noun, &lt;m:call>                            => m };
+NameCont:  AST = { ";" => AST::Nil, ";" &lt;m:namelist>         => m };
+ExprCont:  AST = { ";" => AST::Nil, ";" &lt;m:exprlist>         => m };
 Noun:      AST = { Name, Number, Hexlit, Bool, Symbol, List, Dict, Sequence, Lambda, Ioverb };
 Expr:      AST = { Noun, Call, Verbs, Adverbs, };
 
-Verbs:     AST = {           <v:verb>               => verb(v,AST::Nil,AST::Nil),
-                             <v:verb>     <r:expr>  => verb(v,AST::Nil,r),
-                   <l:call>  <v:verb>     <r:expr>  => verb(v,l,r),
-                   <l:noun>  <v:verb>     <r:expr>  => verb(v,l,r), };
+Verbs:     AST = {           &lt;v:verb>               => verb(v,AST::Nil,AST::Nil),
+                             &lt;v:verb>     &lt;r:expr>  => verb(v,AST::Nil,r),
+                   &lt;l:call>  &lt;v:verb>     &lt;r:expr>  => verb(v,l,r),
+                   &lt;l:noun>  &lt;v:verb>     &lt;r:expr>  => verb(v,l,r), };
 
-Adverbs:   AST = {           <a:adverb>             => adverb(a,AST::Nil,AST::Nil),
-                             <a:adverb>   <e:expr>  => adverb(a,AST::Nil,e),
-                   <l:call>  <a:adverb>   <r:expr>  => adverb(a,l,r),
-                   <l:noun>  <a:adverb>   <r:expr>  => adverb(a,l,r), };
+Adverbs:   AST = {           &lt;a:adverb>             => adverb(a,AST::Nil,AST::Nil),
+                             &lt;a:adverb>   <e:expr>  => adverb(a,AST::Nil,e),
+                   &lt;l:call>  &lt;a:adverb>   &lt;r:expr>  => adverb(a,l,r),
+                   &lt;l:noun>  &lt;a:adverb>   &lt;r:expr>  => adverb(a,l,r), };
    </font></p>
 
 <p>Терминалы думаю написать на NOM попробовать, чтобы быстрее парсалось.</p>
 
    <p><font face="monospace" size=4 style="white-space: pre;">
-Number:    AST = { <n:r"\d+"> => AST::Number(u64::from_str(n).unwrap()), };
+Number:    AST = { &lt;n:r"\d+"> => AST::Number(u64::from_str(n).unwrap()), };
 Hexlit:    AST = { <h:r"0x[a-zA-Z\d]+"> => AST::Number(u64::from_str_radix(&h[2..], 16).unwrap()), };
-Bool:      AST = { <b:r"[01]+b"> => AST::Number(u64::from_str_radix(&b[0..b.len()-1], 2).unwrap()), };
-Name:      AST = { <n:r"[a-zA-Z][-a-zA-Z\d]*"> => AST::Name(String::from(n)), };
-Symbol:    AST = { <s:r"`([a-z][a-z0-9]*)?"> => AST::Symbol(String::from(&s[1..s.len()])), };
-Adverb: Adverb = { <a:r"[\x27:\x5C\x2F]:?"> => Adverb::from_str(a).unwrap(), };
-Verb:     Verb = { <v:r"[+\x2D*$%!&|<>=~,^#_?@.]"> => Verb::from_str(v).unwrap(), };
-Ioverb:    AST = { <i:r"\d+:"> => AST::Ioverb(String::from(i),Box::new(AST::Nil)), };
-Sequence:  AST = { <s:r"\x22(\\.|[^\x5C\x22])*\x22"> => AST::Sequence(String::from(&s[1..s.len()-1])), };
+Bool:      AST = { &lt;b:r"[01]+b"> => AST::Number(u64::from_str_radix(&b[0..b.len()-1], 2).unwrap()), };
+Name:      AST = { &lt;n:r"[a-zA-Z][-a-zA-Z\d]*"> => AST::Name(String::from(n)), };
+Symbol:    AST = { &lt;s:r"`([a-z][a-z0-9]*)?"> => AST::Symbol(String::from(&s[1..s.len()])), };
+Adverb: Adverb = { &lt;a:r"[\x27:\x5C\x2F]:?"> => Adverb::from_str(a).unwrap(), };
+Verb:     Verb = { &lt;v:r"[+\x2D*$%!&|<>=~,^#_?@.]"> => Verb::from_str(v).unwrap(), };
+Ioverb:    AST = { &lt;i:r"\d+:"> => AST::Ioverb(String::from(i),Box::new(AST::Nil)), };
+Sequence:  AST = { &lt;s:r"\x22(\\.|[^\x5C\x22])*\x22"> => AST::Sequence(String::from(&s[1..s.len()-1])), };
    </font></p>
 
 <p>Этот парсер парсает все исходники К и Q которые мне попадались на глаза,
