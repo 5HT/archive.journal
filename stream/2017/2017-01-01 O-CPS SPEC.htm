@@ -1,10 +1,29 @@
-O-CPS SPEC
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2017-01-01</title>
+    <link rel="stylesheet" href="../../blank.css?v=4" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2017-01-01</a>
+</nav>
+<main>
+    <section>
+        <h3>O-CPS SPEC</h3>
 
-Если бы O-CPS был PhD :-)
+<p>Если бы O-CPS был PhD :-)</p>
 
-1. Синтаксис. Модифицированный lalrpop (убраны типы-аттрибуты и несущественные
-элементы, отсутствуют терминалы, можно найти в предыдущих постах).
+<p>1. Синтаксис. Модифицированный lalrpop (убраны типы-аттрибуты и несущественные
+элементы, отсутствуют терминалы, можно найти в предыдущих постах).</p>
 
+            <p><font face="monospace" size=4 style="white-space: pre;">
 E: V | A | C
 NC: ";" = [] | ";" m:NL = m
 FC: ";" = [] | ";" m:FL = m
@@ -21,8 +40,11 @@ D: "[" "]" = [] | "["  l:EL "]" = Dict l
 L: "(" ")" = [] | "([" c:NL "]" m:FL ")" = Table c m | "(" l:EL ")" = List l
 F: "{" "}" = Lambda [] [] [] | "{[" c:NL "]" m:EL "}" = Lambda [] c m
                              | "{" m:EL "}" = Lambda [] [] m
+</font></p>
 
-2. Порт Rust в System F (убраны лайфтаймы).
+<p>2. Порт Rust в System F (убраны лайфтаймы).</p>
+
+            <p><font face="monospace" size=4 style="white-space: pre;">
 lazy n (Assign n b)               e k = D n b (ContAssign n k)
      n (Cond v a l)               e k = D n v (ContCond l r k)
      n (List l)                   e k = eve n l e k
@@ -54,5 +76,11 @@ cont n (Dict v) e (ContCall c k)          = evf n c v e k
      n x        e (ContExpr (Cons a d) k) = eve n (Cons a d) k
      n x        e (ContExpr r k)          = cont n x k
      n x        e  ContRet                = emr x e k
+</font></p>
 
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
 

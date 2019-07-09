@@ -1,5 +1,24 @@
-Pony vs O-CPS
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2017-01-17</title>
+    <link rel="stylesheet" href="../../blank.css?v=4" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2017-01-17</a>
+</nav>
+<main>
+    <section>
+        <h3>Pony vs O-CPS</h3>
 
+            <p><font face="monospace" size=4 style="white-space: pre;">
 $ cat main.pony
 use "time"
 actor Main
@@ -33,11 +52,13 @@ $ ponyc
 $ ./voxoz
 Ackerman: 80332ns, 125
 Factorial: 291ns, 120
+</font></p>
 
-В то время как у нас:
+<p>В то время как у нас:</P>
 
+            <p><font face="monospace" size=4 style="white-space: pre;">
 #[bench]
-fn fac_rec<'a>(b: &'a mut Bencher) {
+fn fac_rec&lt;'a>(b: &'a mut Bencher) {
     let h = handle::new(Interpreter::new().unwrap());
     let eval = &"fac:{$[x=1;1;x*fac[x-1]]}".to_string();
     let mut code = h.borrow_mut().parse(eval);
@@ -50,7 +71,7 @@ fn fac_rec<'a>(b: &'a mut Bencher) {
 }
 
 #[bench]
-fn akkerman_k<'a>(b: &'a mut Bencher) {
+fn akkerman_k&lt;'a>(b: &'a mut Bencher) {
     let h = handle::new(Interpreter::new().unwrap());
     h.borrow_mut().define_primitives();
     let akk =
@@ -66,4 +87,14 @@ tring());
 
 test akkerman_k        ... bench:         442 ns/iter (+/- 37)
 test fac_rec           ... bench:         195 ns/iter (+/- 55)
+</font></p>
+
+</section>
+
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
+
+
 
