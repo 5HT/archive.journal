@@ -1,7 +1,26 @@
-Сферические факториалы
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2016-12-02</title>
+    <link rel="stylesheet" href="../../blank.css?v=4" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2016-12-02</a>
+</nav>
+<main>
+    <section>
+        <h3>Сферические факториалы</h3>
 
-TL;DR
+<p>TL;DR</p>
 
+            <p><font face="monospace" size=4 style="white-space: pre;">
 Lang    avg ns of 1M calls
 ------- ------------------
 Rust    0
@@ -12,9 +31,13 @@ K       756
 O-CPS   7702
 Erlang  10699/1806/436/9
 LuaJIT  33856
+    </font></p>
 
-Java HotSpot(TM) 64-Bit Server VM (build 25.111-b14, mixed mode)
-Джава как эталон считающий факториал пятерочки за 4нс.
+<h4>Java HotSpot(TM) 64-Bit Server VM (build 25.111-b14, mixed mode)</h4>
+
+<p>Джава как эталон считающий факториал пятерочки за 4нс, которые уходят на разогрев ВМ.</p>
+
+            <p><font face="monospace" size=4 style="white-space: pre;">
 public class fac {
 
     public static void main(String[] args) {
@@ -39,11 +62,14 @@ public class fac {
 $ javac fac.java
 $ java -cp . fac
 Fac: 3ns
+</font></p>
 
+<h4>rustc 1.14.0-nightly (cae6ab1c4 2016-11-05)</h4>
 
-rustc 1.14.0-nightly (cae6ab1c4 2016-11-05)
-На расте вообще zero-cost факториал получился :-) Даже factoria 20 не выходит
-из 0 наносекунд.
+<p>На расте вообще zero-cost факториал получился :-) Даже factoria 20 не выходит из 0 наносекунд.
+   Так и должно быть!</p>
+
+            <p><font face="monospace" size=4 style="white-space: pre;">
 #[bench]
 fn fac_rust(b: &mut Bencher) {
     let mut x: i64 = 0;
@@ -56,19 +82,23 @@ factorial(value-1); } }
 test fac_rust ... bench:           0 ns/iter (+/- 0)
 
 0ns
+</font></p>
 
+<p>Теперь переходим к CPS интерпретаторам:</p>
 
-Теперь переходим к CPS интерпретаторам:
+<h4>KDB+ 3.4 2016.10.10 Copyright (C) 1993-2016 Kx Systems</h4>
 
-KDB+ 3.4 2016.10.10 Copyright (C) 1993-2016 Kx Systems
+            <p><font face="monospace" size=4 style="white-space: pre;">
 q)f:{$[x=1;1;x*.z.s x-1]}
 q)\t f'[1000000#5]
 756
 
 756ns
+</font></p>
 
+<h4>LuaJIT 2.0.4 -- Copyright (C) 2005-2015 Mike Pall. http://luajit.org/</h4>
 
-LuaJIT 2.0.4 -- Copyright (C) 2005-2015 Mike Pall. http://luajit.org/
+            <p><font face="monospace" size=4 style="white-space: pre;">
 function factorial(n)
   if n == 1 then return 1
   else return n * factorial(n - 1) end end
@@ -82,9 +112,11 @@ $ luajit fac.lua
 120     33856
 
 33us
+</font></p>
 
+<h4>Erlang/OTP 19 [erts-8.1] [64-bit] [smp:8:8]</h4>
 
-Erlang/OTP 19 [erts-8.1] [64-bit] [smp:8:8]
+            <p><font face="monospace" size=4 style="white-space: pre;">
 > Fac = fun Factorial(X) -> case X of 1 -> 1; _ -> X * Factorial(X-1) end end.
 #Fun
 > lists:sum([element(1,timer:tc(fun() -> Fac(5)
@@ -127,9 +159,11 @@ end))||_<-lists:seq(1,1000000)])/1000000.
 1.806826
 
 1806ns
+</font></p>
 
+<h4>Python 2.7.12</h4>
 
-Python 2.7.12
+            <p><font face="monospace" size=4 style="white-space: pre;">
 #!/usr/bin/python
 import timeit
 
@@ -144,9 +178,11 @@ r = timeit.timeit(lambda: fac(5), number=n)
 print("{0:.6f}ns".format(r*1000))
 
 542.725086ns
+</font></p>
 
+<h4>PyPy 5.1.2 with GCC 5.3.1 20160413</h4>
 
-PyPy 5.1.2 with GCC 5.3.1 20160413
+            <p><font face="monospace" size=4 style="white-space: pre;">
 #!/usr/bin/env pypy
 import timeit
 
@@ -161,15 +197,16 @@ r = timeit.timeit(lambda: fac(5), number=n)
 print("{0:.6f}ns".format(r*1000))
 
 8.576870ns
+    </font></p>
 
+<h4>Welcome to O-CPS Interpreter v0.11.0!</h4>
 
-Welcome to O-CPS Interpreter v0.11.0!
+            <p><font face="monospace" size=4 style="white-space: pre;">
 $ cargo build ; rlwrap ./target/debug/console 2>/dev/null
     Finished debug [unoptimized + debuginfo] target(s) in 0.0 secs
 Welcome to O-CPS Interpreter v0.11.0!
 > fac:{$[x=1;1;x*fac[x-1]]};fac 5
 120
-
 
 #[bench]
 fn fac(b: &mut Bencher) {
@@ -185,3 +222,11 @@ fn fac(b: &mut Bencher) {
 test fac      ... bench:      7,702 ns/iter (+/- 376)
 
 7us
+    </font></p>
+
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
+

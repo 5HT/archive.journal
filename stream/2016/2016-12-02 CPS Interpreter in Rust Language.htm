@@ -36,14 +36,14 @@ String, Boolean, Float, поэтому в процессе работы инте
 положит результат в тот же тип AST, в байткоде виртуальной машины — это может
 выглядеть как просто состояние регистров и инструкции для загрузки или выгрузки
 констант), а Контексты — это счетчики ссылок на ячейки (AST,
-Rc<RefCell<Environment>>). Если сказать о контекстах высоко — то вложенные
+Rc&lt;RefCell&lt;Environment>>). Если сказать о контекстах высоко — то вложенные
 контексты соответствуют Сигма типу и являются свидетелями контекстуальной
 полноты.</p>
 
    <p><font face="monospace" size=4 style="white-space: pre;">
 pub struct Environment {
-    parent: Option&lt;Rc&lt;RefCell<Environment>>>,
-    values: HashMap<String, AST>,
+    parent: Option&lt;Rc&lt;RefCell&lt;Environment>>>,
+    values: HashMap&lt;String, AST>,
 }
             </font></p>
 
@@ -126,6 +126,7 @@ call-by-name причмокивая. Тут хочется быть максим
 функциоальной полноты нашей системы. Если добавить сюда Пи тип, мы сможем
 превратить интерпретатор в теорем прувер? :-)<p>
 
+   <p><font face="monospace" size=4 style="white-space: pre;">
 pub enum Continuation {
     EvaluateExpressions(AST, Rc&lt;RefCell&lt;Environment>>, Box&lt;Continuation>),
     EvaluateAssign(AST, Rc&lt;RefCell&lt;Environment>>, Box&lt;Continuation>),
@@ -304,7 +305,6 @@ test tests::fac ... bench:      16,850 ns/iter (+/- 1,169)
             </font></p>
 
 <p>91 микросекунд (Erlang) против 17 микросекунд (O-CPS INTERPRETER)</p>
-
 
             <p>ОМ ЛЯМБДА ГАРБХА ХУМ</p>
     </section>
