@@ -1,8 +1,27 @@
-Lambda Term Exponential Explosion
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2016-12-29</title>
+    <link rel="stylesheet" href="../../blank.css?v=4" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2016-12-29</a>
+</nav>
+<main>
+    <section>
+        <h3>Lambda Term Exponential Explosion</h3>
 
-NPONECCOP поставил вопрос и был получен прекрасный ответ который хочется
-процитировать.
+<p>NPONECCOP поставил вопрос и был получен прекрасный ответ который хочется
+процитировать.</p>
 
+            <p><font face="monospace" size=4 style="white-space: pre;">
 q:(nat->nat->nat)->nat->nat->nat = \f:(nat->nat->nat).(\a b:nat.f (f a b) (f a b))
 
 q p => \a b.p (p a b) (p a b)
@@ -53,6 +72,16 @@ Prelude> (q $ q $ q $ q $ q $ q $ q $ q (+)) 1 1
 Prelude> (q $ q $ q $ q $ q $ q $ q $ q $ q (+)) 1 1
 13407807929942597099574024998205846127479365820592393377723561443721764030073546
 976801874298166903427690031858186486050853753882811946569946433649006084096
+</font></p>
 
-Это пример терма, который растет экспоненциально при аппликативном порядке бета
-редукции (аксиома subst операционной семантики).
+
+<p>Это пример терма, который растет экспоненциально при аппликативном порядке бета
+редукции (аксиома subst операционной семантики).</p>
+
+
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
+
