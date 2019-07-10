@@ -11,7 +11,7 @@
 <body>
 <nav>
     <a href='../../index.html'>5HT</a>
-    <a href='../index.html'>STREAM</a>
+    <a href='../index.html'>TOP</a>
     <a href='#'>2010-10-18</a>
 </nav>
 <main>
@@ -24,14 +24,17 @@
             отвечает Windows Mail/Apple Mail, etc. и возвращает по LDAP протоколу
             спискок адресатов для автоматической подставновки (inplace search)
             в адресных полях письма. Т.е. что бы из такого:</p>
+
         <center> <img src="https://archive.li/NEf94/a2c39ab075841a47c5ba8850d5776ddb424e7e4b.png" width=600></center>
+
         <p> получить вот такое:</p>
+
         <center> <img src="https://archive.li/NEf94/b2cb299be73b2d38eff9d831ab7b07ed5e06987b.png" width=600></center>
             <p> Прежде все я зашел на <a href="http://www.rfc-editor.org/rfc/rfc4511.txt">http://www.rfc-editor.org/rfc/rfc4511.txt</a>
                 и начал скачивать определение LDAP протокола в ASN.1 нотации.
                 Простая копи паста примерно такого кода:</p>
 
-            <figure><code>
+   <p><font face="monospace" size=4 style="white-space: pre;">
  LDAP DEFINITIONS IMPLICIT TAGS ::=
  BEGIN
 
@@ -67,33 +70,14 @@
     maxInt INTEGER ::= 2147483647 -- (2^^31 - 1) --
 
     LDAPString ::= OCTET STRING -- UTF-8 encoded, [ISO10646] characters
-            </code></figure>
+            </font></p>
             <p>Дальше я с помощью Эрланг сгенерировал парсер этой хуеты. </p>
-            <figure><code>
+   <p><font face="monospace" size=4 style="white-space: pre;">
  > asn1ct:compile("LDAP.asn1").
-
- =PROGRESS REPORT==== 18-Oct-2010::23:42:39 ===
-          supervisor: {local,kernel_safe_sup}
-             started: [{pid,<0.43.0>},
-                       {name,disk_log_sup},
-                       {mfargs,{disk_log_sup,start_link,[]}},
-                       {restart_type,permanent},
-                       {shutdown,1000},
-                       {child_type,supervisor}]
-
- =PROGRESS REPORT==== 18-Oct-2010::23:42:39 ===
-          supervisor: {local,kernel_safe_sup}
-             started: [{pid,<0.44.0>},
-                       {name,disk_log_server},
-                       {mfargs,{disk_log_server,start_link,[]}},
-                       {restart_type,permanent},
-                       {shutdown,2000},
-                       {child_type,worker}]
  ok
- 2>
-            </code></figure>
+            </font></p>
             <p>Потом я написал код который отвечает на LDAP запросы:</p>
-            <figure><code>
+   <p><font face="monospace" size=4 style="white-space: pre;">
  -module(eds).
  -author('Maxim Sokhatsky ').
  -export([start/0]).
@@ -101,8 +85,8 @@
  -include("LDAP.hrl").
  -include("roster.hrl").
  -define(TCP_OPTIONS, [binary, {packet, 0}, {active, false}, {reuseaddr, true}]).
-            </code></figure>
-            <figure><code>
+            </font></p>
+   <p><font face="monospace" size=4 style="white-space: pre;">
  start() ->
     listen(389).
 
@@ -128,8 +112,9 @@
         {error, closed} ->
             ok
     end.
-            </code></figure>
-            <figure><code>
+            </font></p>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
  message(No,Message,Socket) ->
     io:format("messageID: ~p~n",[No]),
     io:format("~p~n",[Message]),
@@ -173,9 +158,10 @@
  abandon(No,Socket) ->
     roster:done(),
     gen_tcp:close(Socket).
-            </code></figure>
+            </font></p>
             <p>А также библиотеку для работы с контактной книгой</p>
-            <figure><code>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
  -module(roster).
  -include("roster.hrl").
  -include_lib("stdlib/include/qlc.hrl").
@@ -218,16 +204,18 @@
         [Contact] -> {ok, Contact};
         [] -> {error,instance}
     end.
-            </code></figure>
+            </font></p>
             <p>...В виде эрланг рекордов:</p>
-            <figure><code>
+   <p><font face="monospace" size=4 style="white-space: pre;">
  -record('ContactRecord', {cn, givenName, mail}).
-            </code></figure>
+            </font></p>
             <p>Откомпилировал это:</p>
-            <figure><code>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
  erlc +debug_info -o ebin src\LDAP.erl src\eds.erl src\roster.erl
-            </code></figure>
+            </font></p>
             <p>И все :)</p>
+
             <p>P.S. <a href="https://github.com/devaspot/eds">https://github.com/synrc/eds</a></p>
     </section>
 </main>
