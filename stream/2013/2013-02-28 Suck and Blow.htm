@@ -27,10 +27,8 @@
 темплейты:</p>
 
    <p><font face="monospace" size=4 style="white-space: pre;">
-&lt;ul>
-    $forall Entity articleId article <- articles
-        &lt;li>
-            &lt;a href=@{ArticleR articleId} > #{articleTitle article}
+&lt;ul> $forall Entity articleId article <- articles
+&lt;li> &lt;a href=@{ArticleR articleId} > #{articleTitle article}
     </font></p>
 
 <p>Вот это пример темплейта из Yesod. Ну гавно же, на такое смотреть, истинный
