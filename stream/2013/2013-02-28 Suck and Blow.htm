@@ -1,30 +1,51 @@
-Suck and Blow
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Namdak Tonpa"/>
+    <title>2013-02-28</title>
+    <link rel="stylesheet" href="../../blank.css"/>
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2013-02-28</a>
+</nav>
+<main>
+    <section>
+        <h3>Suck and Blow</h3>
 
-Вот во времена Perl смешивание текста и программ как-то органично
+<p>Вот во времена Perl смешивание текста и программ как-то органично
 воспринималось, все эти print <<. На перле, между прочим, бородатые дядьки еще
 тогда писали неблокирующие сервера. Среди всех этих Python, Ruby, на которых
 пацанва счас скриптует свои хомяки, Perl как-то особенно выделяется. Если у
 меня в проекте нехватило бы Bash, для скриптования, то его место занял бы Perl.
 Но вот начиная вроде с PHP, или откуда, появилась какая-то жуткая мода на эти
-темплейты:
+темплейты:</p>
 
-<ul>
+   <p><font face="monospace" size=4 style="white-space: pre;">
+&lt;ul>
     $forall Entity articleId article <- articles
-        <li>
-            <a href=@{ArticleR articleId} > #{articleTitle article}
+        &lt;li>
+            &lt;a href=@{ArticleR articleId} > #{articleTitle article}
+    </font></p>
 
-Вот это пример темплейта из Yesod. Ну гавно же, на такое смотреть, истинный
+<p>Вот это пример темплейта из Yesod. Ну гавно же, на такое смотреть, истинный
 неотличимый от ПХП код. Я уже молчу про все эти ASP.NET, PHP, и прочие
 зотоники. Как этот стиль сохраняется и почему его любят, вот что меня
 инетересует. Даже на божественном Хаскеле находятся чуваки, которые лепят вот
-такую лапшу.
+такую лапшу.</p>
 
-Но есть же и нормальные пацаны, которые генерируют типизированную структуру,
+<p>Но есть же и нормальные пацаны, которые генерируют типизированную структуру,
 которая уже будет провалидирована на этапе компиляции и сконвертирована в этот
 ужаснейший на свете формат: HTML. Вот как выглядит это у нормальных людей,
 которым знакомо чувство прекрасного. На код таких людей смотришь и понимаешь,
-что они не пойду работать на Java за еду никогда:
+что они не пойду работать на Java за еду никогда:</p>
 
+   <p><font face="monospace" size=4 style="white-space: pre;">
  template :: Text -> Html -> Response
  template title body = toResponse $
    H.html $ do
@@ -33,9 +54,11 @@ Suck and Blow
      H.body $ do
        body
        p $ a ! href "/" $ "back home"
+    </font></p>
 
-Красиво, чётенько. Вот например божественный чат на Erlang с Кометом, Аяксом, ХТМЛем:
+<p>Красиво, чётенько. Вот например божественный чат на Erlang с Кометом, Аяксом, ХТМЛем:</p>
 
+   <p><font face="monospace" size=4 style="white-space: pre;">
 body() -> wf:comet_global(fun() -> chat_loop() end, chatroom),
                [#panel { id=chatHistory, class=chat_history },
                 #textbox { id=messageTextBox, next=sendButton },
@@ -57,22 +80,31 @@ chat_loop() ->
             wf:flush()
     end,
     chat_loop().
+    </font></p>
 
-Ну красота же. Нет блядь подавай им:
+<p>Ну красота же. Нет блядь подавай им:</p>
 
-<form id="form1" runat="server">
-        The current time is: <asp:Label runat="server" id="lbl1" />
-   </form>
+   <p><font face="monospace" size=4 style="white-space: pre;">
+&lt;form id="form1" runat="server">
+        The current time is: &lt;asp:Label runat="server" id="lbl1" />
+   &lt;/form>
+    &lt;/font>&lt;/p>
+    </font></p>
 
-Апогей такого подхода, это дебаггеры, который уже понимают и ActionScript и
+<p>Апогей такого подхода, это дебаггеры, который уже понимают и ActionScript и
 MXML и дебагер ходит по XML как по родному коду. Есть даже чуваки, которые на
 XML пишут, функциональные программы, XSLT называется. И совсем клинические
-пишут новые языки программирования XML на XML. XML это реально какой-то вирус.
+пишут новые языки программирования XML на XML. XML это реально какой-то вирус.</p>
 
-Уж на сколько я не люблю скобочки лисповые ' ( ), за которыми не видно сути
+<p>Уж на сколько я не люблю скобочки лисповые ' ( ), за которыми не видно сути
 если годами не тренировать свою нейронную сеть, но < > = — это самые ады
 программирования. Четкие пацаны используют { } [ ] -> или [ ] ( ) | ,
-средненько — ( . ) =>
+средненько — ( . ) =></p>
 
-< > — эти символы так и называются Suck and Blow :-)
+<p>&lt; > — эти символы так и называются Suck and Blow :-)</p>
 
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
