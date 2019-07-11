@@ -32,7 +32,21 @@
            согласились с тем, что данные в сторадже должны быть типизированны,
            это потом вы уже можете использовать словари и JSON для транспортировки,
            но валидаторы и генераторы SDK лучше писать по типовым спецификациям.
-           В Erlang базовая схема типовой конфигурации предприятия выглядит так:</p>
+           </p>
+
+          <p>Другими словами в типовых спецификациях есть суммы и мы можем генерировать
+             хоть Haskell спецификации, причем делать это на стадии компиляции.
+             Пример набора парс трансформаций для генерации JavaScript, Swift и даже Protobuf
+             спецификаций вы можете найти в этой библиотеке:</p>
+
+          <p>— <a href="https://github.com/synrc/bert">synrc/bert</a></p>
+
+          <p>Там же находится генератор валидаторов (его конечно нужно переписать)
+             для самого языка Erlang. Почему в поставке языка отсувствует такая
+             библиотека — тот ещё вопрос!</p>
+
+        <h4>ERP SPEC — Таблицы организационной структуры</h4>
+
    <p><font face="monospace" size=4 style="white-space: pre;">
 -type locationType() :: normal | extra.
 
@@ -69,15 +83,36 @@
                           org         = [] :: [] | #'Organization'{},
                           branch      = [] :: [] | #'Branch'{},
                           type        = [] :: term() }).
-
     </font></p>
-          <p>Другими словами в типовых спецификациях есть суммы и мы можем генерировать
-             хоть Haskell спецификации, причем делать это на стадии компиляции.
-             Пример набора парс трансформаций для генерации JavaScript, Swift и даже Protobuf
-             спецификаций вы можете найти в этой библиотеке:</p>
-          <p>— <a href="https://github.com/synrc/bert">synrc/bert</a></p>
-          <p>Там же находится генератор валидаторов для самого языка Erlang.
-             Почему в поставке языка отсувствует такая библиотека — тот ещё вопрос!</p>
+
+        <h4>PLM SPEC — Таблицы системы управления жизненным циклом</h4>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+-type fraction_length() :: integer().
+-type digits() :: integer().
+-type money() :: {fraction_length(),digits()}.
+
+-record('Acc', { id   = [] :: [] | binary() | list(),
+                 rate = {0,0} :: money() }).
+
+-record('Payment', { invoice = [] :: [] | term(),
+                     volume = [] :: [] | money(),
+                     price = {0,1} :: money(),
+                     instrument = [] :: term(),
+                     type = [] :: paymentType(),
+                     from = [] :: term(),
+                     to = [] :: term() }).
+
+-record('Product', { code         = [] :: [] | term(),
+                     id           = kvs:seq([],[]) :: [] | binary(),
+                     url          = [] :: [] | binary() | list(),
+                     engineer     = [] :: [] | #'Person'{},
+                     director     = [] :: [] | #'Person'{},
+                     owner        = [] :: [] | #'Person'{},
+                     organization = [] :: [] | #'Organization'{},
+                     type         = [] :: productType() }).
+    </font></p>
+
     </section>
     <section>
         <h3>Создание корневых цепочек</h3>
@@ -90,7 +125,7 @@
            и возможно даже до синдикатов транснациональныз корпораций. В зависимости от того какую структу вы хотите
            так вы организовываете первичные фиды.</p>
 
-        <h4>Организационная структура предприятия</h4>
+        <h4>ERP BOOT — Организационная структура предприятия</h4>
 
         <p>Рассмотрим пример: компания Quanterall, главный подрядчик Aethernity, имеет офисы в
            Софии, Варне (главный офис компании) и Пловдиве. Сама компания совершает операции только в Болгарии,
@@ -109,18 +144,67 @@ HeadBranches = [ #'Branch'{loc=#'Loc'{city="Varna",  country="BG"}},
 -module(erp).
 -compile(export_all).
 boot() ->
-  case kvs:get(writer,"/erp/group") of
-    {ok,_} -> skip;
-    {error,_} ->
-      lists:map(fun(X) -> kvs:append(X,"/erp/quanterall") end, HeadBranches),
-      lists:map(fun(X) -> kvs:append(X,"/erp/group") end, GroupOrgs) end.
+    case kvs:get(writer,"/erp/group") of
+         {ok,_} -> skip;
+         {error,_} ->
+             lists:map(fun(X) -> kvs:append(X,"/erp/quanterall") end, HeadBranches),
+             lists:map(fun(X) -> kvs:append(X,"/erp/group") end, GroupOrgs) end.
     </font></p>
 
-        <h4>Учётность CashFlow</h4>
+        <h4>PAY BOOT — Учётность CashFlow</h4>
 
-        <h4>Бюджетирование проекта</h4>
+        <p>Управление отчетностью аутсорс предприятия достаточно простое:
+           1) мы принимаем оплаты по инвойсам выставленным клиентам периодически регулярно раз в месяц;
+           2) мы выплачиваем зарплаты раз в месяц. Поэтому фолды группируются календарно
+           и зипуются помесячно.</p>
 
-        <h4>Портфель инвестора</h4>
+   <p><font face="monospace" size=4 style="white-space: pre;">
+sal_boot() ->
+   lists:map(fun(#'Product'{code=C} = P) ->
+      lists:map(fun(#'Payment'{}=Pay) ->
+         kvs:append(Pay,"/plm/"++C++"/outcome") end,salaries(C))
+      end, products()).
+
+pay_boot() ->
+   lists:map(fun(#'Product'{code=C} = P) ->
+      lists:map(fun(#'Payment'{}=Pay) ->
+         kvs:append(Pay,"/plm/"++C++"/income") end,payments(C))
+      end, products()).
+    </font></p>
+
+        <h4>PLM BOOT — Бюджетирование проектов</h4>
+
+       <p>Инициализация почасовая для каждого сотрудника по проекту.
+          Этот список будет использоваться в будущем для распределения
+          выплат по опционам.<b></b> </p>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+assignees() ->
+   lists:map(fun(#'Product'{code=C} = P) ->
+      case kvs:get(writer,"/plm/"++C++"/staff") of
+           {error,_} -> lists:map(fun(#'Person'{}=Person) ->
+                        kvs:append(Person,"/plm/"++C++"/staff") end,staff(C));
+           {ok,_} -> skip end
+      end, products()).
+    </font></p>
+
+    <p>Выплаты по попроцентам на субконто попроектно:</p>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+accounts() ->
+  lists:map(fun(#'Product'{code=C}) ->
+    lists:map(fun(#'Acc'{id=Id, rate=R}=SubAcc) ->
+      Address = lists:concat(["/fin/acc/",C]),
+      kvs:append(SubAcc,Address),
+      Feed = lists:concat(["/fin/tx/",Id]),
+      case kvs:get(writer, Feed) of
+           {error,_} -> lists:map(fun(#'Payment'{invoice=I,price=P, volume=V}=Pay) ->
+                        kvs:append(rate(Pay,SubAcc,C), Feed) end, payments(C));
+             {ok,_} -> skip
+      end
+    end, acc(C))
+  end, plm_boot:products()).
+    </font></p>
 
         <p>За работу с данными отвечает библиотека KVS, как работать с ней читайте в предыдущих
            выпусках журнала:</p>
@@ -142,6 +226,8 @@ boot() ->
     <section>
         <h3>Пример</h3>
 
+        <p>Elixir прелюдия:</p>
+
    <p><font face="monospace" size=4 style="white-space: pre;">
 defmodule PLM.Mixfile do
   use Mix.Project
@@ -160,36 +246,51 @@ defmodule PLM.Mixfile do
 end
     </font></p>
 
+        <p>Содержимое корневой директории БД предприятия:</p>
+
    <p><font face="monospace" size=4 style="white-space: pre;">
-> :kvs.all :writer
+>  :writer |> :kvs.all |> :lists.sort
 [
-  {:writer, '/bpe/proc', 8, [], [], []},
+  {:writer, '/acc/quanterall/Plovdiv', 3, [], [], []},
+  {:writer, '/acc/quanterall/Sophia', 9, [], [], []},
+  {:writer, '/acc/quanterall/Varna', 23, [], [], []},
+  {:writer, '/bpe/hist/1562855060639704000', 1, [], [], []},
+  {:writer, '/bpe/proc', 1, [], [], []},
   {:writer, '/erp/group', 1, [], [], []},
   {:writer, '/erp/partners', 7, [], [], []},
-  {:writer, '/plm/products', 2, [], [], []},
   {:writer, '/erp/quanterall', 3, [], [], []},
-  {:writer, '/plm/NYNJA/income', 5, [], [], []},
+  {:writer, '/fin/acc/CATALX', 4, [], [], []},
+  {:writer, '/fin/acc/NYNJA', 4, [], [], []},
+  {:writer, '/fin/tx/CATALX/R&D', 12, [], [], []},
+  {:writer, '/fin/tx/CATALX/insurance', 12, [], [], []},
+  {:writer, '/fin/tx/CATALX/options', 12, [], [], []},
+  {:writer, '/fin/tx/CATALX/reserved', 12, [], [], []},
+  {:writer, '/fin/tx/NYNJA/R&D', 5, [], [], []},
+  {:writer, '/fin/tx/NYNJA/insurance', 5, [], [], []},
+  {:writer, '/fin/tx/NYNJA/options', 5, [], [], []},
+  {:writer, '/fin/tx/NYNJA/reserved', 5, [], [], []},
   {:writer, '/plm/CATALX/income', 12, [], [], []},
-  {:writer, '/plm/NYNJA/outcome', 5, [], [], []},
-  {:writer, '/plm/CATALX/outcome', 12, [], [], []},
-  {:writer, '/acc/quanterall/Varna', 23, [], [], []},
-  {:writer, '/acc/quanterall/Sophia', 9, [], [], []},
-  {:writer, '/plm/NYNJA/investments', 2, [], [], []},
-  {:writer, '/acc/quanterall/Plovdiv', 3, [], [], []},
   {:writer, '/plm/CATALX/investments', 4, [], [], []},
-  {:writer, '/bpe/hist/1562332259203168000', 1, [], [], []},
-  {:writer, '/bpe/hist/1562334175998750000', 1, [], [], []},
-  {:writer, '/bpe/hist/1562336340706450000', 6, [], [], []},
-  {:writer, '/bpe/hist/1562340196188455000', 5, [], [], []},
-  {:writer, '/bpe/hist/1562348864928400000', 1, [], [], []},
-  {:writer, '/bpe/hist/1562430493646066000', 12, [], [], []},
-  {:writer, '/bpe/hist/1562430816193366000', 3, [], [], []},
-  {:writer, '/bpe/hist/1562445107454442000', 24, [], [], []}
+  {:writer, '/plm/CATALX/outcome', 12, [], [], []},
+  {:writer, '/plm/CATALX/staff', 2, [], [], []},
+  {:writer, '/plm/NYNJA/income', 5, [], [], []},
+  {:writer, '/plm/NYNJA/investments', 2, [], [], []},
+  {:writer, '/plm/NYNJA/outcome', 5, [], [], []},
+  {:writer, '/plm/NYNJA/staff', 4, [], [], []},
+  {:writer, '/plm/products', 2, [], [], []}
 ]
+    </font></p>
 
+        <p>Список компаний входящие в группу предприяти:</p>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
 > :kvs.feed '/erp/group'
 [{:Organization, 'Quanterall', 'quanterall.com', [], []}]
+    </font></p>
 
+        <p>Список бреч-офисов головной (и единственной) компании группы:</p>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
 > :kvs.feed '/erp/quanterall'
 [
   {:Branch, '1562329445378242000',
@@ -199,7 +300,11 @@ end
   {:Branch, '1562329445378234000',
    {:Loc, '1562329445378240000', [], 'BG', 'Varna', [], []}}
 ]
+    </font></p>
 
+        <p>Список контрагентнов:</p>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
 > :kvs.feed '/erp/partners'
 [
   {:Organization, 'Catalx Exchange Inc.', 'catalx.io', [], []},
