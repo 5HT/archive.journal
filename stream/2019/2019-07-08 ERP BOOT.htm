@@ -85,15 +85,13 @@
                           type        = [] :: term() }).
     </font></p>
 
-        <h4>PLM SPEC — Таблицы системы управления жизненным циклом</h4>
+        <h4>PAY SPEC — Таблицы системы управления платежами</h4>
 
    <p><font face="monospace" size=4 style="white-space: pre;">
 -type fraction_length() :: integer().
 -type digits() :: integer().
 -type money() :: {fraction_length(),digits()}.
 
--record('Acc', { id   = [] :: [] | binary() | list(),
-                 rate = {0,0} :: money() }).
 
 -record('Payment', { invoice = [] :: [] | term(),
                      volume = [] :: [] | money(),
@@ -102,6 +100,13 @@
                      type = [] :: paymentType(),
                      from = [] :: term(),
                      to = [] :: term() }).
+    </font></p>
+
+        <h4>PLM SPEC — Таблицы системы управления жизненным циклом</h4>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+-record('Acc', { id   = [] :: [] | binary() | list(),
+                 rate = {0,0} :: money() }).
 
 -record('Product', { code         = [] :: [] | term(),
                      id           = kvs:seq([],[]) :: [] | binary(),
@@ -111,6 +116,14 @@
                      owner        = [] :: [] | #'Person'{},
                      organization = [] :: [] | #'Organization'{},
                      type         = [] :: productType() }).
+
+-record('Investment', { id = [] :: [] | term(),
+                        volume = [] :: [] | money(),
+                        price = {0,1} :: money(),
+                        instrument = [] :: term(),
+                        type = [] :: investmentType(),
+                        from = [] :: term(),
+                        to = [] :: term() }).
     </font></p>
 
     </section>
