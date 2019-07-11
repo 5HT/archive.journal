@@ -208,6 +208,7 @@ assignees() ->
       end, products()).
     </font></p>
 
+
     <p>Выплаты по процентам на субконто попроектно:</p>
 
    <p><font face="monospace" size=4 style="white-space: pre;">
@@ -336,6 +337,19 @@ end
   {:Organization, '3Stars', [], [], []}
 ]
     </font></p>
+
+    <p>Бюджетирование проекта по статьям субконто:</p>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+> :kvs.feed '/fin/acc/NYNJA'
+[
+  {:Acc, 'NYNJA/insurance', {2, 70}},
+  {:Acc, 'NYNJA/reserved', {2, 10}},
+  {:Acc, 'NYNJA/options', {2, 10}},
+  {:Acc, 'NYNJA/R&D', {2, 10}}
+]
+    </font></p>
+
     </section>
 </main>
 <footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
