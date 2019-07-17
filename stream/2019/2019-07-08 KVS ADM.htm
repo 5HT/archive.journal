@@ -37,7 +37,7 @@
            а также другие N2O протоколы CHAT, NITRO. NITRO — является портом
            Nitrogen Web Framework написанный Расти Клопхаусом.</p>
 
-        <h4>config/config.exs:</h4>
+        <h4>config/config.exs</h4>
    <p><font face="monospace" size=4 style="white-space: pre;">
 use Mix.Config
 
@@ -50,7 +50,7 @@ config :n2o,
   ws_services: ['chat'],
   upload: "./priv/static",
   protocols: [:n2o_heart, :n2o_nitro, :n2o_ftp, :bpe_n2o, CHAT.TXT],
-  routes: PLM.Routes
+  routes: KVS.Routes
 
 config :kvs,
   dba: :kvs_rocks,
@@ -61,7 +61,7 @@ config :erp,
   boot: [:erp_boot, :acc_boot, :pay_boot, :plm_boot, :fin_boot]
       </font></p>
 
-        <h4>mix.exs:</h4>
+        <h4>mix.exs</h4>
    <p><font face="monospace" size=4 style="white-space: pre;">
 defmodule PLM.Mixfile do
   use Mix.Project
@@ -118,49 +118,81 @@ emd
        Основная идея — пишем все на одном языке и обучать новичков надо одному языку причем
        сразу показывая как писать на нем веб приложения, которые и так все понимают как писать.</p>
 
-    <h4>src/events/kvs_adm.erl</h4>
+    <h4>lib/events/kvs.ex</h4>
 
    <p><font face="monospace" size=4 style="white-space: pre;">
--module(kvs_adm).
--compile(export_all).
--include_lib("nitro/include/nitro.hrl").
--include_lib("kvs/include/cursors.hrl").
+defmodule KVS.Index do
+  use N2O, with: [:n2o, :nitro]
+  use FORM
+  use KVS
+  require ERP
+  require Logger
 
-% 1
-event(session) ->
-    nitro:update(<font color=red>session</font>, #span{body = n2o:sid()});
+  def parse(ERP."Employee"(person: ERP."Person"(cn: name))), do: name
+  def parse(_), do: []
+  def event(:init),
+    do:
+      [:user, :writers, :session, :enode, :disc, :ram]
+      |> Enum.map(fn x -> [NITRO.clear(x), send(self(), {:direct, x})] end)
 
-% 2
-event(enode) ->
-    nitro:update(<font color=red>enode</font>,   #span{body = lists:concat([node()])});
+  def event(:ram), do: NITRO.update(:ram, span(body: ram(:os.type())))
+  def event(:user), do: NITRO.update(:user, span(body: parse(:n2o.user())))
+  def event(:session), do: NITRO.update(:session, span(body: :n2o.sid()))
+  def event(:enode), do: NITRO.update(:enode, span(body: :lists.concat([:erlang.node()])))
+  def event(:disc), do: NITRO.update(:disc, span(body:
+                                     hd(:string.tokens(:os.cmd('du -hs rocksdb'), '\t'))))
 
-% 3
-event({link,Id}) ->
-    nitro:clear(<font color=red>feeds</font>),
-    lists:map(fun(T)->
-    nitro:insert_bottom(<font color=red>feeds</font>, #panel{body=nitro:compact(T)}) end,
-    kvs:feed(Id));
+  def event({:link, i}),
+    do: [
+      NITRO.clear(:feeds),
+      :kvs.feed(i) |> Enum.map(fn t ->
+          NITRO.insert_bottom(:feeds,
+             panel(body: NITRO.compact(t))) end)
+    ]
 
-% 4
-event(init) ->
-  [ begin nitro:clear(X), self() ! {direct,X}
-    end || X <- [ <font color=red> writers</font>,<font color=red>session</font>,<font color=red>enode</font>] ];
+  def event(:writers),
+    do:
+      :writer
+      |> :kvs.all()
+      |> :lists.sort()
+      |> Enum.map(fn writer(id: i, count: c) ->
+        NITRO.insert_bottom(
+          :writers,
+          panel(body: [link(body: i, postback: {:link, i}),
+                       ' (' ++ NITRO.to_list(c) ++ ')']))
+      end)
 
-% 5
-event(writers) ->
-  [ nitro:insert_bottom(<font color=red>writers</font>,
-      #panel{body = [#link{body = Id,
-      postback = {link,Id}}," (" ++ nitro:to_list(C) ++ ")"]})
-   || #writer{id = Id, count = C} <- kvs:all(writer) ];
+  def event(_), do: []
 
-event(_) -> [].
+  def ram({_, :darwin}) do
+    mem = :os.cmd('top -l 1 -s 0 | grep PhysMem')
+    [_, l, _, r] = :string.tokens(
+                   :lists.filter(fn x ->
+                   :lists.member(x, '0123456789MG ') end, mem), ' ')
+    :lists.concat([NITRO.meg(NITRO.num(l)), '/',
+                   NITRO.meg(NITRO.num(l) + NITRO.num(r))])
+  end
+
+  def ram({_, :linux}) do
+    [t, u, _, _, b, c] = :lists.sublist(
+                         :string.tokens(
+                         :os.cmd('free'), ' \n'), 8, 6)
+    mem = :erlang.list_to_integer(u) -
+          :erlang.list_to_integer(b) +
+          :erlang.list_to_integer(c)
+    :lists.concat([NITRO.meg(mem * 1000), '/',
+                   NITRO.meg(:erlang.list_to_integer(t) * 1000)])
+  end
+
+  def ram(os), do: NITRO.compact(os)
+end
     </font></p>
 
 
         <h4>lib/routes.ex</h4>
 
    <p><font face="monospace" size=4 style="white-space: pre;">
-defmodule PLM.Routes do
+defmodule KVS.Routes do
   use N2O, with: [:n2o, :nitro]
 
   def finish(state, context), do: {:ok, state, context}
@@ -174,9 +206,9 @@ defmodule PLM.Routes do
   defp route_prefix(<<"/", p::binary>>), do: route(p)
   defp route_prefix(path), do: route(path)
 
-  def route(<<"kvs", _::binary>>), do: :kvs_adm
-  def route(<<"app/kvs", _::binary>>), do: :kvs_adm
-  def route(_), do: :kvs_adm
+  def route(<<"kvs", _::binary>>), do: KVS.Index
+  def route(<<"app/kvs", _::binary>>), do: KVS.Index
+  def route(_), do: KVS.Index
 end
     </font></p>
     </section>
