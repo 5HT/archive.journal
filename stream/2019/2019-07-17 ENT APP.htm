@@ -47,9 +47,11 @@
        <figure><img src="ent/1.png"></figure>
 
         <h4>lib/routes.ex</h4>
+        
+        <p>Роутинг контроллеров страниц Nitrogen Web фреймворка.</p>
 
    <p><font face="monospace" size=4 style="white-space: pre;">
-defmodule PLM.Routes do
+defmodule <font color=red>PLM.Routes</font> do
   use N2O, with: [:n2o, :nitro]
 
   def finish(state, context), do: {:ok, state, context}
@@ -63,15 +65,15 @@ defmodule PLM.Routes do
   defp route_prefix(<<"/", p::binary>>), do: route(p)
   defp route_prefix(path), do: route(path)
 
-  def route(<<"app/ldap", _::binary>>), do: LDAP.Index
-  def route(<<"app/form", _::binary>>), do: FORM.Index
-  def route(<<"app/act", _::binary>>), do: BPE.Actor
-  def route(<<"app/fin", _::binary>>), do: FIN.Index
-  def route(<<"app/bpe", _::binary>>), do: BPE.Index
-  def route(<<"app/kvs", _::binary>>), do: KVS.Index
-  def route(<<"app/plm", _::binary>>), do: PLM.Index
-  def route(<<"app/cashflow", _::binary>>), do: PLM.CashFlow
-  def route(_), do: LDAP.Index
+  def route(<<<font color=red>"app/ldap"</font>, _::binary>>), do: <font color=red>LDAP.Index</font>
+  def route(<<<font color=red>"app/form"</font>, _::binary>>), do: <font color=red>FORM.Index</font>
+  def route(<<<font color=red>"app/act"</font>, _::binary>>), do: <font color=red>BPE.Actor</font>
+  def route(<<<font color=red>"app/fin"</font>, _::binary>>), do: <font color=red>FIN.Index</font>
+  def route(<<<font color=red>"app/bpe"</font>, _::binary>>), do: <font color=red>BPE.Index</font>
+  def route(<<<font color=red>"app/kvs"</font>, _::binary>>), do: <font color=red>KVS.Index</font>
+  def route(<<<font color=red>"app/plm"</font>, _::binary>>), do: <font color=red>PLM.Index</font>
+  def route(<<<font color=red>"app/cashflow"</font>, _::binary>>), do: <font color=red>PLM.CashFlow</font>
+  def route(_), do: <font color=red>LDAP.Index</font>
 end
     </font></p>
 
