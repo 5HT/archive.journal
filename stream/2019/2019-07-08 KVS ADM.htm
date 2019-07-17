@@ -50,7 +50,7 @@ config :n2o,
   ws_services: ['chat'],
   upload: "./priv/static",
   protocols: [:n2o_heart, :n2o_nitro, :n2o_ftp, :bpe_n2o, CHAT.TXT],
-  routes: KVS.Routes
+  routes: <font color=red>KVS.Routes</font>
 
 config :kvs,
   dba: :kvs_rocks,
@@ -132,25 +132,25 @@ defmodule KVS.Index do
   def parse(_), do: []
   def event(:init),
     do:
-      [:user, :writers, :session, :enode, :disc, :ram]
+      [<font color=red>:user</font>, <font color=red>:writers</font>, <font color=red>:session</font>, <font color=red>:enode</font>, <font color=red>:disc</font>, <font color=red>:ram</font>]
       |> Enum.map(fn x -> [NITRO.clear(x), send(self(), {:direct, x})] end)
 
-  def event(:ram), do: NITRO.update(:ram, span(body: ram(:os.type())))
-  def event(:user), do: NITRO.update(:user, span(body: parse(:n2o.user())))
-  def event(:session), do: NITRO.update(:session, span(body: :n2o.sid()))
-  def event(:enode), do: NITRO.update(:enode, span(body: :lists.concat([:erlang.node()])))
-  def event(:disc), do: NITRO.update(:disc, span(body:
+  def event(<font color=red>:ram</font>), do: NITRO.update(<font color=red>:ram</font>, span(body: ram(:os.type())))
+  def event(<font color=red>:user</font>), do: NITRO.update(<font color=red>:user</font>, span(body: parse(:n2o.user())))
+  def event(<font color=red>:session</font>), do: NITRO.update(<font color=red>:session</font>, span(body: :n2o.sid()))
+  def event(<font color=red>:enode</font>), do: NITRO.update(<font color=red>:enode</font>, span(body: :lists.concat([:erlang.node()])))
+  def event(<font color=red>:disc</font>), do: NITRO.update(<font color=red>:disc</font>, span(body:
                                      hd(:string.tokens(:os.cmd('du -hs rocksdb'), '\t'))))
 
   def event({:link, i}),
     do: [
-      NITRO.clear(:feeds),
+      NITRO.clear(<font color=red>:feeds</font>),
       :kvs.feed(i) |> Enum.map(fn t ->
           NITRO.insert_bottom(:feeds,
              panel(body: NITRO.compact(t))) end)
     ]
 
-  def event(:writers),
+  def event(<font color=red>:writers</font>),
     do:
       :writer
       |> :kvs.all()
@@ -229,10 +229,11 @@ end
     &lt;section&gt;
       &lt;h2&gt;KVS&lt;/h2&gt;
       &lt;p&gt;Abstract chain database&lt;/p&gt;
-      &lt;div&gt;SSD: &lt;span id=disc&gt;&lt;/span&gt;
-           RAM: &lt;span id=ram&gt;&lt;/span&gt;&lt;br&gt;
-       SESSION: &lt;span id=<font color=red>session</font>&gt;&lt;/span&gt;
-            VM: &lt;span id=<font color=red>enode</font>&gt;&lt;/span&gt;&lt;/div&gt;
+      &lt;div&gt;USER: &lt;span id=<font color=red>user</font>&gt;&lt;/span&gt;
+            SSD: &lt;span id=<font color=red>disc</font>&gt;&lt;/span&gt;
+            RAM: &lt;span id=<font color=red>ram</font>&gt;&lt;/span&gt;&lt;br&gt;
+        SESSION: &lt;span id=<font color=red>session</font>&gt;&lt;/span&gt;
+             VM: &lt;span id=<font color=red>enode</font>&gt;&lt;/span&gt;&lt;/div&gt;
     &lt;/section&gt;
     &lt;div class=container&gt;
       &lt;div&gt;&lt;h2&gt;WRITERS&lt;/h2&gt;&lt;div id=<font color=red>writers</font>&gt;&lt;/div&gt;&lt;/div&gt;
