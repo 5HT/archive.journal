@@ -4,7 +4,7 @@
 
 body { background-color: white; font-family: 'local', sans-serif; font-size: 16px; }
 hr { margin-top: 10px; margin-bottom: 10px; }
-h1, h2, h3, h4 { font-weight: normal; border-left: 2px solid #00b8cf; }
+h1, h2, h3, h4 { font-weight: normal; margin-left: 20px; border-left: 2px solid #00b8cf; }
 
 nav { margin: 10px 0; display: flex; flex-direction: column; align-items: center; }
 nav a:visited { color: CadetBlue; }
