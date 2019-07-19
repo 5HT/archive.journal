@@ -30,84 +30,9 @@
 
     </section>
     <section>
-        <h3>Elixir прелюдия</h3>
-
-        <p>Чтобы не писать каждый раз эту прелюдию для каждого приложения приведем
-           на примере PLM проекта, который уже включает почти весь стек: N2O, KVS, BPE,
-           а также другие N2O протоколы CHAT, NITRO. NITRO — является портом
-           Nitrogen Web Framework написанный Расти Клопхаусом.</p>
-
-        <h4>config/config.exs</h4>
-   <p><font face="monospace" size=4 style="white-space: pre;">
-use Mix.Config
-
-config :n2o,
-  pickler: :n2o_secret,
-  mq: :n2o_syn,
-  port: 8043,
-  proto: CHAT.Server
-  mqtt_services: ['erp', 'plm'],
-  ws_services: ['chat'],
-  upload: "./priv/static",
-  protocols: [:n2o_heart, :n2o_nitro, :n2o_ftp, :bpe_n2o, CHAT.TXT],
-  routes: <font color=red>KVS.Routes</font>
-
-config :kvs,
-  dba: :kvs_rocks,
-  dba_st: :kvs_st,
-  schema: [:kvs, :kvs_stream, :bpe_metainfo]
-
-config :erp,
-  boot: [:erp_boot, :acc_boot, :pay_boot, :plm_boot, :fin_boot]
-      </font></p>
-
-        <h4>mix.exs</h4>
-   <p><font face="monospace" size=4 style="white-space: pre;">
-defmodule PLM.Mixfile do
-  use Mix.Project
-
-  def project() do
-    [
-      app: :plm,
-      version: "0.7.1",
-      elixir: "~> 1.8.1",
-      description: "PLM Product Lifecycle Management",
-      deps: deps()
-    ]
-  end
-
-  def application() do
-    [
-      mod: {PLM.Application, []},
-      applications: [:ranch, :cowboy, :rocksdb, :kvs, :syn, :erp, :bpe, :n2o, :chat]
-    ]
-  end
-
-  def deps() do
-    [
-      {:ex_doc, "~> 0.20.2", only: :dev},
-      {:asn1ex, github: "vicentfg/asn1ex", only: :dev},
-      {:cowboy, "~> 2.5.0"},
-      {:rocksdb, "~> 1.2.0"},
-      {:chat, "~> 3.7.2"},
-      {:n2o, "~> 6.7.1"},
-      {:syn, "~> 1.6.3"},
-      {:kvs, "~> 6.7.4"},
-      {:erp, "~> 0.7.6"},
-      {:bpe, "~> 4.7.3"},
-      {:nitro, "~> 4.7.3"}
-    ]
-  end
-emd
-    </font></p>
-
-    </section>
-    <section>
-    <h3>Админка на Нитрогене</h3>
+    <h3>Постановка задачи</h3>
+    <h3>Главная страница приложения</h3>
     <figure><img src="https://tonpa.guru/stream/2019/ent/2.png"/></figure>
-    <p>Админку напишем на Эрланге, хотя можно и на Эликсире! Но ничего,
-       в следующей статье покажем как на эликсире писать админку BPE!
-       Контроллер страницы состоит из 5 сообщений.</p>
 
     <p>Красным цветом выделены идентификаторы DOM элементов, которые заменяются
        на пререндереные на сервере куски HTML сниппетов. Как это происходит
@@ -189,8 +114,83 @@ defmodule <font color=red>KVS.Index</font> do
 end
     </font></p>
 
+    </section>
+    <section>
+        <h3>Elixir прелюдия</h3>
 
-        <h4>lib/routes.ex</h4>
+        <p>Чтобы не писать каждый раз эту прелюдию для каждого приложения приведем
+           на примере PLM проекта, который уже включает почти весь стек: N2O, KVS, BPE,
+           а также другие N2O протоколы CHAT, NITRO. NITRO — является портом
+           Nitrogen Web Framework написанный Расти Клопхаусом.</p>
+
+        <h4>config/config.exs</h4>
+   <p><font face="monospace" size=4 style="white-space: pre;">
+use Mix.Config
+
+config :n2o,
+  pickler: :n2o_secret,
+  mq: :n2o_syn,
+  port: 8043,
+  proto: CHAT.Server
+  mqtt_services: ['erp', 'plm'],
+  ws_services: ['chat'],
+  upload: "./priv/static",
+  protocols: [:n2o_heart, :n2o_nitro, :n2o_ftp, :bpe_n2o, CHAT.TXT],
+  routes: <font color=red>KVS.Routes</font>
+
+config :kvs,
+  dba: :kvs_rocks,
+  dba_st: :kvs_st,
+  schema: [:kvs, :kvs_stream, :bpe_metainfo]
+
+config :erp,
+  boot: [:erp_boot, :acc_boot, :pay_boot, :plm_boot, :fin_boot]
+      </font></p>
+
+        <h4>mix.exs</h4>
+   <p><font face="monospace" size=4 style="white-space: pre;">
+defmodule PLM.Mixfile do
+  use Mix.Project
+
+  def project() do
+    [
+      app: :plm,
+      version: "0.7.1",
+      elixir: "~> 1.8.1",
+      description: "PLM Product Lifecycle Management",
+      deps: deps()
+    ]
+  end
+
+  def application() do
+    [
+      mod: {PLM.Application, []},
+      applications: [:ranch, :cowboy, :rocksdb, :kvs, :syn, :erp, :bpe, :n2o, :chat]
+    ]
+  end
+
+  def deps() do
+    [
+      {:ex_doc, "~> 0.20.2", only: :dev},
+      {:asn1ex, github: "vicentfg/asn1ex", only: :dev},
+      {:cowboy, "~> 2.5.0"},
+      {:rocksdb, "~> 1.2.0"},
+      {:chat, "~> 3.7.2"},
+      {:n2o, "~> 6.7.1"},
+      {:syn, "~> 1.6.3"},
+      {:kvs, "~> 6.7.4"},
+      {:erp, "~> 0.7.6"},
+      {:bpe, "~> 4.7.3"},
+      {:nitro, "~> 4.7.3"}
+    ]
+  end
+emd
+    </font></p>
+
+    </section>
+    <section>
+
+        <h3>Роутер приложения</h3>
 
    <p><font face="monospace" size=4 style="white-space: pre;">
 defmodule <font color=red>KVS.Routes</font> do
