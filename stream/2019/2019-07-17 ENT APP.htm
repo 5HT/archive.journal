@@ -18,12 +18,12 @@
     <section>
         <h3>Часть 5. Структура приложения</h3>
 
-        <p>— <a href="https://tonpa.guru/stream/2019/2019-06-30%20DEPOT.htm">Часть 1. Введение</a><br>
-           — <a href="https://tonpa.guru/stream/2019/2019-07-08%20ERP%20BOOT.htm">Часть 2. Пусконаладка предприятия</a><br>
-           — <a href="https://tonpa.guru/stream/2019/2019-07-08%20KVS%20ADM.htm">Часть 3. Администратор данных</a><br>
-           — <a href="https://tonpa.guru/stream/2019/2019-07-09%20BPE%20ADM.htm">Часть 4. Администратор процессов</a><br>
-           — <a href="https://tonpa.guru/stream/2019/2019-07-17%20ENT%20APP.htm">Часть 5. Структура приложения</a><br>
-           — <a href="https://tonpa.guru/stream/2019/2019-07-19%20ENT%20PUB.htm">Часть 6. Публикация в GCP</a></p>
+        <p>— <a href="2019-06-30%20DEPOT.htm">Часть 1. Введение</a><br>
+           — <a href="2019-07-08%20ERP%20BOOT.htm">Часть 2. Пусконаладка предприятия</a><br>
+           — <a href="2019-07-08%20KVS%20ADM.htm">Часть 3. Администратор данных</a><br>
+           — <a href="2019-07-09%20BPE%20ADM.htm">Часть 4. Администратор процессов</a><br>
+           — <a href="2019-07-17%20ENT%20APP.htm">Часть 5. Структура приложения</a><br>
+           — <a href="2019-07-19%20ENT%20PUB.htm">Часть 6. Публикация в GCP</a></p>
 
     </section>
     <section>
@@ -46,37 +46,60 @@
        <h3>README</h3>
        <figure><img src="ent/1.png"></figure>
 
-       <h4>modules</h4>
+       <h3>PLM</h3>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
-Elixir.BPE.Account.beam
-Elixir.BPE.Actor.beam — <font color=red>"act.htm"</font>
-Elixir.BPE.Forms.Create.beam
-Elixir.BPE.Index.beam — <font color=red>"bpe.htm"</font>
-Elixir.BPE.Rows.Process.beam
-Elixir.BPE.Rows.Trace.beam
-Elixir.FIN.Index.beam — <font color=red>"fin.htm"</font>
-Elixir.FORM.Index.beam
-Elixir.KVS.Index.beam
-Elixir.LDAP.Forms.Access.beam
-Elixir.LDAP.Forms.Credentials.beam
-Elixir.LDAP.Index.beam — <font color=red>"bpe.htm"</font>
-Elixir.PLM.Application.beam
-Elixir.PLM.CashFlow.beam — <font color=red>"cashflow.htm"</font>
-Elixir.PLM.Forms.Error.beam
-Elixir.PLM.Index.beam — <font color=red>"plm.htm"</font>
-Elixir.PLM.Routes.beam
-Elixir.PLM.Rows.Investment.beam
-Elixir.PLM.Rows.Payment.beam
-Elixir.PLM.Rows.Product.beam
-Elixir.PLM.beam
-    </font></p>
+       <h4>PLM.Index</h4>
+       <figure><img src="ent/6.png"></figure>
 
-        <h4>lib/routes.ex</h4>
+    <figure><code>
+def event(:init)
+def event({:chart, code, x, y, z, i})
+def event({:invest, code})
+    </code></figure>
 
-        <p>Роутинг контроллеров страниц Nitrogen Web фреймворка.</p>
+       <h4>PLM.CashFlow</h4>
+       <figure><img src="ent/7.png"></figure>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+    <figure><code>
+def event(:init)
+def event(:create_investment)
+def event(:create_income)
+def event(:create_outcome)
+def event({:discard, []})
+    </code></figure>
+
+       <h3>FIN</h3>
+       <h4>FIN.Index</h4>
+       <figure><img src="ent/5.png"></figure>
+       <figure><img src="ent/11.png"></figure>
+
+    <figure><code>
+def event(:init)
+def event({:txs, proc})
+def event({:off, form})
+    </code></figure>
+
+       <h3>LDAP</h3>
+       <h4>LDAP.Index</h4>
+       <figure><img src="ent/9.png"></figure>
+       <figure><img src="ent/4.png"></figure>
+
+    <figure><code>
+def event(:init)
+def event(:on)
+def event({:auth, form})
+def event({:close, form})
+def event({:revoke, x})
+def event({:off, form})
+    </code></figure>
+
+        <h3>Роутер приложения</h3>
+
+        <p>Роутинг контроллеров страниц Nitrogen Web фреймворка.
+           В этом роутере мы подключим все наши модули разработанные в Частях 3 и 4,
+           т.е. администраторы данных и процессов.</p>
+
+   <figure><code>
 defmodule <font color=red>PLM.Routes</font> do
   use N2O, with: [:n2o, :nitro]
 
@@ -84,7 +107,10 @@ defmodule <font color=red>PLM.Routes</font> do
 
   def init(state, context) do
     %{path: path} = cx(context, :req)
-    {:ok, state, cx(context, path: path, module: route_prefix(path))}
+    {:ok, state,
+          cx(context,
+             path: path,
+             module: route_prefix(path))}
   end
 
   defp route_prefix(<<"/ws/", p::binary>>), do: route(p)
@@ -98,23 +124,11 @@ defmodule <font color=red>PLM.Routes</font> do
   def route(<<<font color=red>"app/bpe"</font>, _::binary>>), do: <font color=red>BPE.Index</font>
   def route(<<<font color=red>"app/kvs"</font>, _::binary>>), do: <font color=red>KVS.Index</font>
   def route(<<<font color=red>"app/plm"</font>, _::binary>>), do: <font color=red>PLM.Index</font>
-  def route(<<<font color=red>"app/cashflow"</font>, _::binary>>), do: <font color=red>PLM.CashFlow</font>
+  def route(<<<font color=red>"app/cashflow"</font>, _::binary>>),
+      do: <font color=red>PLM.CashFlow</font>
   def route(_), do: <font color=red>LDAP.Index</font>
 end
-    </font></p>
-
-       <h3>PLM</h3>
-       <figure><img src="ent/6.png"></figure>
-       <figure><img src="ent/7.png"></figure>
-
-       <h3>FIN</h3>
-       <figure><img src="ent/5.png"></figure>
-       <figure><img src="ent/11.png"></figure>
-
-       <h3>LDAP</h3>
-       <figure><img src="ent/9.png"></figure>
-       <figure><img src="ent/4.png"></figure>
-
+    </code></figure>
 
 
        <p>— <a href="https://github.com/enterprizing/plm">enterprizing/plm</a></p>
