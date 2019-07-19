@@ -37,7 +37,7 @@ main a:hover { background: rgba(71, 144, 256, 0.13); }
 main ul { list-style-type: none; max-width: 850px; margin: 20px; }
 main b { color: #121212; font-weight: bold; }
 main h3 { line-height: 1.2; font-size: 32px; padding-left: 20px; max-width: 850px; }
-main h4 { line-height: 2; font-size: 24px;  padding-left: 20px; max-width: 850px; }
+main h4 { line-height: 1.2; font-size: 24px;  padding-left: 20px; max-width: 850px; }
 
 figure { margin: 50px auto; max-width: 100%; text-align: center; }
 figcaption { padding: 5px 20px; text-transform: uppercase; font-size: 1rem; }
