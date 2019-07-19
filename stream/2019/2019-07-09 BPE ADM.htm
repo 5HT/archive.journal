@@ -33,6 +33,63 @@
     <h3>Админка на Нитрогене</h3>
 
        <figure><img src="ent/3.png"></figure>
+    <h3>Модули контроллеров страниц</h3>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+Elixir.BPE.Index.beam — <font color=red>"bpe.htm"</font>
+Elixir.BPE.Actor.beam — <font color=red>"act.htm"</font>
+   </font></p>
+
+    <h4>Протокол страницы BPE.Index</h4>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+def event(:init)
+def event(:create)
+def event({:discard, form})
+def event({:spawn, what})
+def event({:complete, id})
+   </font></p>
+
+    <h4>Протокол страницы BPE.Actor</h4>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+def event(:init)
+def event({:txs, proc})
+def event({:off, form})
+   </font></p>
+
+    <h3>Процессы</h3>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+Elixir.BPE.Account.beam
+   </font></p>
+
+    <h4>Протокол процесса BPE.Account</h4>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+def action({:request, :Created:})
+def action({:request, :Init})
+def action({:request, :Upload})
+def action({:request, :Payment})
+def action({:request, :Process})
+def action({:request, :Final})
+   </font></p>
+
+    <h3>Формы для ввода объектов</h3>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+Elixir.BPE.Forms.Create.beam
+   </font></p>
+
+    <figure><img src="ent/12.png"></figure>
+
+    <h3>Формы для отображения строки в таблицах</h3>
+
+   <p><font face="monospace" size=4 style="white-space: pre;">
+Elixir.BPE.Rows.Process.beam
+Elixir.BPE.Rows.Trace.beam
+   </font></p>
+
        <figure><img src="ent/8.png"></figure>
        <figure><img src="ent/10.png"></figure>
 
