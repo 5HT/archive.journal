@@ -20,7 +20,7 @@ footer { text-align: center; background-color: white; color: black; padding: 50p
 
 aside { background-color: white; padding: 20px 0 60px; }
 aside section { padding: 0 20px; max-width: 600px; margin: auto; }
-aside h3 { font-size: 28px; text-transform: uppercase; color: CadetBlue; padding: 20px 0 10px; }
+aside h3 { font-size: 28px; text-transform: uppercase; color: CadetBlue; margin: 0px; padding-left: 20px; margin-bottom: 20px;  }
 aside div { color: black; }
 aside img { width: 20px; vertical-align: middle; }
 aside a { text-decoration: none; color: CadetBlue; }
