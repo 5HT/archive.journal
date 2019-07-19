@@ -46,7 +46,7 @@
 
     <h4>lib/events/kvs.ex</h4>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 defmodule <font color=red>KVS.Index</font> do
   use N2O, with: [:n2o, :nitro]
   use FORM
@@ -112,7 +112,7 @@ defmodule <font color=red>KVS.Index</font> do
 
   def ram(os), do: NITRO.compact(os)
 end
-    </font></p>
+    </code></figure>
 
     </section>
     <section>
@@ -124,7 +124,7 @@ end
            Nitrogen Web Framework написанный Расти Клопхаусом.</p>
 
         <h4>config/config.exs</h4>
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 use Mix.Config
 
 config :n2o,
@@ -145,10 +145,10 @@ config :kvs,
 
 config :erp,
   boot: [:erp_boot, :acc_boot, :pay_boot, :plm_boot, :fin_boot]
-      </font></p>
+      </code></figure>
 
         <h4>mix.exs</h4>
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 defmodule PLM.Mixfile do
   use Mix.Project
 
@@ -185,14 +185,14 @@ defmodule PLM.Mixfile do
     ]
   end
 emd
-    </font></p>
+    </code></figure>
 
     </section>
     <section>
 
         <h3>Роутер приложения</h3>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 defmodule <font color=red>KVS.Routes</font> do
   use N2O, with: [:n2o, :nitro]
 
@@ -211,12 +211,12 @@ defmodule <font color=red>KVS.Routes</font> do
   def route(<<"app/kvs", _::binary>>), do: <font color=red>KVS.Index</font>
   def route(_), do: <font color=red>KVS.Index</font>
 end
-    </font></p>
+    </code></figure>
     </section>
     <section>
         <h3>Контейнер Приложения<h3>
         <h4>priv/static/kvs.htm</h4>
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 &lt;nav&gt;
   &lt;a href='login.htm'&gt;LOGIN&lt;/a&gt;
   &lt;a href='plm.htm'&gt;PLM&lt;/a&gt;
@@ -242,7 +242,7 @@ end
     &lt;/div&gt;
   &lt;/article&gt;
 &lt;/aside&gt;
-    </font></p>
+    </code></figure>
     <p>Код приложения можно найти в следующих репозиториях:</p>
     <p>— <a href="https://github.com/enterprizing/plm">enterprizing/plm</a></p>
     </section>

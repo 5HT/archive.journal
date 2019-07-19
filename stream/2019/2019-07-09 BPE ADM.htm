@@ -35,35 +35,35 @@
 
     <h4>BPE.Index</h4>
     <figure><img src="ent/3.png"></figure>
-    <p><font face="monospace" size=4 style="white-space: pre;">
+    <figure><code>
 def event(:init)
 def event(:create)
 def event({:discard, form})
 def event({:spawn, what})
 def event({:complete, id})
-    </font></p>
+    </code></figure>
 
     <h4>BPE.Actor</h4>
     <figure><img src="ent/8.png"></figure>
     <figure><img src="ent/10.png"></figure>
-    <p><font face="monospace" size=4 style="white-space: pre;">
+    <figure><code>
 def event(:init)
 def event({:txs, proc})
 def event({:off, form})
-    </font></p>
+    </code></figure>
 
     <h3>Процессы</h3>
 
     <h4>Протокол процесса BPE.Account</h4>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 def action({:request, :Created:})
 def action({:request, :Init})
 def action({:request, :Upload})
 def action({:request, :Payment})
 def action({:request, :Process})
 def action({:request, :Final})
-   </font></p>
+   </code></figure>
 
     <h3>Формы для ввода объектов</h3>
 

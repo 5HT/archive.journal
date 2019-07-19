@@ -55,7 +55,7 @@
 
         <h4>ERP SPEC — Таблицы организационной структуры</h4>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 -type locationType() :: normal | extra.
 
 -record('Loc',          { id          = kvs:seq([],[]) :: [] | term(),
@@ -91,7 +91,7 @@
                           org         = [] :: [] | #'Organization'{},
                           branch      = [] :: [] | #'Branch'{},
                           type        = [] :: term() }).
-    </font></p>
+    </code></figure>
 
         <h4>PAY SPEC — Таблицы системы управления платежами</h4>
 
@@ -101,7 +101,7 @@
            выглядит просто <b>mul({A,B},{C,D}) -> {A+C,B*D}</b>.
            </p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 -type fraction_length() :: integer().
 -type digits() :: integer().
 -type money() :: {fraction_length(),digits()}.
@@ -114,11 +114,11 @@
                      type = [] :: paymentType(),
                      from = [] :: term(),
                      to = [] :: term() }).
-    </font></p>
+    </code></figure>
 
         <h4>PLM SPEC — Таблицы системы управления жизненным циклом</h4>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 -record('Acc', { id   = [] :: [] | binary() | list(),
                  rate = {0,0} :: money() }).
 
@@ -138,7 +138,7 @@
                         type = [] :: investmentType(),
                         from = [] :: term(),
                         to = [] :: term() }).
-    </font></p>
+    </code></figure>
 
     </section>
     <section>
@@ -159,16 +159,16 @@
            Софии, Варне (главный офис компании) и Пловдиве. Сама компания совершает операции только в Болгарии,
            поэтому группа состоит из одной компании.</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 GroupOrgs    = [ #'Organization'{name="Quanterall",  url="quanterall.com"} ].
 HeadBranches = [ #'Branch'{loc=#'Loc'{city="Varna",  country="BG"}},
                  #'Branch'{loc=#'Loc'{city="Sophia", country="BG"}},
                  #'Branch'{loc=#'Loc'{city="Plovdiv",country="BG"}} ].
-    </font></p>
+    </code></figure>
 
         <p>Добавляем сейчас и впредь данные с помощью обычных list комбинаторов:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 -module(erp).
 -compile(export_all).
 boot() ->
@@ -177,7 +177,7 @@ boot() ->
          {error,_} ->
              lists:map(fun(X) -> kvs:append(X,"/erp/quanterall") end, HeadBranches),
              lists:map(fun(X) -> kvs:append(X,"/erp/group") end, GroupOrgs) end.
-    </font></p>
+    </code></figure>
 
         <h4>PAY BOOT — Учётность CashFlow</h4>
 
@@ -186,7 +186,7 @@ boot() ->
            2) мы выплачиваем зарплаты раз в месяц. Поэтому фолды группируются календарно
            и зипуются помесячно.</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 sal_boot() ->
    lists:map(fun(#'Product'{code=C} = P) ->
       lists:map(fun(#'Payment'{}=Pay) ->
@@ -198,7 +198,7 @@ pay_boot() ->
       lists:map(fun(#'Payment'{}=Pay) ->
          kvs:append(Pay,"/plm/"++C++"/income") end,payments(C))
       end, products()).
-    </font></p>
+    </code></figure>
 
         <h4>PLM BOOT — Бюджетирование проектов</h4>
 
@@ -206,7 +206,7 @@ pay_boot() ->
           Этот список будет использоваться в будущем для распределения
           выплат по опционам.<b></b> </p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 assignees() ->
    lists:map(fun(#'Product'{code=C} = P) ->
       case kvs:get(writer,"/plm/"++C++"/staff") of
@@ -214,12 +214,12 @@ assignees() ->
                         kvs:append(Person,"/plm/"++C++"/staff") end,staff(C));
            {ok,_} -> skip end
       end, products()).
-    </font></p>
+    </code></figure>
 
 
     <p>Выплаты по процентам на субконто попроектно:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 accounts() ->
   lists:map(fun(#'Product'{code=C}) ->
     lists:map(fun(#'Acc'{id=Id, rate=R}=SubAcc) ->
@@ -233,7 +233,7 @@ accounts() ->
       end
     end, acc(C))
   end, plm_boot:products()).
-    </font></p>
+    </code></figure>
 
         <p>За работу с данными отвечает библиотека KVS, как работать с ней читайте в предыдущих
            выпусках журнала:</p>
@@ -257,7 +257,7 @@ accounts() ->
 
         <p>Elixir прелюдия:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 defmodule PLM.Mixfile do
   use Mix.Project
   def project() do
@@ -273,11 +273,11 @@ defmodule PLM.Mixfile do
     do: [mod: {PLM.Application, []},
          applications: [:rocksdb, :kvs, :bpe, :erp]]
 end
-    </font></p>
+    </code></figure>
 
         <p>Содержимое корневой директории БД предприятия:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 >  :writer |> :kvs.all |> :lists.sort
 [
   {:writer, '/acc/quanterall/Plovdiv', 3, [], [], []},
@@ -308,18 +308,18 @@ end
   {:writer, '/plm/NYNJA/staff', 4, [], [], []},
   {:writer, '/plm/products', 2, [], [], []}
 ]
-    </font></p>
+    </code></figure>
 
         <p>Список компаний входящие в группу предприяти:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 > :kvs.feed '/erp/group'
 [{:Organization, 'Quanterall', 'quanterall.com', [], []}]
-    </font></p>
+    </code></figure>
 
         <p>Список бреч-офисов головной (и единственной) компании группы:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 > :kvs.feed '/erp/quanterall'
 [
   {:Branch, '1562329445378242000',
@@ -329,11 +329,11 @@ end
   {:Branch, '1562329445378234000',
    {:Loc, '1562329445378240000', [], 'BG', 'Varna', [], []}}
 ]
-    </font></p>
+    </code></figure>
 
         <p>Список контрагентнов:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 > :kvs.feed '/erp/partners'
 [
   {:Organization, 'Catalx Exchange Inc.', 'catalx.io', [], []},
@@ -344,11 +344,11 @@ end
   {:Organization, 'FiaTech', [], [], []},
   {:Organization, '3Stars', [], [], []}
 ]
-    </font></p>
+    </code></figure>
 
     <p>Бюджетирование проекта по статьям субконто:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 > :kvs.feed '/fin/acc/NYNJA'
 [
   {:Acc, 'NYNJA/insurance', {2, 70}},
@@ -356,11 +356,11 @@ end
   {:Acc, 'NYNJA/options', {2, 10}},
   {:Acc, 'NYNJA/R&D', {2, 10}}
 ]
-    </font></p>
+    </code></figure>
 
     <p>Выплаты по опционам для программистов:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 > :kvs.feed '/fin/tx/CATALX/options'
 [
   {:Payment, '1562868880497278000', {0, 1}, {2, 150000}, 'USD', :crypto, [], []},
@@ -376,11 +376,11 @@ end
   {:Payment, '1562868880492939000', {0, 1}, {2, 120000}, 'USD', :crypto, [], []},
   {:Payment, '1562868880492234000', {0, 1}, {2, 120000}, 'USD', :crypto, [], []}
 ]
-    </font></p>
+    </code></figure>
 
     <p>Люди, работающие на проекте:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 > :kvs.feed '/plm/NYNJA/staff'
 [
   {:Person, '1562868880467887000', 'Maxim Sokhatsky', [], [], [], 1, []},
@@ -389,7 +389,7 @@ end
   {:Person, '1562868880467884000', 'Radostin Dimitrov', [], [], [], 4, []},
   {:Person, '1562868880467883000', 'Georgi Spasov', [], [], [], 8, []}
 ]
-    </font></p>
+    </code></figure>
 
     </section>
 </main>
