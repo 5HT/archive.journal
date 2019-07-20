@@ -160,39 +160,45 @@ emd
    <figure><code>
 -type locationType() :: normal | extra.
 
--record('Loc',          { id          = kvs:seq([],[]) :: [] | term(),
-                          code        = [] :: [] | term(),
-                          country     = [] :: [] | binary(),
-                          city        = [] :: [] | binary(),
-                          address     = [] :: [] | binary(),
-                          type        = [] :: locationType() }).
+-record('Loc',
+{ id          = kvs:seq([],[]) :: [] | term(),
+  code        = [] :: [] | term(),
+  country     = [] :: [] | binary(),
+  city        = [] :: [] | binary(),
+  address     = [] :: [] | binary(),
+  type        = [] :: locationType() }).
 
--record('Branch',       { id          = kvs:seq([],[]) :: [] | term(),
-                          loc         = [] :: [] | #'Loc'{} }).
+-record('Branch',
+{ id          = kvs:seq([],[]) :: [] | term(),
+  loc         = [] :: [] | #'Loc'{} }).
 
--record('Inventory',    { id          = [] :: [] | binary(),
-                          name        = [] :: [] | binary(),
-                          branch      = [] :: [] | #'Branch'{},
-                          type        = [] :: term() }).
+-record('Inventory',
+{ id          = [] :: [] | binary(),
+  name        = [] :: [] | binary(),
+  branch      = [] :: [] | #'Branch'{},
+  type        = [] :: term() }).
 
--record('Organization', { name        = [] :: [] | binary(),
-                          url         = [] :: [] | string(),
-                          location    = [] :: [] | #'Loc'{},
-                          type        = [] :: term() }).
+-record('Organization',
+{ name        = [] :: [] | binary(),
+  url         = [] :: [] | string(),
+  location    = [] :: [] | #'Loc'{},
+  type        = [] :: term() }).
 
--record('Person',       { id          = kvs:seq([],[]) :: [] | term(),
-                          cn          = [] :: [] | binary(),
-                          name        = [] :: [] | binary(),
-                          displayName = [] :: [] | binary(),
-                          location    = [] :: #'Loc'{},
-                          type        = [] :: term() }).
+-record('Person',
+{ id          = kvs:seq([],[]) :: [] | term(),
+  cn          = [] :: [] | binary(),
+  name        = [] :: [] | binary(),
+  displayName = [] :: [] | binary(),
+  location    = [] :: #'Loc'{},
+  type        = [] :: term() }).
 
 
--record('Employee',     { id          = kvs:seq([],[]) :: [] | binary(),
-                          person      = [] :: [] | #'Person'{},
-                          org         = [] :: [] | #'Organization'{},
-                          branch      = [] :: [] | #'Branch'{},
-                          type        = [] :: term() }).
+-record('Employee',
+{ id          = kvs:seq([],[]) :: [] | binary(),
+  person      = [] :: [] | #'Person'{},
+  org         = [] :: [] | #'Organization'{},
+  branch      = [] :: [] | #'Branch'{},
+  type        = [] :: term() }).
     </code></figure>
 
         <h4>PAY SPEC — Таблицы системы управления платежами</h4>
@@ -208,38 +214,41 @@ emd
 -type digits() :: integer().
 -type money() :: {fraction_length(),digits()}.
 
-
--record('Payment', { invoice = [] :: [] | term(),
-                     volume = [] :: [] | money(),
-                     price = {0,1} :: money(),
-                     instrument = [] :: term(),
-                     type = [] :: paymentType(),
-                     from = [] :: term(),
-                     to = [] :: term() }).
+-record('Payment',
+{ invoice = [] :: [] | term(),
+  volume = [] :: [] | money(),
+  price = {0,1} :: money(),
+  instrument = [] :: term(),
+  type = [] :: paymentType(),
+  from = [] :: term(),
+  to = [] :: term() }).
     </code></figure>
 
         <h4>PLM SPEC — Таблицы системы управления жизненным циклом</h4>
 
    <figure><code>
--record('Acc', { id   = [] :: [] | binary() | list(),
-                 rate = {0,0} :: money() }).
+-record('Acc',
+{ id   = [] :: [] | binary() | list(),
+  rate = {0,0} :: money() }).
 
--record('Product', { code         = [] :: [] | term(),
-                     id           = kvs:seq([],[]) :: [] | binary(),
-                     url          = [] :: [] | binary() | list(),
-                     engineer     = [] :: [] | #'Person'{},
-                     director     = [] :: [] | #'Person'{},
-                     owner        = [] :: [] | #'Person'{},
-                     organization = [] :: [] | #'Organization'{},
-                     type         = [] :: productType() }).
+-record('Product',
+{ code         = [] :: [] | term(),
+  id           = kvs:seq([],[]) :: [] | binary(),
+  url          = [] :: [] | binary() | list(),
+  engineer     = [] :: [] | #'Person'{},
+  director     = [] :: [] | #'Person'{},
+  owner        = [] :: [] | #'Person'{},
+  organization = [] :: [] | #'Organization'{},
+  type         = [] :: productType() }).
 
--record('Investment', { id = [] :: [] | term(),
-                        volume = [] :: [] | money(),
-                        price = {0,1} :: money(),
-                        instrument = [] :: term(),
-                        type = [] :: investmentType(),
-                        from = [] :: term(),
-                        to = [] :: term() }).
+-record('Investment',
+{ id = [] :: [] | term(),
+  volume = [] :: [] | money(),
+  price = {0,1} :: money(),
+  instrument = [] :: term(),
+  type = [] :: investmentType(),
+  from = [] :: term(),
+  to = [] :: term() }).
     </code></figure>
 
     </section>
@@ -271,14 +280,45 @@ HeadBranches = [ #'Branch'{loc=#'Loc'{city="Varna",  country="BG"}},
         <p>Добавляем сейчас и впредь данные с помощью обычных list комбинаторов:</p>
 
    <figure><code>
+
 -module(erp).
 -compile(export_all).
+
 boot() ->
-    case kvs:get(writer,"/erp/group") of
-         {ok,_} -> skip;
-         {error,_} ->
-             lists:map(fun(X) -> kvs:append(X,"/erp/quanterall") end, HeadBranches),
-             lists:map(fun(X) -> kvs:append(X,"/erp/group") end, GroupOrgs) end.
+    GroupOrgs =
+  [ #'Organization'{
+      name="Quanterall",
+      url="quanterall.com"} ],
+
+    HeadBranches =
+  [ #'Branch'{ loc = #'Loc'{ city = "Varna",
+               country = "BG" } },
+    #'Branch'{ loc = #'Loc'{ city = "Sophia",
+               country = "BG" } },
+    #'Branch'{ loc = #'Loc'{ city = "Plovdiv",
+               country = "BG" } } ],
+
+    PartnersOrgs =
+  [ #'Organization'{ name="NYNJA, Inc."},
+    #'Organization'{ name="Catalx Exchange Inc."},
+    #'Organization'{ name="FiaTech"},
+    #'Organization'{ name="3Stars"},
+    #'Organization'{ name="SwissEMX"},
+    #'Organization'{ name="HistoricalPark"},
+    #'Organization'{ name="Intralinks"} ],
+
+    Structure =
+  [ {"/erp/group", GroupOrgs},
+    {"/erp/partners", PartnersOrgs},
+    {"/erp/quanterall", HeadBranches} ],
+
+    lists:foreach(fun({Feed, Data}) ->
+       case kvs:get(writer, Feed) of
+            {ok,_} -> skip;
+         {error,_} -> lists:map(fun(X) ->
+                      kvs:append(X,Feed) end, Data)
+       end
+    end, Structure).
     </code></figure>
 
         <h4>PAY BOOT — Учётность CashFlow</h4>
