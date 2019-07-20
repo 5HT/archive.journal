@@ -126,6 +126,7 @@ config :n2o,
   mqtt_services: ['erp', 'plm'],
   ws_services: ['chat'],
   upload: "./priv/static",
+  routes: <font color=red>KVS.Routes</font>,
   protocols:
   [
     :n2o_heart,
@@ -133,13 +134,17 @@ config :n2o,
     :n2o_ftp,
     :bpe_n2o,
     CHAT.TXT
-  ],
-  routes: <font color=red>KVS.Routes</font>
+  ]
 
 config :kvs,
   dba: :kvs_rocks,
   dba_st: :kvs_st,
-  schema: [:kvs, :kvs_stream, :bpe_metainfo]
+  schema:
+  [
+    :kvs,
+    :kvs_stream,
+    :bpe_metainfo
+  ]
 
 config :erp,
   boot:
