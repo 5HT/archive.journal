@@ -182,23 +182,23 @@ config :n2o,
    <figure><code>
 > :supervisor.which_children(:n2o)
 [
-  {{:tcp, '/ldap/tcp/4'}, :worker, [:n2o_tcp]},
-  {{:tcp, '/ldap/tcp/3'}, :worker, [:n2o_tcp]},
-  {{:tcp, '/ldap/tcp/2'}, :worker, [:n2o_tcp]},
-  {{:tcp, '/ldap/tcp/1'}, :worker, [:n2o_tcp]},
-  {{:ws, '/chat/ws/4'}, :worker, [:n2o_ws]},
-  {{:ws, '/chat/ws/3'}, :worker, [:n2o_ws]},
-  {{:ws, '/chat/ws/2'}, :worker, [:n2o_ws]},
-  {{:ws, '/chat/ws/1'}, :worker, [:n2o_ws]},
-  {{:mqtt, '/erp/mqtt/4'}, :worker, [:n2o_mqtt]},
-  {{:mqtt, '/erp/mqtt/3'}, :worker, [:n2o_mqtt]},
-  {{:mqtt, '/erp/mqtt/2'}, :worker, [:n2o_mqtt]},
-  {{:mqtt, '/erp/mqtt/1'}, :worker, [:n2o_mqtt]},
-  {{:mqtt, '/bpe/mqtt/4'}, :worker, [:n2o_mqtt]},
-  {{:mqtt, '/bpe/mqtt/3'}, :worker, [:n2o_mqtt]},
-  {{:mqtt, '/bpe/mqtt/2'}, :worker, [:n2o_mqtt]},
-  {{:mqtt, '/bpe/mqtt/1'}, :worker, [:n2o_mqtt]},
-  {{:caching, 'timer'}, :worker, [:n2o]}
+  {{:tcp, '/ldap/tcp/4'}, [:n2o_tcp]},
+  {{:tcp, '/ldap/tcp/3'}, [:n2o_tcp]},
+  {{:tcp, '/ldap/tcp/2'}, [:n2o_tcp]},
+  {{:tcp, '/ldap/tcp/1'}, [:n2o_tcp]},
+  {{:ws, '/chat/ws/4'}, [:n2o_ws]},
+  {{:ws, '/chat/ws/3'}, [:n2o_ws]},
+  {{:ws, '/chat/ws/2'}, [:n2o_ws]},
+  {{:ws, '/chat/ws/1'}, [:n2o_ws]},
+  {{:mqtt, '/erp/mqtt/4'}, [:n2o_mqtt]},
+  {{:mqtt, '/erp/mqtt/3'}, [:n2o_mqtt]},
+  {{:mqtt, '/erp/mqtt/2'}, [:n2o_mqtt]},
+  {{:mqtt, '/erp/mqtt/1'}, [:n2o_mqtt]},
+  {{:mqtt, '/bpe/mqtt/4'}, [:n2o_mqtt]},
+  {{:mqtt, '/bpe/mqtt/3'}, [:n2o_mqtt]},
+  {{:mqtt, '/bpe/mqtt/2'}, [:n2o_mqtt]},
+  {{:mqtt, '/bpe/mqtt/1'}, [:n2o_mqtt]},
+  {{:caching, 'timer'}, [:n2o]}
 ]
     </code></figure>
 
