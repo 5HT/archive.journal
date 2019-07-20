@@ -74,14 +74,14 @@ defmodule <font color=red>KVS.Index</font> do
 
   def event(<font color=red>:enode</font>),
   do: NITRO.update(<font color=red>:enode</font>,
-      span(body: :lists.concat([:erlang.node()])))
+      span(body: NITRO.compact(:erlang.node())))
 
   def event({:link, i}),
-    do: [
+  do: [
       NITRO.clear(<font color=red>:feeds</font>),
       :kvs.feed(i) |> Enum.map(fn t ->
-          NITRO.insert_bottom(:feeds,
-             panel(body: NITRO.compact(t))) end)
+        NITRO.insert_bottom(:feeds,
+          panel(body: NITRO.compact(t))) end)
     ]
 
   def event(<font color=red>:writers</font>),
@@ -92,8 +92,9 @@ defmodule <font color=red>KVS.Index</font> do
       |> Enum.map(fn writer(id: i, count: c) ->
         NITRO.insert_bottom(
           :writers,
-          panel(body: [link(body: i, postback: {:link, i}),
-                       ' (' ++ NITRO.to_list(c) ++ ')']))
+          panel(body:
+          [link(body: i, postback: {:link, i}),
+           ' (' ++ NITRO.to_list(c) ++ ')']))
       end)
 
   def event(_), do: []
