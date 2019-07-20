@@ -31,7 +31,7 @@
     </section>
     <section>
     <h3>Постановка задачи</h3>
-    <h3>Главная страница приложения</h3>
+    <h3>Cтраницы</h3>
     <figure><img src="https://tonpa.guru/stream/2019/ent/2.png"/></figure>
 
     <p>Красным цветом выделены идентификаторы DOM элементов, которые заменяются
@@ -43,6 +43,38 @@
        OCaml Ocsigen, Scala Lift, SML UrWeb, F# WebSharper, Erlang Nitrogen.
        Основная идея — пишем все на одном языке и обучать новичков надо одному языку причем
        сразу показывая как писать на нем веб приложения, которые и так все понимают как писать.</p>
+
+       <h4>priv/static/kvs.htm</h4>
+   <figure><code>
+&lt;nav&gt;
+  &lt;a href='login.htm'&gt;LOGIN&lt;/a&gt;
+  &lt;a href='plm.htm'&gt;PLM&lt;/a&gt;
+  &lt;a href='bpe.htm'&gt;BPE&lt;/a&gt;
+  &lt;a href='form.htm'&gt;FORM&lt;/a&gt;
+  &lt;a href='kvs.htm'&gt;KVS&lt;/a&gt;
+&lt;/nav&gt;
+
+&lt;aside&gt;
+  &lt;article&gt;
+    &lt;section&gt;
+      &lt;h2&gt;KVS&lt;/h2&gt;
+      &lt;p&gt;Abstract chain database&lt;/p&gt;
+      &lt;div&gt;USER: &lt;span id=<font color=red>user</font>&gt;&lt;/span&gt;
+            SSD: &lt;span id=<font color=red>disc</font>&gt;&lt;/span&gt;
+            RAM: &lt;span id=<font color=red>ram</font>&gt;&lt;/span&gt;&lt;br&gt;
+        SESSION: &lt;span id=<font color=red>session</font>&gt;&lt;/span&gt;
+             VM: &lt;span id=<font color=red>enode</font>&gt;&lt;/span&gt;&lt;/div&gt;
+    &lt;/section&gt;
+    &lt;div class=container&gt;
+      &lt;div&gt;&lt;h2&gt;WRITERS&lt;/h2&gt;
+      &lt;div id=<font color=red>writers</font>&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div&gt;&lt;h2&gt;CHAINS&lt;/h2&gt;
+      &lt;div id=<font color=red>feeds</font>&gt;To display the chain
+              select the writer.&lt;/div&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/article&gt;
+&lt;/aside&gt;
+    </code></figure>
 
     <h4>lib/events/kvs.ex</h4>
 
@@ -105,9 +137,14 @@ defmodule <font color=red>KVS.Index</font> do
 end
     </code></figure>
 
+   <h3>Роутер</h3>
+   <p>
+kvs — KVS.Index<br>
+    </p>
+
     </section>
     <section>
-        <h3>Elixir прелюдия</h3>
+        <h3>Конфигурация</h3>
 
         <p>Чтобы не писать каждый раз эту прелюдию для каждого приложения приведем
            на примере PLM проекта, который уже включает почти весь стек: N2O, KVS, BPE,
@@ -156,6 +193,8 @@ config :erp,
     :fin_boot
   ]
       </code></figure>
+
+        <h3>Публикация</h3>
 
         <h4>mix.exs</h4>
    <figure><code>
@@ -210,46 +249,6 @@ emd
     </section>
     <section>
 
-        <h3>Роутер приложения</h3>
-
-   <p>
-kvs — KVS.Index<br>
-    </p>
-
-    </section>
-    <section>
-        <h3>Контейнер Приложения<h3>
-        <h4>priv/static/kvs.htm</h4>
-   <figure><code>
-&lt;nav&gt;
-  &lt;a href='login.htm'&gt;LOGIN&lt;/a&gt;
-  &lt;a href='plm.htm'&gt;PLM&lt;/a&gt;
-  &lt;a href='bpe.htm'&gt;BPE&lt;/a&gt;
-  &lt;a href='form.htm'&gt;FORM&lt;/a&gt;
-  &lt;a href='kvs.htm'&gt;KVS&lt;/a&gt;
-&lt;/nav&gt;
-
-&lt;aside&gt;
-  &lt;article&gt;
-    &lt;section&gt;
-      &lt;h2&gt;KVS&lt;/h2&gt;
-      &lt;p&gt;Abstract chain database&lt;/p&gt;
-      &lt;div&gt;USER: &lt;span id=<font color=red>user</font>&gt;&lt;/span&gt;
-            SSD: &lt;span id=<font color=red>disc</font>&gt;&lt;/span&gt;
-            RAM: &lt;span id=<font color=red>ram</font>&gt;&lt;/span&gt;&lt;br&gt;
-        SESSION: &lt;span id=<font color=red>session</font>&gt;&lt;/span&gt;
-             VM: &lt;span id=<font color=red>enode</font>&gt;&lt;/span&gt;&lt;/div&gt;
-    &lt;/section&gt;
-    &lt;div class=container&gt;
-      &lt;div&gt;&lt;h2&gt;WRITERS&lt;/h2&gt;
-      &lt;div id=<font color=red>writers</font>&gt;&lt;/div&gt;&lt;/div&gt;
-      &lt;div&gt;&lt;h2&gt;CHAINS&lt;/h2&gt;
-      &lt;div id=<font color=red>feeds</font>&gt;To display the chain
-              select the writer.&lt;/div&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/article&gt;
-&lt;/aside&gt;
-    </code></figure>
     <p>Код приложения можно найти в следующих репозиториях:</p>
     <p>— <a href="https://github.com/enterprizing/plm">enterprizing/plm</a></p>
     </section>
