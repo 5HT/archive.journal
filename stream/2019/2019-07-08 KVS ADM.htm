@@ -54,9 +54,11 @@ defmodule <font color=red>KVS.Index</font> do
   require ERP
   require Logger
 
-  def parse(ERP."Employee"(person: ERP."Person"(cn: name))),
+  def parse(ERP."Employee"(person:
+            ERP."Person"(cn: name))),
   do: name
   def parse(_), do: []
+
   def event(:init),
     do:
       [<font color=red>:user</font>, <font color=red>:writers</font>, <font color=red>:session</font>, <font color=red>:enode</font>]
