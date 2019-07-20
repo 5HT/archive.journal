@@ -270,17 +270,9 @@ emd
            Софии, Варне (главный офис компании) и Пловдиве. Сама компания совершает операции только в Болгарии,
            поэтому группа состоит из одной компании.</p>
 
-   <figure><code>
-GroupOrgs    = [ #'Organization'{name="Quanterall",  url="quanterall.com"} ].
-HeadBranches = [ #'Branch'{loc=#'Loc'{city="Varna",  country="BG"}},
-                 #'Branch'{loc=#'Loc'{city="Sophia", country="BG"}},
-                 #'Branch'{loc=#'Loc'{city="Plovdiv",country="BG"}} ].
-    </code></figure>
-
         <p>Добавляем сейчас и впредь данные с помощью обычных list комбинаторов:</p>
 
    <figure><code>
-
 -module(erp).
 -compile(export_all).
 
@@ -299,8 +291,8 @@ boot() ->
                country = "BG" } } ],
 
     PartnersOrgs =
-  [ #'Organization'{ name="NYNJA, Inc."},
-    #'Organization'{ name="Catalx Exchange Inc."},
+  [ #'Organization'{ name="NYNJA"},
+    #'Organization'{ name="Catalx"},
     #'Organization'{ name="FiaTech"},
     #'Organization'{ name="3Stars"},
     #'Organization'{ name="SwissEMX"},
