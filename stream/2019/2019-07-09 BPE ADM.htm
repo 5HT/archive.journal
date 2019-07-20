@@ -31,6 +31,18 @@
     </section>
     <section>
     <h3>Постановка задачи</h3>
+    <h3>Процессы</h3>
+
+    <h4>Протокол процесса BPE.Account</h4>
+
+   <figure><code>
+def action({:request, :Created:})
+def action({:request, :Init})
+def action({:request, :Upload})
+def action({:request, :Payment})
+def action({:request, :Process})
+def action({:request, :Final})
+   </code></figure>
     <h3>Страницы</h3>
 
     <h4>BPE.Index</h4>
@@ -52,18 +64,6 @@ def event({:txs, proc})
 def event({:off, form})
     </code></figure>
 
-    <h3>Процессы</h3>
-
-    <h4>Протокол процесса BPE.Account</h4>
-
-   <figure><code>
-def action({:request, :Created:})
-def action({:request, :Init})
-def action({:request, :Upload})
-def action({:request, :Payment})
-def action({:request, :Process})
-def action({:request, :Final})
-   </code></figure>
 
     <h3>Редакторы</h3>
 
