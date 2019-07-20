@@ -30,6 +30,109 @@
 
     </section>
     <section>
+
+        <h3>Конфигурация</h3>
+
+        <p>Чтобы не писать каждый раз эту прелюдию для каждого приложения приведем
+           на примере PLM проекта, который уже включает почти весь стек: N2O, KVS, BPE,
+           а также другие N2O протоколы CHAT, NITRO. NITRO — является портом
+           Nitrogen Web Framework написанный Расти Клопхаусом.</p>
+
+        <h4>config/config.exs</h4>
+   <figure><code>
+use Mix.Config
+
+config :n2o,
+  pickler: :n2o_secret,
+  mq: :n2o_syn,
+  port: 8043,
+  proto: CHAT.Server
+  mqtt_services: ['erp', 'plm'],
+  ws_services: ['chat'],
+  upload: "./priv/static",
+  routes: <font color=red>KVS.Routes</font>,
+  protocols:
+  [
+    :n2o_heart,
+    :n2o_nitro,
+    :n2o_ftp,
+    :bpe_n2o,
+    CHAT.TXT
+  ]
+
+config :kvs,
+  dba: :kvs_rocks,
+  dba_st: :kvs_st,
+  schema:
+  [
+    :kvs,
+    :kvs_stream,
+    :bpe_metainfo
+  ]
+
+config :erp,
+  boot:
+  [
+    :erp_boot,
+    :acc_boot,
+    :pay_boot,
+    :plm_boot,
+    :fin_boot
+  ]
+      </code></figure>
+
+        <h3>Публикация</h3>
+
+        <h4>mix.exs</h4>
+   <figure><code>
+defmodule PLM.Mixfile do
+  use Mix.Project
+
+  def project() do
+    [
+      app: :plm,
+      version: "0.7.1",
+      elixir: "~> 1.8.1",
+      description: "PLM",
+      deps: deps()
+    ]
+  end
+
+  def application() do
+    [
+      mod: {PLM.Application, []},
+      applications:
+      [
+        :ranch,
+        :cowboy,
+        :rocksdb,
+        :kvs,
+        :syn,
+        :erp,
+        :bpe,
+        :n2o,
+        :chat
+      ]
+    ]
+  end
+
+  def deps() do
+    [
+      {:ex_doc, "~> 0.20.2", only: :dev},
+      {:cowboy, "~> 2.5.0"},
+      {:rocksdb, "~> 1.2.0"},
+      {:chat, "~> 3.7.2"},
+      {:n2o, "~> 6.7.1"},
+      {:syn, "~> 1.6.3"},
+      {:kvs, "~> 6.7.4"},
+      {:erp, "~> 0.7.6"},
+      {:bpe, "~> 4.7.3"},
+      {:nitro, "~> 4.7.3"}
+    ]
+  end
+emd
+    </code></figure>
+
         <h3>Типовые спецификации</h3>
         <p>Схемы мы храним в цепочках для каждой таблицы поэтому валиаторы
            способны траверсить и по предыдущих схемах. Схема включает в себя
@@ -392,108 +495,6 @@ end
 
     </section>
     <section>
-        <h3>Конфигурация</h3>
-
-        <p>Чтобы не писать каждый раз эту прелюдию для каждого приложения приведем
-           на примере PLM проекта, который уже включает почти весь стек: N2O, KVS, BPE,
-           а также другие N2O протоколы CHAT, NITRO. NITRO — является портом
-           Nitrogen Web Framework написанный Расти Клопхаусом.</p>
-
-        <h4>config/config.exs</h4>
-   <figure><code>
-use Mix.Config
-
-config :n2o,
-  pickler: :n2o_secret,
-  mq: :n2o_syn,
-  port: 8043,
-  proto: CHAT.Server
-  mqtt_services: ['erp', 'plm'],
-  ws_services: ['chat'],
-  upload: "./priv/static",
-  routes: <font color=red>KVS.Routes</font>,
-  protocols:
-  [
-    :n2o_heart,
-    :n2o_nitro,
-    :n2o_ftp,
-    :bpe_n2o,
-    CHAT.TXT
-  ]
-
-config :kvs,
-  dba: :kvs_rocks,
-  dba_st: :kvs_st,
-  schema:
-  [
-    :kvs,
-    :kvs_stream,
-    :bpe_metainfo
-  ]
-
-config :erp,
-  boot:
-  [
-    :erp_boot,
-    :acc_boot,
-    :pay_boot,
-    :plm_boot,
-    :fin_boot
-  ]
-      </code></figure>
-
-        <h3>Публикация</h3>
-
-        <h4>mix.exs</h4>
-   <figure><code>
-defmodule PLM.Mixfile do
-  use Mix.Project
-
-  def project() do
-    [
-      app: :plm,
-      version: "0.7.1",
-      elixir: "~> 1.8.1",
-      description: "PLM",
-      deps: deps()
-    ]
-  end
-
-  def application() do
-    [
-      mod: {PLM.Application, []},
-      applications:
-      [
-        :ranch,
-        :cowboy,
-        :rocksdb,
-        :kvs,
-        :syn,
-        :erp,
-        :bpe,
-        :n2o,
-        :chat
-      ]
-    ]
-  end
-
-  def deps() do
-    [
-      {:ex_doc, "~> 0.20.2", only: :dev},
-      {:cowboy, "~> 2.5.0"},
-      {:rocksdb, "~> 1.2.0"},
-      {:chat, "~> 3.7.2"},
-      {:n2o, "~> 6.7.1"},
-      {:syn, "~> 1.6.3"},
-      {:kvs, "~> 6.7.4"},
-      {:erp, "~> 0.7.6"},
-      {:bpe, "~> 4.7.3"},
-      {:nitro, "~> 4.7.3"}
-    ]
-  end
-emd
-    </code></figure>
-
         <h3>Структура модуля предприятия</h3>
 
         <h4>Конфигурация</h4>
