@@ -99,36 +99,15 @@ def event({:off, form})
            В этом роутере мы подключим все наши модули разработанные в Частях 3 и 4,
            т.е. администраторы данных и процессов.</p>
 
-   <figure><code>
-defmodule <font color=red>PLM.Routes</font> do
-  use N2O, with: [:n2o, :nitro]
-
-  def finish(state, context), do: {:ok, state, context}
-
-  def init(state, context) do
-    %{path: path} = cx(context, :req)
-    {:ok, state,
-          cx(context,
-             path: path,
-             module: route_prefix(path))}
-  end
-
-  defp route_prefix(<<"/ws/", p::binary>>), do: route(p)
-  defp route_prefix(<<"/", p::binary>>), do: route(p)
-  defp route_prefix(path), do: route(path)
-
-  def route(<<<font color=red>"app/ldap"</font>, _::binary>>), do: <font color=red>LDAP.Index</font>
-  def route(<<<font color=red>"app/form"</font>, _::binary>>), do: <font color=red>FORM.Index</font>
-  def route(<<<font color=red>"app/act"</font>, _::binary>>), do: <font color=red>BPE.Actor</font>
-  def route(<<<font color=red>"app/fin"</font>, _::binary>>), do: <font color=red>FIN.Index</font>
-  def route(<<<font color=red>"app/bpe"</font>, _::binary>>), do: <font color=red>BPE.Index</font>
-  def route(<<<font color=red>"app/kvs"</font>, _::binary>>), do: <font color=red>KVS.Index</font>
-  def route(<<<font color=red>"app/plm"</font>, _::binary>>), do: <font color=red>PLM.Index</font>
-  def route(<<<font color=red>"app/cashflow"</font>, _::binary>>),
-      do: <font color=red>PLM.CashFlow</font>
-  def route(_), do: <font color=red>LDAP.Index</font>
-end
-    </code></figure>
+   <p>
+ldap — LDAP.Index<br>
+form — FORM.Index<br>
+act — BPE.Actor<br>
+bpe — BPE.Index<br>
+kvs — KVS.Index<br>
+plm — PLM.Index<br>
+cashflow — PLM.CashFlow<br>
+    </p>
 
 
        <p>— <a href="https://github.com/enterprizing/plm">enterprizing/plm</a></p>
