@@ -6,7 +6,7 @@ body { background-color: white; font-family: 'local', sans-serif; font-size: 16p
 hr { margin-top: 10px; margin-bottom: 10px; }
 h1, h2, h3, h4 { font-weight: normal; margin-left: 20px; border-left: 2px solid #00b8cf; }
 
-nav { margin: 10px 0; display: float; align-items: center; line-height: 3; }
+nav { margin: 10px 0; display: float; text-align: center; align-items: center; line-height: 3; }
 nav a:visited { color: CadetBlue; }
 nav a:hover { border-bottom: 2px solid #00b8cf; }
 nav a { font-size: 16px; border: 2px solid #dedede; color: blue; text-decoration: none;
