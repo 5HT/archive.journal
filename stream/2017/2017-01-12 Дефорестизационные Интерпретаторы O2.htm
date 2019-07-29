@@ -26,7 +26,7 @@
 
 <p>Примеры элиминаторов или правила дефостеризации для стримов и листов:</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 stream (unstream s) = s
 foldr k z (build g) = g k z
 
@@ -37,7 +37,7 @@ foldr f z (x:xs) = f x (foldr f z xs)
 build g (:) []
 stream :: List -> Stream
 unstream :: Stream -> List
-</font></p>
+</code></figure>
 
 <p>Приложения в промышленности: векторизация, SIMD конвеерация</p>
 
