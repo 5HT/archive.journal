@@ -127,65 +127,74 @@
         <h3>На примере</h3>
 
         <p>Пример кода, который показывет основную идею на примере драйвера rocksdb:</p>
-        <p>
-1> {ok,Ref} = rocksdb:open("hey",[{create_if_missing,true}]).<br>
-2> rocksdb:put(Ref, <<"/users/1">>,<<"maxim">>,[{sync,true}]).<br>
-3> rocksdb:put(Ref, <<"/users/2">>,<<"doxtop">>,[{sync,true}]).<br>
-4> rocksdb:put(Ref, <<"/users/3">>,<<"vlad">>,[{sync,true}]).<br>
-5> rocksdb:put(Ref, <<"/staff/1">>,<<"vlad">>,[{sync,true}]).<br>
-6> rocksdb:put(Ref, <<"/staff/2">>,<<"maxim">>,[{sync,true}]).<br>
-7> rocksdb:put(Ref, <<"/staff/3">>,<<"doxtop">>,[{sync,true}]).<br>
-8> {ok,I} = rocksdb:iterator(Ref,[]).<br>
-9> rocksdb:iterator_move(I,{seek,<<"/staff/">>}).<br>
-10> rocksdb:iterator_move(I,next).<br>
-11> rocksdb:iterator_move(I,next).<br>
-12> rocksdb:iterator_move(I,next).<br>
-13> rocksdb:iterator_move(I,{seek,<<"/users/">>}).<br>
-14> rocksdb:iterator_move(I,next).<br>
-15> rocksdb:iterator_move(I,next).<br>
-16> rocksdb:iterator_move(I,next).<br>
-      </p>
+
+        <figure>
+        <code>
+1> {ok,Ref} = rocksdb:open("hey",[{create_if_missing,true}]).
+2> rocksdb:put(Ref, <<"/users/1">>,<<"maxim">>,[{sync,true}]).
+3> rocksdb:put(Ref, <<"/users/2">>,<<"doxtop">>,[{sync,true}]).
+4> rocksdb:put(Ref, <<"/users/3">>,<<"vlad">>,[{sync,true}]).
+5> rocksdb:put(Ref, <<"/staff/1">>,<<"vlad">>,[{sync,true}]).
+6> rocksdb:put(Ref, <<"/staff/2">>,<<"maxim">>,[{sync,true}]).
+7> rocksdb:put(Ref, <<"/staff/3">>,<<"doxtop">>,[{sync,true}]).
+8> {ok,I} = rocksdb:iterator(Ref,[]).
+9> rocksdb:iterator_move(I,{seek,<<"/staff/">>}).
+10> rocksdb:iterator_move(I,next).
+11> rocksdb:iterator_move(I,next).
+12> rocksdb:iterator_move(I,next).
+13> rocksdb:iterator_move(I,{seek,<<"/users/">>}).
+14> rocksdb:iterator_move(I,next).
+15> rocksdb:iterator_move(I,next).
+16> rocksdb:iterator_move(I,next).
+        </code>
+        </figure>
 
       <h3>KVX REPL</h3>
         <p>Теперь, что бы сделать тоже самое на KVX, вы можете сделать просто:</p>
 
-        <p>
-1> kvx:ver().<br>
-{version,"KVX ROCKSDB"}<br>
-2> rr(kvx).<br>
-[emails,id_seq,it,iter,kvx,reader,schema,table,writer]<br>
-3> kvx:join().<br>
-ok<br>
-4> kvx:put(#emails{id=1,email="maxim"}).<br>
-5> kvx:put(#emails{id=2,email="doxtop"}).<br>
-6> kvx:put(#writer{id=2}).<br>
-7> kvx:put(#writer{id=1}).<br>
-8> kvx:all(writer).<br>
-[#writer{id = 1,count = 0,cache = [],args = [],first = []},<br>
- #writer{id = 2,count = 0,cache = [],args = [],first = []}]<br>
-9> kvx:all(emails).<br>
-[#emails{id = 1,next = [],prev = [],email = "maxim"},<br>
- #emails{id = 2,next = [],prev = [],email = "doxtop"}]<br>
+        <figure>
+        <code>
+1> kvx:ver().
+{version,"KVX ROCKSDB"}
+2> rr(kvx).
+[emails,id_seq,it,iter,kvx,reader,schema,table,writer]
+3> kvx:join().
+ok
+4> kvx:put(#emails{id=1,email="maxim"}).
+5> kvx:put(#emails{id=2,email="doxtop"}).
+6> kvx:put(#writer{id=2}).
+7> kvx:put(#writer{id=1}).
+8> kvx:all(writer).
+[#writer{id = 1,count = 0,cache = [],args = [],first = []},
+ #writer{id = 2,count = 0,cache = [],args = [],first = []}]
+9> kvx:all(emails).
+[#emails{id = 1,next = [],prev = [],email = "maxim"},
+ #emails{id = 2,next = [],prev = [],email = "doxtop"}]
 
-10> kvx:add(#writer{id=chain,args=#emails{email="maxim@synrc.com"}}).<br>
-11> kvx:add(#writer{id=chain,args=#emails{email="vlad@synrc.com"}}).<br>
-12> kvx:add(#writer{id=chain,args=#emails{email="doxtop@synrc.com"}}).<br>
-13> kvx:all(chain).<br>
+10> kvx:add(#writer{id=chain,args=#emails{email="maxim@synrc.com"}}).
+11> kvx:add(#writer{id=chain,args=#emails{email="vlad@synrc.com"}}).
+12> kvx:add(#writer{id=chain,args=#emails{email="doxtop@synrc.com"}}).
+13> kvx:all(chain).
 [#emails{id = 1555244691729330000,next = [],prev = [],
-         email = "maxim@synrc.com"},<br>
+         email = "maxim@synrc.com"},
  #emails{id = 1555244699905648000,next = [],prev = [],
-         email = "doxtop@synrc.com"},<br>
+         email = "doxtop@synrc.com"},
  #emails{id = 1555244696660271000,next = [],prev = [],
          email = "vlad@synrc.com"}]
-         </p>
+        </code>
+        </figure>
 
         <p>Единственный тест на стримы, который проходит:</p>
 
-        <p>
-> kvx:check().<br>
+        <figure>
+        <code>
+> kvx:check().
 ok
-      </p>
+        </code>
+        </figure>
+
       <h3>Документация</h3>
+
        <p>Надеюсь сделать эту рубрику в release notes официальной и регулярной,
           к сожалению, если не брать во внимание man страницы для модулей драйверов,
           то остается всего два модуля для которых нужна документация — это <a href="https://kvx.n2o.space/man/kvx.htm">kvx</a> и <a href="https://kvx.n2o.space/man/kvx_stream.htm">kvx_stream</a>.
@@ -195,14 +204,17 @@ ok
           Сделал историю таких страниц в README.md.</p>
 
       <h3>В заключение</h3>
+
       <p>Репозиторий (который депендит медленно-компилирующийся <a href="https://gitlab.com/barrel-db/erlang-rocksdb">rocksdb NIF драйвер</a>
          от Бенуа Кисенау, <a href="https://github.com/Vonmo/rocker">Rust-версию Rocker</a> от Максима Молчанова решил отложить,
          слишком часто раст обновляется, нельзя зафризиться).
          сразу включеет конфигурационный файл для rocksdb:</p>
 
-         <p>— <a href="https://github.com/voxoz/kv">voxoz/kv</a><br></p>
+         <p>— <a href="https://github.com/voxoz/kv">voxoz/kv</a></p>
+
       <p>P.S. Встраивание в BTree можно применять не только в таких базах как rocksdb,
          но и для mnesia и для любых баз вообще.</p>
+
       <p>P.P.S. Можно также использовать rocksdb как драйвер для мнезиии (написаный
          Ульфом Вигером для проекта Аэтернити), или скорее вид таблицы rocksdb_copies —
          <a href="https://github.com/aeternity/mnesia_rocksdb">mnesia_rocksdb</a>.</p>
