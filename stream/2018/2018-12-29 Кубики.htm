@@ -101,7 +101,7 @@
         <p> Синтаксис кубика настолько простой, что его BNF нотацию
             я могу привести на 16 строчек, следите за руками:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
    sys := [ sides ]              side := (id=0)->exp+(id=1)->exp
   form := form\/f1+f1+f2        sides := #empty+cos+side
    cos := side,side+side,cos      mod := module id where imps dec
@@ -119,7 +119,7 @@
    exp := cotel*exp+cotel->exp+exp$\rightarrow$exp+(exp)+id
           (exp,exp)+\cotele->exp+split cobrs+exp.1+exp.2+
           <ids>exp+exp@form+app+u2 exp exp sys+u1 exp sys
-        </font></p>
+        </code></figure>
 
         <p> В нем кроме индуктивных типов, которые расширены равенствами нет больше ничего,
             даже сплиты обязательно в том же порядке указывать, нет рекордов, зато есть
@@ -132,19 +132,19 @@
             Мы же в этой статье попытаемся записать соединения через другие примитивы,
             так это аксиомы только в кубике:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
  connectionOr (A: U) (a b: A) (p: Path A a b)
    : PathP (&lt;x&gt; Path A (p @ x) b) p (&lt;_&gt; b)
    = &lt;y x&gt; p @ (x \/ y)
-        </font></p>
+        </code></figure>
 
             <p>Тут показана просто синонимическая типизация примитивов \/ и /\.</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
  connectionAnd (A: U) (a b: A) (p: Path A a b)
    : PathP (&lt;x&gt; Path A a (p @ x)) (&lt;_&gt; a) p
    = &lt;x y&gt; p @ (x /\ y)
-        </font></p>
+        </code></figure>
 
         <p> Так как кубическая система типов Агды была портом из cubicaltt и Мортберг
             является офиицальным мейнтейнером либы agda/cubical, то в ней соединения
@@ -181,7 +181,7 @@
             выразить их через coe (используется синтаксис Arend).
             В раннем Arend пейпере meet называется squeeze.</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
  \func meet (i j : I)
    => \let | p1 => \lam i j =>
                    (coe (\lam x => left = x) (path (\lam _ => left)) j @ i)
@@ -191,7 +191,7 @@
 
  \func connAnd {A : \Type} {a b : A} (p : a = b) (i : I) : a = p @ i
    => path (\lam j => p @ meet i j)
-        </font></p>
+        </code></figure>
 
         <h3>yacctt/RedPRL</h3>
 
@@ -199,7 +199,7 @@
             действие системы типов RedPRL в своем синтаксисе cubicaltt,
             который я дал формально в виде BNF выше.</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
  connAnd (A : U) (a b : A) (p : Path A a b) :
    PathP (&lt;i&gt; Path A a (p @ i)) (&lt;_&gt; a) p =
    &lt;i j&gt; hcom 0->1 A
@@ -208,13 +208,13 @@
    , (j=0) -> &lt;k&gt; hcom 1->0 A [ (k=0) -> &lt;_&gt; a, (k=1) -> p ] (p @ k)
    , (j=1) -> &lt;k&gt; hcom 1->i A [ (k=0) -> &lt;_&gt; a, (k=1) -> p ] (p @ k)
    ] a
-        </font></p>
+        </code></figure>
 
         <p>Что мы можем сказать смотря на такой код? Во-первых мы можем сказать
            что в этой системе типов код поддается роботизации, а значит хорошо
            подходит для перебора и автомаического поиска пруфтермов.</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
  theorem Connection/And(#l:lvl) : (-> [ty : (U #l hcom)] [a b : ty]
          [p : (path [_] ty a b)] (path [i] (path [_] ty a (@ p i)) (abs [_] a) p))
     by { lam ty a b p => abs i j => `(hcom 0~>1 ty a
@@ -223,7 +223,7 @@
          [j=0 [k] (hcom 1~>0 ty (@ p k) [k=0 [_] a] [k=1 [l] (@ p l)])]
          [j=1 [k] (hcom 1~>i ty (@ p k) [k=0 [_] a] [k=1 [l] (@ p l)])]
          [i=j [k] (hcom 1~>i ty (@ p k) [k=0 [_] a] [k=1 [l] (@ p l)])]) }.
-        </font></p>
+        </code></figure>
 
         <h3>redtt</h3>
 
@@ -233,7 +233,7 @@
            Тут в стиле AUTOMATH для более крутой лямбды используется [].
            Читайте <a href="../2016/2016-08-09%20Американская%20и%20Британская%20школы%20Лямбды.htm">статью про лямбда синтаксисы</a>.</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
  def connection/and
      (A : type)
      (p : 𝕀 → A)
@@ -241,7 +241,7 @@
    = λ i j → let face (l k : 𝕀) : A = comp 0 l (p 0) [ | k=0 → refl | k=1 → p ]
   in comp 0 1 (p 0) [ | i=0 | j=0 → refl
                       | i=1 → face j | j=1 → face i | i=j → face i ]
-        </font></p>
+        </code></figure>
 
         <h3>Lean</h3>
 
@@ -251,7 +251,7 @@
             в систему типов Lean (где фактортипы поддерживаются на вычислительном
             уровне, работает индукция). Вторая &mdash; стремительное начало Agda порта.</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
  def interval_cube : ℕ → Type
      | 0 := I
      | (n + 1) := interval_cube n × I
@@ -273,7 +273,7 @@
 
  def conn_and {α : Sort u} {a b : α} (p : a ⇝ b) :
      LineP (λ i, a ⇝ p # i) := λ i, &lt;j&gt; p # i ∧ j
-        </font></p>
+        </code></figure>
 
         <h3>Эпилог</h3>
 
