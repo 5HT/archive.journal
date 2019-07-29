@@ -110,7 +110,7 @@
            покажем вам, как можно вместо ERP сущности IBAN счет, можно ввести понятия бесконечного процесса,
            как банковского счета, где каждый аменд или шаг выполнения — это транзакция, которая либо переводит
            между аккаунтами банка либо задействует коннекторы и шлюзы в фиат и биткоины.</p>
-        <figure><img src="https://bpe.n2o.space/doc/images/diagram-3.svg"></figure>
+        <figure><img src="https://bpe.n2o.space/man/img/diagram-3.svg"></figure>
         <p>Такая фундаментилизация бизнес-процессов хорошее упражнение для энтепрайз долбоебов, которые
            не знают с чего начинать ассесмент. Начинать надо с самого главного, того процесса который
            приносит бабки и где спрятан весь биллинг. Все остальное над этим процессом — это его объязка:
@@ -125,27 +125,47 @@
            рекордов описаных в type spec. Как же пользоваться и проверить что всё работает?
            Смотрите как проверить прямо в браузере. Заходите на <a href="https://bank.n2o.space/login.htm">bank.n2o.space</a>
            или <a href="https://bpe.n2o.space/login.htm">bpe.n2o.space</a> и открывайте JavaScript консоль:</p>
-         <p>> $io.do = function(r) { console.log(decode(r)); };</P>
+         <figure><code>
+ > $io.do = function(r) { console.log(decode(r)); };
+         </code></figure>
          <p>теперь можете послать инициализирующий маркер, чтоб перерисовать страницу и вызвать NITRO метод event(init).</P>
-         <p>> ws.send('N2O,');</P>
-         <p>{tup: "io", code: "var x = qi('stand'); while (x.firstChild) x.remove…); }
-                               else console.log('Validation Error'); }});};",
-                        data: {tup: "Token", data: "db3b5bc4fd9a59907f12def5c77fb868d5b3
-                           5cb22c9756f182…7d29875bb699ba05c69614e4930da39da127bfb43e698bd10"}}</p>
+         <figure><code>
+ > ws.send('N2O,');
+         </code></figure>
+         <figure><code>
+ {tup: "io",
+  code: "var x = qi('stand'); ... ",
+  data: {tup: "Token",
+         data: "db3b5bc4fd9a59907f12def5c77fb868d5
+                b35cb22c9756f182…7d29875bb699ba05c
+                69614e4930da39da127bfb43e698bd10"}}</code></figure>
+
          <p>Убедитесь в том, что вы создали хотя бы один процесс перед выполнением оперции загрузки процесса #load{id=1}:</P>
-         <p>> ws.send(enc(encode({tup:'load',id:1})));</P>
-         <p>{"tup":"io","data":{"tup":"process","id":1,"container":"feed","feed_id":"process","next":2,
-             "name":"IBAN Account","tasks":[{"tup":"userTask","name":"Init","module":"bpe_account"},
-             {"tup":"userTask","name":"Upload","module":"bpe_account"},{"tup":"userTask","name":"Signatory",
-             "module":"bpe_account"},{"tup":"serviceTask","name":"Payment","module":"bpe_account"},
-             {"tup":"serviceTask","name":"Process","module":"bpe_account"},{"tup":"endEvent","name"
-             :"Final","module":"bpe_account"}],"events":[{"tup":"messageEvent","name":"PaymentReceived"}],
-             "flows":[{"tup":"sequenceFlow","source":"Init","target":"Upload"},{"tup":"sequenceFlow",
-             "source":"Upload","target":"Payment"},{"tup":"sequenceFlow","source":"Payment","target":
-             ["Signatory","Process"]},{"tup":"sequenceFlow","source":"Process","target":["Process",
-             "Final"]},{"tup":"sequenceFlow","source":"Signatory","target":["Process","Final"]}],
-             "docs":[{"0":"tx","tup":"$"}],"task":"Process","started":"nonode@nohost"}}
-         </P>
+         <figure><code>
+ > ws.send(enc(encode({tup:'load',id:1})));
+         </code></figure>
+         <figure><code>
+ {"tup":"io",
+  "data":{"tup":"process",
+          "id":1,
+          "container":"feed",
+          "feed_id":"process",
+          "next":2,
+          "name":"IBAN Account",
+          "tasks":[{"tup":"userTask","name":"Init","module":"bpe_account"},
+                   {"tup":"userTask","name":"Upload","module":"bpe_account"},
+                   {"tup":"userTask","name":"Signatory","module":"bpe_account"},
+                   {"tup":"serviceTask","name":"Payment","module":"bpe_account"},
+                   {"tup":"serviceTask","name":"Process","module":"bpe_account"},
+                   {"tup":"endEvent","name":"Final","module":"bpe_account"}],
+          "events":[{"tup":"messageEvent","name":"PaymentReceived"}],
+          "flows":[{"tup":"sequenceFlow","source":"Init","target":"Upload"},
+                   {"tup":"sequenceFlow","source":"Upload","target":"Payment"},
+                   {"tup":"sequenceFlow","source":"Payment","target":["Signatory","Process"]},
+                   {"tup":"sequenceFlow","source":"Process","target":["Process","Final"]},
+                   {"tup":"sequenceFlow","source":"Signatory","target":["Process","Final"]}],
+           "docs":[{"0":"tx","tup":"$"}],"task":"Process","started":"nonode@nohost"}}
+         </code></figure>
          <p>Кстати обертка N2O протокола вокруг BPE <a href="https://github.com/synrc/bpe/blob/master/src/protos/bpe_n2o.erl#L9-L15">занимает 7 строчек</a>.
             Автоматический маршалинг параметров позволяет нам автоматическую публикацию RPC сервисов по шине,
             как в SOAP и старом добром энтерпрайзе! К микросервис-безумию и GRPC мы тоже готовы, его мы тоже генерируем
