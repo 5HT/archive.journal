@@ -33,7 +33,7 @@
 Пи-калкулус и CHR, штука которая полезна не только для моделирования
 самобалансирующего скедулера но для потокового бизнес роутинга).</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 > ()
 > []
 > {}
@@ -41,12 +41,12 @@
 Ok(Nil)
 Ok(Nil)
 Ok(Lambda(Nil, Nil))
-   </font></p>
+   </code></figure>
 
 <p>Эти Nil могут либо схлопываться, либо рости при встраиваниях. Например [[]] и
 (()) не изменяются при встраиваниях, а {{}} растет:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 > (())
 > [[]]
 > {{}}
@@ -54,12 +54,12 @@ Ok(Lambda(Nil, Nil))
 Ok(Nil)
 Ok(Nil)
 Ok(Lambda(Nil, Lambda(Nil, Nil)))
-   </font></p>
+   </code></figure>
 
 <p>Изменяя способ расстановки скобочек можно догадаться какие основные правила
 создания выражений:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 > ((()))
 > ()()()
 > [][]()
@@ -69,12 +69,12 @@ Ok(Nil)
 Ok(Call(Nil, Call(Nil, Nil)))
 Ok(Call(Nil, Call(Nil, Nil)))
 Ok(Call(Lambda(Nil, Nil), Call(Lambda(Nil, Nil), Lambda(Nil, Nil))))
-   </font></p>
+   </code></figure>
 
 <p>Nil можно вызывать друг у друга в цепочке, отлично. Более общее правило:
 аппликация через пробел в любом ближайшем скобочном контексте всегда одинакова:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 >  1 2 3
 > (1 2 3)
 > [1 2 3]
@@ -93,7 +93,7 @@ Ok(Call(Number(1), Call(Number(2), Call(Number(3), Number(4)))))
 Ok(Call(Call(Call(Number(1), Number(2)), Number(3)), Number(4)))
 Ok(Lambda(Nil, Call(Number(1), Lambda(Nil, Call(Number(2), Lambda(Nil,
 Call(Number(3), Lambda(Nil, Number(4)))))))))
-   </font></p>
+   </code></figure>
 
 <p>Если множество в своем списке-носителе содержит присваивания к именам то такой
 множество трактуется как словарь, если список множества — это просто имена — то
@@ -102,7 +102,7 @@ Call(Number(3), Lambda(Nil, Number(4)))))))))
 Если члены списка словаря просто выражения, то это множество носитель
 параметров. Множества называются M-expressions.</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 > [1;2]
 > function[1;2]
 > [a:1;b:2]
@@ -112,7 +112,7 @@ Ok(Dict(Cons(Number(1), Number(2))))
 Ok(Call(Name("function"), Dict(Cons(Number(1), Number(2)))))
 Ok(Dict(Cons(Adverb(Assign, Name("a"), Number(1)), Adverb(Assign, Name("b"), Number(2)))))
 Ok(Lambda(Cons(Name("x"), Name("y")), Verb(Times, Name("x"), Verb(Plus, Name("y"), Name("x")))))
-   </font></p>
+   </code></figure>
 
 <p>Списки тоже можно конкатенейтить через Semicolon, вообще у Semicolon
 максимальный приоритет и она разделяет все экспрешины. Это в сущности одни и те
@@ -120,7 +120,7 @@ Ok(Lambda(Cons(Name("x"), Name("y")), Verb(Times, Name("x"), Verb(Plus, Name("y"
 абстрактный, и он тоже конвертируется с список но в общем случае может состоять
 из любых K-Cell.</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 > (1;2;3;4)
 > [1;2;3;4]
 >  1 2 3 4
@@ -130,11 +130,11 @@ Ok(List(Cons(Number(1), Cons(Number(2), Cons(Number(3), Number(4))))))
 Ok(Dict(Cons(Number(1), Cons(Number(2), Cons(Number(3), Number(4))))))
      Ok(Call(Number(1), Call(Number(2), Call(Number(3), Number(4)))))
      Ok(Call(Symbol("a"), Call(Symbol("b"), Call(Symbol("c"), Symbol("d")))))
-   </font></p>
+   </code></figure>
 
 <p>У меня получилась BNF нотация на 13 правил. Что скажете? Можно короче, красивее?</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 List:      AST = { "(" ")" => AST::Nil, "(" &lt;l:exprlist> ")" => list(l), };
 Dict:      AST = { "[" "]" => AST::Nil, "[" &lt;l:exprlist> "]" => dict(l), };
 Lambda:    AST = { "{" &lt;m:exprlist> "}"                      => fun(AST::Nil,m),
@@ -159,11 +159,11 @@ Adverbs:   AST = {           &lt;a:adverb>             => adverb(a,AST::Nil,AST:
                              &lt;a:adverb>   <e:expr>  => adverb(a,AST::Nil,e),
                    &lt;l:call>  &lt;a:adverb>   &lt;r:expr>  => adverb(a,l,r),
                    &lt;l:noun>  &lt;a:adverb>   &lt;r:expr>  => adverb(a,l,r), };
-   </font></p>
+   </code></figure>
 
 <p>Терминалы думаю написать на NOM попробовать, чтобы быстрее парсалось.</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 Number:    AST = { &lt;n:r"\d+"> => AST::Number(u64::from_str(n).unwrap()), };
 Hexlit:    AST = { <h:r"0x[a-zA-Z\d]+"> => AST::Number(u64::from_str_radix(&h[2..], 16).unwrap()), };
 Bool:      AST = { &lt;b:r"[01]+b"> => AST::Number(u64::from_str_radix(&b[0..b.len()-1], 2).unwrap()), };
@@ -173,7 +173,7 @@ Adverb: Adverb = { &lt;a:r"[\x27:\x5C\x2F]:?"> => Adverb::from_str(a).unwrap(), 
 Verb:     Verb = { &lt;v:r"[+\x2D*$%!&|<>=~,^#_?@.]"> => Verb::from_str(v).unwrap(), };
 Ioverb:    AST = { &lt;i:r"\d+:"> => AST::Ioverb(String::from(i),Box::new(AST::Nil)), };
 Sequence:  AST = { &lt;s:r"\x22(\\.|[^\x5C\x22])*\x22"> => AST::Sequence(String::from(&s[1..s.len()-1])), };
-   </font></p>
+   </code></figure>
 
 <p>Этот парсер парсает все исходники К и Q которые мне попадались на глаза,
 включая диалекты типа Kona (K4) и oK.js (K5). Это около 128КБ, включая саму

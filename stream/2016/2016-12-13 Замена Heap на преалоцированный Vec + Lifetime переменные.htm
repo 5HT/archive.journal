@@ -22,7 +22,7 @@
 раз). В вопросе скорости создания контекстов мы выебали Kx Systems, Erlang и
 Python. На этом можно поставить пока точку.</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 Lang    avg ns of 1M calls
 ------- ------------------
 Rust    0
@@ -32,7 +32,7 @@ Erlang  10699/1806/436/9
 Python  537
 K       899
 LuaJIT  33856
-    </font></p>
+    </code></figure>
 
 <p>Мы поменяли в нашем интерпретаторе все Box Heap аллокации на преалоцированный
 ручной хип с вектором указателей + лайфтайм по всему коду. Т.е. даже Box
@@ -43,7 +43,7 @@ LuaJIT  33856
 
 <p>Старое дерево с Heap указателями</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 pub enum Cont {
     Expressions(AST, Tape),
     Lambda(Code, AST, AST, Tape),
@@ -60,11 +60,11 @@ pub struct Tape {
     env: Rc<RefCell<Environment>>,
     cont: Box<cont>,
 }
-    </font></p>
+    </code></figure>
 
 <p>Новое дерево только с абстрактными ссылками и переменными времени жизни</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 pub enum Cont<'a> {
     Expressions(&'a AST<'ast>, &'a Cont<'a>),
     Lambda(Code, &'a AST<'a>, &'a AST<'a>, &'a Cont<'a>),
@@ -81,7 +81,7 @@ pub struct Interpreter<'a> {
     arena: Arena<'a>,
     env: Environment<'a>,
 }
-    </font></p>
+    </code></figure>
 
 <p>Environment в наивном прототипе представлен в виде HashMap, который как
 известно неподходит там где нужна скорость, зато понятно — у каждой кложи своя

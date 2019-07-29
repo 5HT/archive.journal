@@ -26,10 +26,10 @@
 Но вот начиная вроде с PHP, или откуда, появилась какая-то жуткая мода на эти
 темплейты:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 &lt;ul> $forall Entity articleId article <- articles
 &lt;li> &lt;a href=@{ArticleR articleId} > #{articleTitle article}
-    </font></p>
+    </code></figure>
 
 <p>Вот это пример темплейта из Yesod. Ну гавно же, на такое смотреть, истинный
 неотличимый от ПХП код. Я уже молчу про все эти ASP.NET, PHP, и прочие
@@ -43,7 +43,7 @@
 которым знакомо чувство прекрасного. На код таких людей смотришь и понимаешь,
 что они не пойду работать на Java за еду никогда:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
  template :: Text -> Html -> Response
  template title body = toResponse $
    H.html $ do
@@ -52,11 +52,11 @@
      H.body $ do
        body
        p $ a ! href "/" $ "back home"
-    </font></p>
+    </code></figure>
 
 <p>Красиво, чётенько. Вот например божественный чат на Erlang с Кометом, Аяксом, ХТМЛем:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 body() -> wf:comet_global(fun() -> chat_loop() end, chatroom),
                [#panel { id=chatHistory, class=chat_history },
                 #textbox { id=messageTextBox, next=sendButton },
@@ -78,16 +78,16 @@ chat_loop() ->
             wf:flush()
     end,
     chat_loop().
-    </font></p>
+    </code></figure>
 
 <p>Ну красота же. Нет блядь подавай им:</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 &lt;form id="form1" runat="server">
         The current time is: &lt;asp:Label runat="server" id="lbl1" />
    &lt;/form>
     &lt;/font>&lt;/p>
-    </font></p>
+    </code></figure>
 
 <p>Апогей такого подхода, это дебаггеры, который уже понимают и ActionScript и
 MXML и дебагер ходит по XML как по родному коду. Есть даже чуваки, которые на

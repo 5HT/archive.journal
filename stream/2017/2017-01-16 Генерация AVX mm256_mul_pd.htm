@@ -18,7 +18,7 @@
     <section>
         <h3>Генерация AVX mm256_mul_pd</h3>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 #![feature(target_feature)]
 
 // $ rustc -C opt-level=3 --emit asm intint.rs
@@ -51,7 +51,7 @@ fn main() {
 $ rustc -C opt-level=3 -Z force-overflow-checks=no --emit asm intint.rs
 maxim@kudzu:~/depot/voxoz/kernel/tests$ cat intint.s | grep vmul
  vmulsd (%rdi,%rax,8), %xmm0, %xmm0
-</font></p>
+</code></figure>
 
 <p>мы видим что сгенерировалась vmulsp (%rdi,%rax,8), %xmm0, %xmm0
 но мы точно знаем, что в этом случае возможно применение инструкции vmulpd

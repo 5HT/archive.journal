@@ -40,14 +40,14 @@ Rc&lt;RefCell&lt;Environment>>). Если сказать о контекстах
 контексты соответствуют Сигма типу и являются свидетелями контекстуальной
 полноты.</p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 pub struct Environment {
     parent: Option&lt;Rc&lt;RefCell&lt;Environment>>>,
     values: HashMap&lt;String, AST>,
 }
-            </font></p>
+            </code></figure>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 impl Environment {
 
     pub fn new_root() -> Result&lt;Rc&lt;RefCell&lt;Environment>>, Error> {
@@ -77,15 +77,15 @@ impl Environment {
             }
         }
     }
-            </font></p>
+            </code></figure>
 
 <p>Интерпретатор хранит рутовый контекст.</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 pub struct Interpreter {
     root: Rc&lt;RefCell&lt;Environment>>,
 }
-            </font></p>
+            </code></figure>
 
 <p>Отложенные вычисления — используются нами для проскакивания цепочки AST, и
 форсинг когда достигли определенного события. Обычно во всех базовых
@@ -103,13 +103,13 @@ Force, причем все дефер обычно заканчиваются с
 считать. Если бы этот интерпретатор был клаудом, он бы чарджил и билил только
 форсы.</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 pub enum Trampoline {
     Defer(AST, Rc&lt;RefCell&lt;Environment>>, Continuation),
     Force(AST, Continuation),
     Return(AST),
 }
-            </font></p>
+            </code></figure>
 
 <p>Протокол исполнения: Лямбда исчисление + синтаксические расширения — ядро
 интерпретатора (Assign, Cond, Lambda, Call) которое создает контексты, делает
@@ -126,7 +126,7 @@ call-by-name причмокивая. Тут хочется быть максим
 функциоальной полноты нашей системы. Если добавить сюда Пи тип, мы сможем
 превратить интерпретатор в теорем прувер? :-)<p>
 
-   <p><font face="monospace" size=4 style="white-space: pre;">
+   <figure><code>
 pub enum Continuation {
     EvaluateExpressions(AST, Rc&lt;RefCell&lt;Environment>>, Box&lt;Continuation>),
     EvaluateAssign(AST, Rc&lt;RefCell&lt;Environment>>, Box&lt;Continuation>),
@@ -136,13 +136,13 @@ pub enum Continuation {
     EvaluateAdverb(AST, AST, Rc&lt;RefCell&lt;Environment>>, Box&lt;Continuation>),
     Return,
 }
-            </font></p>
+            </code></figure>
 
 <p>В CPS интерпретаторе самое главное — это цикл, который крутит AST дерево и
 создает отложенные вычисление, периодически форся вычисления. Обычно это
 проистодит в стиле Defer-Force, но все зависит от программ.</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 fn process(exprs: AST, env: Rc&lt;RefCell&lt;Environment>>) -> Result<AST,Error> {
     if exprs.len() == 0 {
         return Ok(AST::Nil);
@@ -156,11 +156,11 @@ fn process(exprs: AST, env: Rc&lt;RefCell&lt;Environment>>) -> Result<AST,Error>
         }
     }
 }
-            </font></p>
+            </code></figure>
 
 <p>handle_defer выглядит примерно так:</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 fn handle_defer(a: AST, env: Rc&lt;RefCell&lt;Environment>>, k: Continuation) -> Result&lt;Trampoline,Error> {
     match a {
         AST::Assign(box name, box body) => {
@@ -177,11 +177,11 @@ fn handle_defer(a: AST, env: Rc&lt;RefCell&lt;Environment>>, k: Continuation) ->
         x => k.run(x),
     }
 }
-            </font></p>
+            </code></figure>
 
 <p>evaluate_function разворачивает Name и деферит лямбду.</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 fn evaluate_function(fun: AST,
                      env: Rc&lt;RefCell&lt;Environment>>,
                      args: AST,
@@ -210,11 +210,11 @@ fn evaluate_function(fun: AST,
         }
     }
 }
-            </font></p>
+            </code></figure>
 
 <p>evaluate_expressions создает один отложеный такт интерпретатора, типа R(1).</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 fn evaluate_expressions(exprs: AST,
                         env: Rc&lt;RefCell&lt;Environment>>,
                         k: Box&lt;Continuation>)
@@ -233,12 +233,12 @@ fn evaluate_expressions(exprs: AST,
         }
     }
 }
-            </font></p>
+            </code></figure>
 
 <p>Обработчики Лямбда исчисления простые, эвалуатор ложит и кладет в контексты,
 сравниватель сранивает, биндинг переменной биндит переменную.</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 impl Continuation {
     pub fn run(self, val: AST) -> Result&lt;Trampoline,Error> {
 
@@ -282,27 +282,27 @@ impl Continuation {
         }
     }
 }
-            </font></p>
+            </code></figure>
 
 <p>Вот и весь интерпретатор (кроме правил для Verb и Adverb, там умножение и
 вычитание необходимые для факториала и Cond вообще говоря тоже, который в K
 языке повешен на Cast). Традиционно бенчмарки против Erlang написанном на С.</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 1> Fac = fun Factorial(X) -> case X of 1 -> 1; _ -> X * Factorial(X-1) end end.
 #fun<1131414>
 2> Fac(5).
 120
 3> timer:tc(fun() -> Fac(5) end).
 {91,120}
-            </font></p>
+            </code></figure>
 
 <p>Интерпретатор написанном на Rust:</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 "fac:{[x]$[x=1;1;x*fac[x-1]]};fac[5]"
 test tests::fac ... bench:      16,850 ns/iter (+/- 1,169)
-            </font></p>
+            </code></figure>
 
 <p>91 микросекунд (Erlang) против 17 микросекунд (O-CPS INTERPRETER)</p>
 

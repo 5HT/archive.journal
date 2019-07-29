@@ -23,7 +23,7 @@
 <p>1. Синтаксис. Модифицированный lalrpop (убраны типы-аттрибуты и несущественные
 элементы, отсутствуют терминалы, можно найти в предыдущих постах).</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 E: V | A | C
 NC: ";" = [] | ";" m:NL = m
 FC: ";" = [] | ";" m:FL = m
@@ -40,11 +40,11 @@ D: "[" "]" = [] | "["  l:EL "]" = Dict l
 L: "(" ")" = [] | "([" c:NL "]" m:FL ")" = Table c m | "(" l:EL ")" = List l
 F: "{" "}" = Lambda [] [] [] | "{[" c:NL "]" m:EL "}" = Lambda [] c m
                              | "{" m:EL "}" = Lambda [] [] m
-</font></p>
+</code></figure>
 
 <p>2. Порт Rust в System F (убраны лайфтаймы).</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 lazy n (Assign n b)               e k = D n b (ContAssign n k)
      n (Cond v a l)               e k = D n v (ContCond l r k)
      n (List l)                   e k = eve n l e k
@@ -76,7 +76,7 @@ cont n (Dict v) e (ContCall c k)          = evf n c v e k
      n x        e (ContExpr (Cons a d) k) = eve n (Cons a d) k
      n x        e (ContExpr r k)          = cont n x k
      n x        e  ContRet                = emr x e k
-</font></p>
+</code></figure>
 
     </section>
 </main>

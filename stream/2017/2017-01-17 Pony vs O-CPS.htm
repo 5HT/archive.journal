@@ -18,7 +18,7 @@
     <section>
         <h3>Pony vs O-CPS</h3>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 $ cat main.pony
 use "time"
 actor Main
@@ -52,11 +52,11 @@ $ ponyc
 $ ./voxoz
 Ackerman: 80332ns, 125
 Factorial: 291ns, 120
-</font></p>
+</code></figure>
 
 <p>В то время как у нас:</P>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 #[bench]
 fn fac_rec&lt;'a>(b: &'a mut Bencher) {
     let h = handle::new(Interpreter::new().unwrap());
@@ -87,7 +87,7 @@ tring());
 
 test akkerman_k        ... bench:         442 ns/iter (+/- 37)
 test fac_rec           ... bench:         195 ns/iter (+/- 55)
-</font></p>
+</code></figure>
 
 </section>
 

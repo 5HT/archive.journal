@@ -35,7 +35,7 @@ MMX инструкции). Сегодня мы покажем, что в наш�
 так как там это имеет смысл и реально сразу помогает для векторизации. Мы же
 напишем на расте и так и так и проверим:</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 #![feature(step_by)]
 
 pub fn lpa(sz: usize, iter_num: usize, ) -> usize {
@@ -87,11 +87,11 @@ $ time ./main-lpa
 real    0m0.107s
 user    0m0.096s
 sys     0m0.012s
-  </font></p>
+  </code></figure>
 
 <p>Теперь сишечка:</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 #include &lt;stdint.h>
 #include &lt;vector>
 #include &lt;iostream>
@@ -130,11 +130,11 @@ $ time ./main-c
 real    0m0.129s
 user    0m0.100s
 sys     0m0.028s
-  </font></p>
+  </code></figure>
 
 <p>Теперь божественная "неоптимизированная" ГеАшЦешечка</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 {-# LANGUAGE ParallelListComp #-}
 import Control.Monad
 
@@ -156,12 +156,12 @@ $ time ./main-hs
 real    0m0.115s
 user    0m0.108s
 sys     0m0.004s
-  </font></p>
+  </code></figure>
 
 
 <p>По требованию трудящихся на арену выходит божественный ЛуаДЖИТик:</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 ffi=require('ffi')
 jit.opt.start("hotloop=5", "loopunroll=100", "instunroll=100")
 jit.flush()
@@ -195,7 +195,7 @@ $ time luajit lpa.lua
 real    0m0.099s
 user    0m0.032s
 sys     0m0.064s
-  </font></p>
+  </code></figure>
 
 <p>Swift и Go -- ниже дна (С++). Поэтому эту хуйню даже ставить на машину не буду.
 Свифт лично мне нравится и желаю ему взросления, но его не будет так как Apple
@@ -209,7 +209,7 @@ sys     0m0.064s
 
 <p>Раздача шампанского:</p>
 
-            <p><font face="monospace" size=4 style="white-space: pre;">
+            <figure><code>
 Lang             ms
 --------------- ---
 Rust Iterators   55
@@ -217,7 +217,7 @@ LuaJIT 2.1       99
 Rust Arrays     107
 GHC             115
 C++             119
-  </font></p>
+  </code></figure>
 
 <p>С Новым Годом, Сережа и Лев!<br>
 Всем желаю успешного байтойобства и глубокого аппликативного фьюжена в 2017!</P>
