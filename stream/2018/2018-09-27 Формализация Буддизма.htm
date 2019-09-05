@@ -6,12 +6,13 @@
     <meta name="description" content="" />
     <meta name="author" content="Maxim Sokhatsky" />
     <title>2018-09-27</title>
-    <link rel="stylesheet" href="../../blank.css?v=4" />
+    <link rel="stylesheet" href="https://n2o.dev/blank.css" />
+    <link rel="stylesheet" href="../../journal.css" />
 </head>
 <body>
 <nav>
     <a href='../../index.html'>5HT</a>
-    <a href='../index.html'>STREAM</a>
+    <a href='../index.html'>TOP</a>
     <a href='#'>2018-09-27</a>
 </nav>
 <main>
@@ -21,7 +22,7 @@
             вам может показаться, что это канал по формальной математике, а не формальной
             философии. Я же считаю, что если формальная философия не опирается на
             формальную математику, то грош цена такой формальной философии.</p>
-        <figure><code>
+   <figure><code>
  module buddhism where
  import path
         </code></figure>
@@ -42,7 +43,7 @@
             o принадлежит концепту, только если сам концепт, параметризированный этим
             объектом, населен p(o) : U (где p : concept o).</p>
 
-        <figure><code>
+   <figure><code>
  concept (o: U): U
    = o -> U
         </code></figure>
@@ -53,7 +54,7 @@
             недвойственность может быть представлена, как равенство между всеми
             расслоениями (предекатами над объектами).</p>
 
-        <figure><code>
+   <figure><code>
  nondual (o: U) (p: concept o): U
    = (x y: o) -> Path U (p x) (p y)
         </code></figure>
@@ -64,7 +65,7 @@
             это условие, сжимающее все объекты в точку, или стягиваемое пространство,
             вершина конуса мандалы MLTT, или, другими словами, пустотность всех феноменов.</p>
 
-        <figure><code>
+   <figure><code>
  allpaths (o: U): U
    = (x y: o) -> Path o x y
         </code></figure>
@@ -79,7 +80,7 @@
             пространствами путей: (p x) =_U (p y) и x =_o y. Воспользуемся приведением пути
             в стрелку (coerce) и конгруэнтностью (cong) из базовой библиотеки.</p>
 
-        <figure><code>
+   <figure><code>
  forward (o:U): ((p: concept o) -> nondual o p) -> allpaths o
    = \(nd: (p: concept o) -> nondual o p) (a b: o) ->
       coerce (Path o a a) (Path o a b) (nd (\(z:o)->Path o a z) a b) (refl o a)
@@ -91,7 +92,9 @@
         <p> Как видите, теоремка о пустотности всех феноменов получилась на пару строчек,
             которые демонстрируют: 1) основы формальной философии и быстрый вкат; 2)
             хороший пример к первой главе HoTT на пространство путей и модуль path.</p>
-        <hr>
+        <br><br>
+            <center>&dot;</center>
+            <br><br>
         <p>[1]. Kuen-Bang Hou (Favonia), 2017, Higher-Dimensional Types
                 in the Mechanization of Homotopy Theory
                 <a href="https://favonia.org/files/thesis.pdf">https://favonia.org/files/thesis.pdf</a></p>

@@ -1,0 +1,189 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2016-11-15</title>
+    <link rel="stylesheet" href="https://n2o.dev/blank.css" />
+    <link rel="stylesheet" href="../../journal.css" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2016-11-15</a>
+</nav>
+<main>
+    <section>
+        <h3>О-CPS Интерпретатор</h3>
+
+<p>Немного о том, как я написал парсер языка О. Хотя NETCH80 и ругает у себя в
+посте язык К справедливо, хочу попытаться зафиксировать основные правила
+синтаксиса и привнести некоторый порядок в язык, предоставив формальную нотацию
+для LR парсеров. Имплементация прототипа делалась на lalrpop — это нетабличный
+однопроходной LR парсер который поставляется с голимым регэксп токенайзером.
+Токенайзер вместо регекспов хочется кастомный на NOM, но руки не доходят.</p>
+
+<p>Существует три вида скобочек: [], (), {} — множества, списки и лямбды. Другими
+словами это M-expressions, S-expressions и Лямбда-калкулус соответственно
+(который в К можно представить как Pi-calculus, так как K-Cell содержит вектор,
+а значит все параметры — это стримы, и если трактовать срабатывание функции на
+появление нового элемента в любом стриме-параметре, то это уже будет
+Пи-калкулус и CHR, штука которая полезна не только для моделирования
+самобалансирующего скедулера но для потокового бизнес роутинга).</p>
+
+   <figure><code>
+> ()
+> []
+> {}
+
+Ok(Nil)
+Ok(Nil)
+Ok(Lambda(Nil, Nil))
+   </code></figure>
+
+<p>Эти Nil могут либо схлопываться, либо рости при встраиваниях. Например [[]] и
+(()) не изменяются при встраиваниях, а {{}} растет:</p>
+
+   <figure><code>
+> (())
+> [[]]
+> {{}}
+
+Ok(Nil)
+Ok(Nil)
+Ok(Lambda(Nil, Lambda(Nil, Nil)))
+   </code></figure>
+
+<p>Изменяя способ расстановки скобочек можно догадаться какие основные правила
+создания выражений:</p>
+
+   <figure><code>
+> ((()))
+> ()()()
+> [][]()
+> {}{}{}
+
+Ok(Nil)
+Ok(Call(Nil, Call(Nil, Nil)))
+Ok(Call(Nil, Call(Nil, Nil)))
+Ok(Call(Lambda(Nil, Nil), Call(Lambda(Nil, Nil), Lambda(Nil, Nil))))
+   </code></figure>
+
+<p>Nil можно вызывать друг у друга в цепочке, отлично. Более общее правило:
+аппликация через пробел в любом ближайшем скобочном контексте всегда одинакова:</p>
+
+   <figure><code>
+>  1 2 3
+> (1 2 3)
+> [1 2 3]
+> {1 2 3}
+> (1(2(3(4))))
+> [1[2[3[4]]]]
+> [[[[1]2]3]4]
+> {1{2{3{4}}}}
+
+Ok(Call(Number(1), Call(Number(2), Number(3))))
+Ok(Call(Number(1), Call(Number(2), Number(3))))
+Ok(Call(Number(1), Call(Number(2), Number(3))))
+Ok(Lambda(Nil, Call(Number(1), Call(Number(2), Number(3)))))
+Ok(Call(Number(1), Call(Number(2), Call(Number(3), Number(4)))))
+Ok(Call(Number(1), Call(Number(2), Call(Number(3), Number(4)))))
+Ok(Call(Call(Call(Number(1), Number(2)), Number(3)), Number(4)))
+Ok(Lambda(Nil, Call(Number(1), Lambda(Nil, Call(Number(2), Lambda(Nil,
+Call(Number(3), Lambda(Nil, Number(4)))))))))
+   </code></figure>
+
+<p>Если множество в своем списке-носителе содержит присваивания к именам то такой
+множество трактуется как словарь, если список множества — это просто имена — то
+это бинд параметр функции {[x;y;z]...}, если параметр множества если функция
+без параметров бинда, то x,y,z трактуются как имена контекста по умолчанию.
+Если члены списка словаря просто выражения, то это множество носитель
+параметров. Множества называются M-expressions.</p>
+
+   <figure><code>
+> [1;2]
+> function[1;2]
+> [a:1;b:2]
+> {[x;y]x*y+x}
+
+Ok(Dict(Cons(Number(1), Number(2))))
+Ok(Call(Name("function"), Dict(Cons(Number(1), Number(2)))))
+Ok(Dict(Cons(Adverb(Assign, Name("a"), Number(1)), Adverb(Assign, Name("b"), Number(2)))))
+Ok(Lambda(Cons(Name("x"), Name("y")), Verb(Times, Name("x"), Verb(Plus, Name("y"), Name("x")))))
+   </code></figure>
+
+<p>Списки тоже можно конкатенейтить через Semicolon, вообще у Semicolon
+максимальный приоритет и она разделяет все экспрешины. Это в сущности одни и те
+же списки, только данные обрамленные конструкторами, а колл-чейн более
+абстрактный, и он тоже конвертируется с список но в общем случае может состоять
+из любых K-Cell.</p>
+
+   <figure><code>
+> (1;2;3;4)
+> [1;2;3;4]
+>  1 2 3 4
+> `a`b`c`d
+
+Ok(List(Cons(Number(1), Cons(Number(2), Cons(Number(3), Number(4))))))
+Ok(Dict(Cons(Number(1), Cons(Number(2), Cons(Number(3), Number(4))))))
+     Ok(Call(Number(1), Call(Number(2), Call(Number(3), Number(4)))))
+     Ok(Call(Symbol("a"), Call(Symbol("b"), Call(Symbol("c"), Symbol("d")))))
+   </code></figure>
+
+<p>У меня получилась BNF нотация на 13 правил. Что скажете? Можно короче, красивее?</p>
+
+   <figure><code>
+List:      AST = { "(" ")" => AST::Nil, "(" &lt;l:exprlist> ")" => list(l), };
+Dict:      AST = { "[" "]" => AST::Nil, "[" &lt;l:exprlist> "]" => dict(l), };
+Lambda:    AST = { "{" &lt;m:exprlist> "}"                      => fun(AST::Nil,m),
+                   "{[" &lt;c:namelist> "]" &lt;m:exprlist> "}"    => fun(c,m),
+                   "{" "}"                                   => fun(AST::Nil,AST::Nil)};
+
+Call:      AST = { &lt;c:noun> &lt;a:callcont>                     => call(c,a), };
+NameList:  AST = { Name, &lt;o:name> &lt;m:namecont>               => cons(o,m), };
+ExprList:  AST = { ExprCont, Expr, &lt;o:expr> &lt;m:exprcont>     => cons(o,m), };
+CallCont:  AST = { Noun, &lt;m:call>                            => m };
+NameCont:  AST = { ";" => AST::Nil, ";" &lt;m:namelist>         => m };
+ExprCont:  AST = { ";" => AST::Nil, ";" &lt;m:exprlist>         => m };
+Noun:      AST = { Name, Number, Hexlit, Bool, Symbol, List, Dict, Sequence, Lambda, Ioverb };
+Expr:      AST = { Noun, Call, Verbs, Adverbs, };
+
+Verbs:     AST = {           &lt;v:verb>               => verb(v,AST::Nil,AST::Nil),
+                             &lt;v:verb>     &lt;r:expr>  => verb(v,AST::Nil,r),
+                   &lt;l:call>  &lt;v:verb>     &lt;r:expr>  => verb(v,l,r),
+                   &lt;l:noun>  &lt;v:verb>     &lt;r:expr>  => verb(v,l,r), };
+
+Adverbs:   AST = {           &lt;a:adverb>             => adverb(a,AST::Nil,AST::Nil),
+                             &lt;a:adverb>   <e:expr>  => adverb(a,AST::Nil,e),
+                   &lt;l:call>  &lt;a:adverb>   &lt;r:expr>  => adverb(a,l,r),
+                   &lt;l:noun>  &lt;a:adverb>   &lt;r:expr>  => adverb(a,l,r), };
+   </code></figure>
+
+<p>Терминалы думаю написать на NOM попробовать, чтобы быстрее парсалось.</p>
+
+   <figure><code>
+Number:    AST = { &lt;n:r"\d+"> => AST::Number(u64::from_str(n).unwrap()), };
+Hexlit:    AST = { <h:r"0x[a-zA-Z\d]+"> => AST::Number(u64::from_str_radix(&h[2..], 16).unwrap()), };
+Bool:      AST = { &lt;b:r"[01]+b"> => AST::Number(u64::from_str_radix(&b[0..b.len()-1], 2).unwrap()), };
+Name:      AST = { &lt;n:r"[a-zA-Z][-a-zA-Z\d]*"> => AST::Name(String::from(n)), };
+Symbol:    AST = { &lt;s:r"`([a-z][a-z0-9]*)?"> => AST::Symbol(String::from(&s[1..s.len()])), };
+Adverb: Adverb = { &lt;a:r"[\x27:\x5C\x2F]:?"> => Adverb::from_str(a).unwrap(), };
+Verb:     Verb = { &lt;v:r"[+\x2D*$%!&|<>=~,^#_?@.]"> => Verb::from_str(v).unwrap(), };
+Ioverb:    AST = { &lt;i:r"\d+:"> => AST::Ioverb(String::from(i),Box::new(AST::Nil)), };
+Sequence:  AST = { &lt;s:r"\x22(\\.|[^\x5C\x22])*\x22"> => AST::Sequence(String::from(&s[1..s.len()-1])), };
+   </code></figure>
+
+<p>Этот парсер парсает все исходники К и Q которые мне попадались на глаза,
+включая диалекты типа Kona (K4) и oK.js (K5). Это около 128КБ, включая саму
+имплементацию Q, каталоги примеров других диалектов и корпоративный
+продакшиновский К код. Принципиальной и абсолютной совестимости я не хочу, но
+максимальное покрытие диалектов и высокая портируемость не помешает.</p>
+
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2016-12-29</title>
+    <link rel="stylesheet" href="https://n2o.dev/blank.css" />
+    <link rel="stylesheet" href="../../journal.css" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2016-12-29</a>
+</nav>
+<main>
+    <section>
+        <h3>Lambda Term Exponential Explosion</h3>
+
+<p>NPONECCOP поставил вопрос и был получен прекрасный ответ который хочется
+процитировать.</p>
+
+            <figure><code>
+q:(nat->nat->nat)->nat->nat->nat = \f:(nat->nat->nat).(\a b:nat.f (f a b) (f a b))
+
+q p => \a b.p (p a b) (p a b)
+
+q (q p) => \c d.q p (q p c d) (q p c d)
+  => \c d.q p (p (p c d) (p c d)) (p (p c d) (p c d))
+  => \c d.p (p [p (p (p c d) (p c d))] [p (p (p c d) (p c d))]) 
+     (p [p (p (p c d) (p c d))] [p (p (p c d) (p c d))])
+
+Section Expand.
+Variable nat:Type.
+Variable p:nat->nat->nat.
+
+Definition q:(nat->nat->nat)->nat->nat->nat :=
+  fun f:(nat->nat->nat) => fun a b:nat => f (f a b) (f a b).
+
+Eval compute in (q p).
+Eval compute in (q (q p)).
+Eval compute in (q (q (q p))).
+(*
+     = fun a b : nat =>
+       p
+         (p
+            (p
+               (p
+                  (p (p (p (p a b) (p a b)) (p (p a b) (p a b)))
+                     (p (p (p a b) (p a b)) (p (p a b) (p a b))))
+                  (p (p (p (p a b) (p a b)) (p (p a b) (p a b)))
+                 =============SKIPPED LOTS OF LINES==========
+                  (p (p (p (p a b) (p a b)) (p (p a b) (p a b)))
+                     (p (p (p a b) (p a b)) (p (p a b) (p a b)))))))
+     : nat -> nat -> nat
+*)
+
+Prelude> q f a b = f (f a b) (f a b)
+Prelude> (q $ q $ q (+)) 1 1
+256
+Prelude> (q $ q $ q $ q (+)) 1 1
+65536
+Prelude> (q $ q $ q $ q $ q (+)) 1 1
+4294967296
+Prelude> (q $ q $ q $ q $ q $ q (+)) 1 1
+18446744073709551616
+Prelude> (q $q $ q $ q $ q $ q $ q (+)) 1 1
+340282366920938463463374607431768211456
+Prelude> (q $ q $ q $ q $ q $ q $ q $ q (+)) 1 1
+115792089237316195423570985008687907853269984665640564039457584007913129639936
+Prelude> (q $ q $ q $ q $ q $ q $ q $ q $ q (+)) 1 1
+13407807929942597099574024998205846127479365820592393377723561443721764030073546
+976801874298166903427690031858186486050853753882811946569946433649006084096
+</code></figure>
+
+
+<p>Это пример терма, который растет экспоненциально при аппликативном порядке бета
+редукции (аксиома subst операционной семантики).</p>
+
+
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
+

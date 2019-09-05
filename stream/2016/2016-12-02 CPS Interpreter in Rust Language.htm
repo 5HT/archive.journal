@@ -1,0 +1,316 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2016-12-02</title>
+    <link rel="stylesheet" href="https://n2o.dev/blank.css" />
+    <link rel="stylesheet" href="../../journal.css" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2016-12-02</a>
+</nav>
+<main>
+    <section>
+        <h3>CPS Interpreter in Rust Language</h3>
+
+<p>Итак, в прошлых постах мы построили парсер диалектов K, а именно: K3, K4, K5 и
+Q. Теперь пришла пора написать CPS интерпретатор, такой который смог бы крутить
+бесконечные циклы лямбдочки быстрее эрланга.</p>
+
+<p>Интерпретатор мы будем строить используя следующий базис понятий
+функционального программирования: Вложенные контексты, Отложенные вычисления и
+Лямбда исчисление.</p>
+
+<p>Вложенные контексты — это наш Environment или Dictionary, когда мы создаем
+дочерний контекст, например при аппликации лямбды, мы линкуем дочерний контекст
+с родителькому, поэтому в имплментациях акссесоров у нас будет рекурсивный Find
+— он не только должен вернуть значение по ключу, но и вернуть контекст в
+котором он это нашел в цепочке контекстов. Значения — это AST (чтобы не плодить
+много типов, мы просто некоторые конструкторы AST объявляем боксами Integer,
+String, Boolean, Float, поэтому в процессе работы интерпретатора он вычислит и
+положит результат в тот же тип AST, в байткоде виртуальной машины — это может
+выглядеть как просто состояние регистров и инструкции для загрузки или выгрузки
+констант), а Контексты — это счетчики ссылок на ячейки (AST,
+Rc&lt;RefCell&lt;Environment>>). Если сказать о контекстах высоко — то вложенные
+контексты соответствуют Сигма типу и являются свидетелями контекстуальной
+полноты.</p>
+
+   <figure><code>
+pub struct Environment {
+    parent: Option&lt;Rc&lt;RefCell&lt;Environment>>>,
+    values: HashMap&lt;String, AST>,
+}
+            </code></figure>
+
+            <figure><code>
+impl Environment {
+
+    pub fn new_root() -> Result&lt;Rc&lt;RefCell&lt;Environment>>, Error> {
+        let mut env = Environment {
+            parent: None,
+            values: HashMap::new(),
+        };
+        Ok(Rc::new(RefCell::new(env)))
+    }
+
+    pub fn new_child(parent: Rc&lt;RefCell&lt;Environment>>) -> Rc&lt;RefCell&lt;Environment>> {
+        let env = Environment {
+            parent: Some(parent),
+            values: HashMap::new(),
+        };
+        Rc::new(RefCell::new(env))
+    }
+
+    pub fn find(&self, key: &String) -> Option<(AST, Rc&lt;RefCell&lt;Environment>>)> {
+        match self.values.get(key) {
+            Some(val) => Some((val.clone(), Rc::new(RefCell::new(self.clone())))),
+            None => {
+                match self.parent {
+                    Some(ref parent) => parent.borrow().find(key),
+                    None => None,
+                }
+            }
+        }
+    }
+            </code></figure>
+
+<p>Интерпретатор хранит рутовый контекст.</p>
+
+            <figure><code>
+pub struct Interpreter {
+    root: Rc&lt;RefCell&lt;Environment>>,
+}
+            </code></figure>
+
+<p>Отложенные вычисления — используются нами для проскакивания цепочки AST, и
+форсинг когда достигли определенного события. Обычно во всех базовых
+функциональных библиотеках (типа PureScript и Elm) называется Lazy Type. У нас
+Lazy параметризирован контекстами и протоколом выполнения — Environment и
+Continuation. Вообще тут мистики никакой нет. Если посмотреть на любое
+выражение — то половина времени тратится на Defer и приблизительно половина на
+Force, причем все дефер обычно заканчиваются сразу парными форсами. Это сделано
+для того, чтобы вечные циклы крутились в нулевом стеке. Что еще можно сказать
+про этот интерпретатор? Я лично хотел добиться от этого интерпретатора
+идиоматичности, чтобы его понимал и прокурор и милиция. Я намеренно в посте
+исключил имплементации обычных выражений + и * чтобы показать суть
+интерпретатора. Так как многие знают что этого уже достаточно для моделирование
+вычислительных вселенных. По крайней мере такты интерпретатора уже можно
+считать. Если бы этот интерпретатор был клаудом, он бы чарджил и билил только
+форсы.</p>
+
+            <figure><code>
+pub enum Trampoline {
+    Defer(AST, Rc&lt;RefCell&lt;Environment>>, Continuation),
+    Force(AST, Continuation),
+    Return(AST),
+}
+            </code></figure>
+
+<p>Протокол исполнения: Лямбда исчисление + синтаксические расширения — ядро
+интерпретатора (Assign, Cond, Lambda, Call) которое создает контексты, делает
+по ним лукапы и биндит переменные при аппликациях. У нас не
+аппликативно-божественный (на subst, как в OM/EXE), а нормально-колхозный
+порядок бета редукции (ALGOL68, LUA, K), зато если поместиться в 32К L1 то
+можно сорвать большой куш, как это делают K и LuaJIT, остальные сосут с
+call-by-name причмокивая. Тут хочется быть максимально расширяемым, чтобы новые
+конструкторы AST ложились на этот протокол отложенных вычислений. Особой
+мистики тут не нужно, можно считать — это управляющим протоколом, вся магия
+будет происходить в векторном DSL, там целые блоки будут транслироваться в Lazy
+структуры итераторы Rust и выполняться в интерпретаторе как единые инструкции,
+для которых определен AST конструктор. Лямбда исчисление является свидетелем
+функциоальной полноты нашей системы. Если добавить сюда Пи тип, мы сможем
+превратить интерпретатор в теорем прувер? :-)<p>
+
+   <figure><code>
+pub enum Continuation {
+    EvaluateExpressions(AST, Rc&lt;RefCell&lt;Environment>>, Box&lt;Continuation>),
+    EvaluateAssign(AST, Rc&lt;RefCell&lt;Environment>>, Box&lt;Continuation>),
+    EvaluateCond(AST, AST, Rc&lt;RefCell&lt;Environment>>, Box&lt;Continuation>),
+    EvaluateFunc(AST, AST, Rc&lt;RefCell&lt;Environment>>, Box&lt;Continuation>),
+    EvaluateVerb(AST, AST, Rc&lt;RefCell&lt;Environment>>, Box&lt;Continuation>),
+    EvaluateAdverb(AST, AST, Rc&lt;RefCell&lt;Environment>>, Box&lt;Continuation>),
+    Return,
+}
+            </code></figure>
+
+<p>В CPS интерпретаторе самое главное — это цикл, который крутит AST дерево и
+создает отложенные вычисление, периодически форся вычисления. Обычно это
+проистодит в стиле Defer-Force, но все зависит от программ.</p>
+
+            <figure><code>
+fn process(exprs: AST, env: Rc&lt;RefCell&lt;Environment>>) -> Result<AST,Error> {
+    if exprs.len() == 0 {
+        return Ok(AST::Nil);
+    }
+    let mut b = try!(evaluate_expressions(exprs, env, Box::new(Continuation::Return)));
+    loop {
+        match b {
+            Trampoline::Defer(a, e, k) => b = try!(handle_defer(a, e, k)),
+            Trampoline::Force(x, k) => b = try!(k.run(x)),
+            Trampoline::Return(a) => return Ok(a),
+        }
+    }
+}
+            </code></figure>
+
+<p>handle_defer выглядит примерно так:</p>
+
+            <figure><code>
+fn handle_defer(a: AST, env: Rc&lt;RefCell&lt;Environment>>, k: Continuation) -> Result&lt;Trampoline,Error> {
+    match a {
+        AST::Assign(box name, box body) => {
+            Ok(Trampoline::Force(body,
+                                 Continuation::Assign(name, env, Box::new(k))))
+        }
+        AST::Call(box callee, box args) => evaluate_function(callee, env, args, k),
+        AST::Name(name) => {
+            match lookup(name, env) {
+                Ok(v) => k.run(v),
+                Err(x) => Err(x),
+            }
+        }
+        x => k.run(x),
+    }
+}
+            </code></figure>
+
+<p>evaluate_function разворачивает Name и деферит лямбду.</p>
+
+            <figure><code>
+fn evaluate_function(fun: AST,
+                     env: Rc&lt;RefCell&lt;Environment>>,
+                     args: AST,
+                     k: Continuation)
+                     -> Result&lt;Trampoline, Error> {
+    match fun {
+        AST::Lambda(box names, box body) => {
+            Ok(Trampoline::Force(body, Continuation::Func(names, args, env, Box::new(k))))
+        }
+        AST::Name(s) => {
+            match env.borrow().find(&s) {
+                Some((v, x)) => evaluate_function(v, x, args, k),
+                None => {
+                    Err(Error::EvalError {
+                        desc: "Function Name in all Contexts".to_string(),
+                        ast: AST::Name(s),
+                    })
+                }
+            }
+        }
+        x => {
+            Err(Error::EvalError {
+                desc: "Call Error".to_string(),
+                ast: x,
+            })
+        }
+    }
+}
+            </code></figure>
+
+<p>evaluate_expressions создает один отложеный такт интерпретатора, типа R(1).</p>
+
+            <figure><code>
+fn evaluate_expressions(exprs: AST,
+                        env: Rc&lt;RefCell&lt;Environment>>,
+                        k: Box&lt;Continuation>)
+                        -> Result&lt;Trampoline,Error> {
+    match exprs.shift() {
+        Some((car, cdr)) => {
+            Ok(Trampoline::Defer(car,
+                                 env.clone(),
+                                 Continuation::EvaluateExpressions(cdr, env, k)))
+        }
+        None => {
+            Err(Error::EvalError {
+                desc: "Empty list".to_string(),
+                ast: AST::Nil,
+            })
+        }
+    }
+}
+            </code></figure>
+
+<p>Обработчики Лямбда исчисления простые, эвалуатор ложит и кладет в контексты,
+сравниватель сранивает, биндинг переменной биндит переменную.</p>
+
+            <figure><code>
+impl Continuation {
+    pub fn run(self, val: AST) -> Result&lt;Trampoline,Error> {
+
+        match self {
+            Continuation::EvaluateExpressions(rest, env, k) => {
+                if rest.is_cons() || !rest.is_empty() {
+                    evaluate_expressions(rest, env, k)
+                } else {
+                    Ok(Trampoline::Force(val, *k))
+                }
+            }
+            Continuation::EvaluateFunc(names, args, env, k) => {
+                let local_env = Environment::new_child(env);
+                for (name, value) in names.into_iter().zip(args.into_iter()) {
+                    try!(local_env.borrow_mut().define(name.to_string(), value));
+                }
+                evaluate_expressions(val, local_env, k)
+            }
+            Continuation::EvaluateCond(if_expr, else_expr, env, k) => {
+                match val {
+                    AST::Bool(false) => Ok(Trampoline::Defer(else_expr, env, *k)),
+                    _ => Ok(Trampoline::Defer(if_expr, env, *k)),
+                }
+            }
+            Continuation::EvaluateAssign(name, env, k) => {
+                match name {
+                    AST::Name(ref s) => {
+                        try!(env.borrow_mut().define(s.to_string(), val));
+                        Ok(Trampoline::Force(AST::Nil, *k))
+                    }
+                    x => {
+                        Err(Error::EvalError {
+                            desc: "Can assign only to var".to_string(),
+                            ast: x,
+                        })
+                    }
+
+                }
+            }
+            _ => Ok(Trampoline::Return(val)),
+        }
+    }
+}
+            </code></figure>
+
+<p>Вот и весь интерпретатор (кроме правил для Verb и Adverb, там умножение и
+вычитание необходимые для факториала и Cond вообще говоря тоже, который в K
+языке повешен на Cast). Традиционно бенчмарки против Erlang написанном на С.</p>
+
+            <figure><code>
+1> Fac = fun Factorial(X) -> case X of 1 -> 1; _ -> X * Factorial(X-1) end end.
+#fun<1131414>
+2> Fac(5).
+120
+3> timer:tc(fun() -> Fac(5) end).
+{91,120}
+            </code></figure>
+
+<p>Интерпретатор написанном на Rust:</p>
+
+            <figure><code>
+"fac:{[x]$[x=1;1;x*fac[x-1]]};fac[5]"
+test tests::fac ... bench:      16,850 ns/iter (+/- 1,169)
+            </code></figure>
+
+<p>91 микросекунд (Erlang) против 17 микросекунд (O-CPS INTERPRETER)</p>
+
+            <p>ОМ ЛЯМБДА ГАРБХА ХУМ</p>
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
+

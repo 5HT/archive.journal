@@ -1,0 +1,99 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2016-11-29</title>
+    <link rel="stylesheet" href="https://n2o.dev/blank.css" />
+    <link rel="stylesheet" href="../../journal.css" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2016-11-29</a>
+</nav>
+<main>
+    <section>
+        <h3>Архитектура К-подобного языка и его операционной среды</h3>
+
+<p>Я пришел к выводу, что лучше всего объединить весь базовый инструментарий
+минимального рантайма в виде синтаксических расширений, которые могут биндится
+как на языковые конструкции типа cond lambda app так и на слоты в контекстах.
+Языковое пространство включает в себя несколько синтаксическиз групп:
+Нетипизированное Лямбда Исчисление (нормальный порядок бета редукции),
+Векторный DSL (векторизируемый с MMX, SSE, пока без GPU бекенда), Хендлеры
+системы эффектов, а также рантайм операционной среды: доступ к очередям
+(цикличиским буферам — split/join, RAM — free/alloc), и управление
+CPS-программами (задачи, CPU — spawn,kill). Есть еще IO задачи, и Таймеры
+написанны чисто на Rust, в отличие от задач, написанных на К-образном языке О.
+O — здесь символ Enso, и символ кольцевой очереди. Все программы написанные на
+О могут паралелиться и исполняться на пуле потоков, жестко закрепленных на
+ядрах с помощью hwloc.</P>
+
+<p>Несмотря на растовскую имплементацию — этот подход можно применять на любом
+языке. Так как во всех языках уже есть как минимум System F, есть везде стримы
+на комбинаторах, в Java, C#, Scala, Rust, C++11 вы можете писать в таком стиле
+и навешивать на фасад любые синтаксисы. В динамически типизированных языках все
+это выглядит компактнее, так как не нужна прелюдия типов. Но в динамически
+типизированных не получишь бесплатную векторизацию и прочие высокотехнологичные
+оптимизации.</p>
+
+<p>O Интерпретатор растет:</p>
+
+   <figure><code>
+$ cargo build
+   Compiling kernel v0.11.0 (file:///Users/maxim/depot/voxoz/kernel)
+    Finished debug [unoptimized + debuginfo] target(s) in 10.43 secs
+bash-3.2$ rlwrap ./target/debug/console init etc/boot.init
+Console is listening...
+> 2+3
+Ok(Integer(5))
+>
+    </code></figure>
+
+<p>Кобминаторы стримов посортированы по каталогах (по группам синтаксических
+расширений):</p>
+
+   <figure><code>
+$ tree -L 3
+.
+├── adverb
+│   ├── map.rs
+│   ├── fold.rs
+│   ├── over.rs
+│   ├── scan.rs
+│   ├── filter.rs
+│   ├── deltas.rs
+│   └── mod.rs
+├── effect
+│   ├── read.rs
+│   ├── write.rs
+│   ├── recv.rs
+│   ├── send.rs
+│   ├── get.rs
+│   ├── set.rs
+│   └── mod.rs
+├── interpreter.rs
+├── lambda
+│   ├── call.rs
+│   ├── let.rs
+│   ├── cond.rs
+│   ├── lambda.rs
+│   └── mod.rs
+├── mod.rs
+├── stream.rs
+└── verb
+    ├── mod.rs
+    ├── mul.rs
+    └── plus.rs
+    </code></figure>
+
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
+

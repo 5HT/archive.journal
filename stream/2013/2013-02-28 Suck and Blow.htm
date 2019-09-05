@@ -1,0 +1,109 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Namdak Tonpa"/>
+    <title>2013-02-28</title>
+    <link rel="stylesheet" href="https://n2o.dev/blank.css" />
+    <link rel="stylesheet" href="../../journal.css" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2013-02-28</a>
+</nav>
+<main>
+    <section>
+        <h3>Suck and Blow</h3>
+
+<p>Вот во времена Perl смешивание текста и программ как-то органично
+воспринималось, все эти print <<. На перле, между прочим, бородатые дядьки еще
+тогда писали неблокирующие сервера. Среди всех этих Python, Ruby, на которых
+пацанва счас скриптует свои хомяки, Perl как-то особенно выделяется. Если у
+меня в проекте нехватило бы Bash, для скриптования, то его место занял бы Perl.
+Но вот начиная вроде с PHP, или откуда, появилась какая-то жуткая мода на эти
+темплейты:</p>
+
+   <figure><code>
+&lt;ul> $forall Entity articleId article <- articles
+&lt;li> &lt;a href=@{ArticleR articleId} > #{articleTitle article}
+    </code></figure>
+
+<p>Вот это пример темплейта из Yesod. Ну гавно же, на такое смотреть, истинный
+неотличимый от ПХП код. Я уже молчу про все эти ASP.NET, PHP, и прочие
+зотоники. Как этот стиль сохраняется и почему его любят, вот что меня
+инетересует. Даже на божественном Хаскеле находятся чуваки, которые лепят вот
+такую лапшу.</p>
+
+<p>Но есть же и нормальные пацаны, которые генерируют типизированную структуру,
+которая уже будет провалидирована на этапе компиляции и сконвертирована в этот
+ужаснейший на свете формат: HTML. Вот как выглядит это у нормальных людей,
+которым знакомо чувство прекрасного. На код таких людей смотришь и понимаешь,
+что они не пойду работать на Java за еду никогда:</p>
+
+   <figure><code>
+ template :: Text -> Html -> Response
+ template title body = toResponse $
+   H.html $ do
+     H.head $ do
+       H.title (toHtml title)
+     H.body $ do
+       body
+       p $ a ! href "/" $ "back home"
+    </code></figure>
+
+<p>Красиво, чётенько. Вот например божественный чат на Erlang с Кометом, Аяксом, ХТМЛем:</p>
+
+   <figure><code>
+body() -> wf:comet_global(fun() -> chat_loop() end, chatroom),
+               [#panel { id=chatHistory, class=chat_history },
+                #textbox { id=messageTextBox, next=sendButton },
+                #button { id=sendButton, text="Send", postback=chat } ].
+
+event(chat) ->
+    Username = wf:q(userNameTextBox),
+    Message = wf:q(messageTextBox),
+    wf:send_global(chatroom, {message, Username, Message}),
+    wf:wire("obj('messageTextBox').focus(); obj('messageTextBox').select();");
+
+chat_loop() ->
+    receive
+        {message, Username, Message} ->
+            Terms = [#span { text=Username, class=username }, ": ",
+                     #span { text=Message, class=message } ],
+            wf:insert_bottom(chatHistory, Terms),
+            wf:wire("obj('chatHistory').scrollTop = obj('chatHistory').scrollHeight;"),
+            wf:flush()
+    end,
+    chat_loop().
+    </code></figure>
+
+<p>Ну красота же. Нет блядь подавай им:</p>
+
+   <figure><code>
+&lt;form id="form1" runat="server">
+        The current time is: &lt;asp:Label runat="server" id="lbl1" />
+   &lt;/form>
+    &lt;/font>&lt;/p>
+    </code></figure>
+
+<p>Апогей такого подхода, это дебаггеры, который уже понимают и ActionScript и
+MXML и дебагер ходит по XML как по родному коду. Есть даже чуваки, которые на
+XML пишут, функциональные программы, XSLT называется. И совсем клинические
+пишут новые языки программирования XML на XML. XML это реально какой-то вирус.</p>
+
+<p>Уж на сколько я не люблю скобочки лисповые ' ( ), за которыми не видно сути
+если годами не тренировать свою нейронную сеть, но < > = — это самые ады
+программирования. Четкие пацаны используют { } [ ] -> или [ ] ( ) | ,
+средненько — ( . ) =></p>
+
+<p>&lt; > — эти символы так и называются Suck and Blow :-)</p>
+
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>

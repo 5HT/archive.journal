@@ -1,0 +1,61 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2017-01-12</title>
+    <link rel="stylesheet" href="https://n2o.dev/blank.css" />
+    <link rel="stylesheet" href="../../journal.css" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2017-01-12</a>
+</nav>
+<main>
+    <section>
+        <h3>Дефорестизационные Интерпретаторы O2</h3>
+
+<p>Тут NPONECCOP говорит, что наши JIT интерпретаторы говно, вручную мы аллоцируем
+регистры или через LLVM калейдоскоп, и что надо делать интерпретаторы с реврайт
+рулами которые делают фьюжин на стадии прекомпиляции. Такие интерпретаторы надо
+выделить в отдельный класс О2, например, а О класс пускай включает в себя все
+нормальные интерпретаторы, включая CPS и JIT.</p>
+
+<p>Примеры элиминаторов или правила дефостеризации для стримов и листов:</p>
+
+            <figure><code>
+stream (unstream s) = s
+foldr k z (build g) = g k z
+
+where
+
+foldr f z [] = z
+foldr f z (x:xs) = f x (foldr f z xs)
+build g (:) []
+stream :: List -> Stream
+unstream :: Stream -> List
+</code></figure>
+
+<p>Приложения в промышленности: векторизация, SIMD конвеерация</p>
+
+<p>__________________<br>
+[1]. https://github.com/flypy/flypy/blob/master/docs/source/fusion.rst#id19<br>
+[2]. http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.36.5748&rep=rep1&type=pdf<br>
+[3]. http://citeseer.ist.psu.edu/viewdoc/download?doi=10.1.1.421.8551&rep=rep1&type=pdf<br>
+</P>
+
+</section>
+
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
+
+
+
+
+

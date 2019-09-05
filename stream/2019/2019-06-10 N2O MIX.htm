@@ -1,0 +1,192 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Namdak Tonpa"/>
+    <title>2019-06-10</title>
+    <link rel="stylesheet" href="https://n2o.dev/blank.css" />
+    <link rel="stylesheet" href="../../journal.css" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2019-06-10</a>
+</nav>
+<main>
+    <section>
+        <h3>ELIXIR N2O MIX</h3>
+
+        <p>Yeah, that's right, we released a new version of N2O for Elixir.
+           As this is june and N2O is 6 years old it is 6.6.6 :-)
+           Generally speaking, it was already so long time ago, I just dropped Elixir
+           support for a focusing on something meaningful at least at Erlang side.</p>
+
+        <p>By full N2O Elixir support I mean Erlang records auto import with module usage,
+           and proxying, recoloring calls from :n2o.sid() to N2O.sid(), etc. Also we
+           assume mix.exs contains application entry point definition and
+           other vital stuff but no more! As N2O came from the land of keeping ass clean,
+           we encourage only vital macros at the top of the Sample.Index page:</p>
+
+        <figure><code>
+ defmodule Sample.Index do
+       use N2O, with: [:kvx, :n2o, :nitro]
+        </code></figure>
+
+        <p>The minimal <b>sys.config</b> in Elixir <b>config.exs</b> syntax will have only
+           proper KVX setup for custom DB layer (using <b>kvx_st</b> as a custom stream backend implementation for RocksDB), NITRO protocol and Sample.Routes.</p>
+
+        <figure><code>
+ config :n2o,
+   protocols: [:n2o_nitro],
+   routes: Sample.Routes
+
+ config :kvx,
+   dba: :kvx_rocks,
+   dba_st: :kvx_st,
+   schema: [:kvx,:kvx_stream]
+        </code></figure>
+
+        <p>We are using plain binary pattern match as a fastest way of routing,
+           but you may use any code at this level:</p>
+
+        <figure><code>
+ defmodule Sample.Routes do
+    import N2O
+
+   def finish(state, cx), do: {:ok, state, cx}
+   def init(state, ctx) do
+       %{path: p} = cx(ctx,:req)
+       {:ok, state, cx(ctx, path: p, module: route_prefix(p))}
+   end
+
+   def route_prefix(<<"/ws/", p::binary>>), do: route(p)
+   def route_prefix(<<"/",    p::binary>>), do: route(p)
+   def route_prefix(p),                     do: route(p)
+
+   def route(<<>>),                         do: Sample.Login
+   def route(<<"app/index", _::binary>>),   do: Sample.Index
+   def route(<<"app/login", _::binary>>),   do: Sample.Login
+   def route(_),                            do: Sample.Login
+        </code></figure>
+
+        <p>The actual page that contains direct embedding of N2O JavaScript SDK from CDN
+           is following and is included as a static file for cowboy serving (could also
+           be obtained from CDN):</p>
+
+        <p>HTML:</p>
+
+        <figure><code>
+ &lt;header&gt;
+     &lt;h2 id=heading>room&lt;/h2&gt;
+     &lt;button id=logout>logout&lt;/button&gt;
+ &lt;/header&gt;
+ &lt;main&gt;
+     &lt;form&gt;
+         &lt;textarea id=message rows='4'
+          autofocus placeholder="Just type what you think about this"&gt;
+         &lt;/textarea&gt;
+         &lt;button id=upload&gt;Browse&lt;/button&gt;
+         &lt;button id=send&gt;chat&lt;/button&gt;
+     &lt;/form&gt;
+     &lt;history id="history"&gt;
+     &lt;/history&gt;
+ &lt;/main&gt;
+        </code></figure>
+
+        <p>JavaScript CDN <b>ws.n2o.space</b>:</p>
+
+        <figure><code>
+ &lt;script src='https://ws.n2o.space/priv/utf8.js'&gt;&lt;/script&gt;
+ &lt;script src='https://ws.n2o.space/priv/bert.js'&gt;&lt;/script&gt;
+ &lt;script src='https://ws.n2o.space/priv/heart.js'&gt;&lt;/script&gt;
+ &lt;script src='https://ws.n2o.space/priv/ieee754.js'&gt;&lt;/script&gt;
+ &lt;script src='https://ws.n2o.space/priv/n2o.js'&gt;&lt;/script&gt;
+ &lt;script>host = location.hostname === 'sample.n2o.space'
+     ? 'ns.synrc.com' : location.hostname; port = 8001;&lt;/script&gt;
+ &lt;script src='https://ws.n2o.space/priv/ftp.js'&gt;&lt;/script&gt;
+ &lt;script src='https://ws.n2o.space/priv/nitro.js'&gt;&lt;/script&gt;
+ &lt;script>$io.do = function(r) { console.log(r); };&lt;/script&gt;
+ &lt;script>protos = [$bert]; N2O_start();&lt;/script&gt;
+        </code></figure>
+
+        <h3>INIT</h3>
+
+        <p>The code that mounts JavaScript postback events that delivers source DOM
+           information to server is here. On connect page should sent <b>'N2O'</b> init marker
+           that calls the <b>:init</b> case of <b>event</b> function in Sample.index module:</p>
+
+        <figure><code>
+ def event(:init) do
+     room = N2O.session(:room)
+     KVX.save(KVX.writer(NITRO.to_binary(room)))
+     N2O.reg({:topic,room})
+     N2O.reg(:n2o.sid())
+     NITRO.clear (:history)
+     NITRO.update(:upload,  upload())
+     NITRO.update(:heading, h2(id:     :heading, body: room))
+     NITRO.update(:logout,  button(id: :logout,
+                            postback:  :logout,  body: "Logout"))
+     NITRO.update(:send,    button(id: :send,    body: "Chat",
+                            postback:  :chat,  source: [:message]))
+
+     Enum.each KVX.all(room), fn {:msg,_,u,m} -> event({:client,{u,m}}) end
+ end
+        </code></figure>
+
+        <p>It contains KVX cursor initialization for that particular room feed
+           and also proceed GPROC/SYN subscriptions for two topics: <b>{:topic, room}</b> 
+           and <b>:n2o.sid()</b> --- authorized WebSocket process.
+           Note that in case of updat DOM elements they must already be present in page
+           otherwise you will get an error exception. At the botton of <b>:init</b> Nitrogen event
+           you can see database retrival of recorded messages. All of them
+           are being passed trough <b>{:client,_}</b> event.</p>
+
+        <h3>RENDER</h3>
+
+        <figure><code>
+ def event({:client,{usr,msg}}) do
+     NITRO.wire(jq(target: :message,method: [:focus,:select]))
+     NITRO.insert_top(:history, message(body: [author(body: usr), msg]))
+ end
+        </code></figure>
+        <p>In this event it simply adds the DOM element to the <b>:history</b> div.</p>
+
+        <h3>CHAT</h3>
+
+        <p>The main event of the Sample.Index application module is the <b>:chat</b>.
+           It retrives room and user names from session and message from client's
+           sent event, than stores it in the KVX and notify the render.</p>
+
+        <figure><code>
+ def event(:chat) do
+     room = N2O.session(:room)
+     usr  = N2O.user()
+     msg  = NITRO.q(:message)
+     KVX.save(KVX.add(writer(KVX.writer(room),
+                  args: {:msg,KVX.seq([],[]),usr,msg})))
+     N2O.send({:topic,room},client(data: {usr,msg}))
+ end
+        </code></figure>
+
+        <figure><img src="https://pbs.twimg.com/media/D8tLybIXUAEgwS4?format=jpg&name=large"></figure>
+
+        <p>Next version of MAD will be able to produce Elixir skeleton code.
+           The sources of working SAMPLE ported to Elixir is here:</p>
+
+        <p>— <a href="https://github.com/o7/sample">o7/sample</a></p>
+
+        <p>Brought to you by:</p>
+
+        <p>— <a href="https://github.com/am-kantox">am-kantox</a> — Aleksei Matiushkin<br>
+           — <a href="https://github.com/bushyn">bushyn</a> — Arseniy Bushyn<br>
+           — <a href="https://github.com/lessless">lessless</a> — Yevhenii Kurtov<br>
+           — <a href="https://github.com/5HT">5HT</a> — Namdak Tonpa</p>
+
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>

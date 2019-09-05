@@ -1,0 +1,82 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2017-01-16</title>
+    <link rel="stylesheet" href="https://n2o.dev/blank.css" />
+    <link rel="stylesheet" href="../../journal.css" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2017-01-16</a>
+</nav>
+<main>
+    <section>
+        <h3>Генерация AVX mm256_mul_pd</h3>
+
+            <figure><code>
+#![feature(target_feature)]
+
+// $ rustc -C opt-level=3 --emit asm intint.rs
+// $ cat intint.s | grep mul
+
+#[target_feature = "+avx"]
+pub fn mul_array_float<'a>(x: &mut[f64], y: &[f64]) {
+    let n: Vec = x.iter().zip(y).map(|(d,c)|d*c).collect();
+    println!("{:?}",n);
+}
+
+#[target_feature = "+avx"]
+pub fn mul_array<'a>(x: &mut [u64], y: &[u64]) {
+    let n: Vec = x.iter().zip(y).map(|(d,c)|d*c).collect();
+    println!("{:?}",n);
+}
+
+fn main() {
+    let mut fa = vec![0.0, 1.0, 4.0, 9.0, 0.0, 1.0, 4.0, 9.0, 0.0, 1.0, 4.0,
+9.0, 0.0, 1.0, 4.0, 9.0];
+    let fb     = vec![0.0, 2.0, 6.0, 0.0, 0.0, 1.0, 4.0, 9.0, 0.0, 2.0, 6.0,
+0.0, 0.0, 1.0, 4.0, 9.0];
+    let mut a  = vec![0, 1, 4, 9, 0, 1, 4, 9, 0, 1, 4, 9, 0, 1, 4, 9];
+    let b      = vec![0, 2, 6, 0, 0, 1, 4, 9, 0, 1, 4, 9, 0, 1, 4, 9];
+    mul_array_float(fa.as_mut_slice(), fb.as_slice());
+    mul_array(a.as_mut_slice(), b.as_slice());
+    println!("{:?} {:?}", a, fa);
+}
+
+$ rustc -C opt-level=3 -Z force-overflow-checks=no --emit asm intint.rs
+maxim@kudzu:~/depot/voxoz/kernel/tests$ cat intint.s | grep vmul
+ vmulsd (%rdi,%rax,8), %xmm0, %xmm0
+</code></figure>
+
+<p>мы видим что сгенерировалась vmulsp (%rdi,%rax,8), %xmm0, %xmm0
+но мы точно знаем, что в этом случае возможно применение инструкции vmulpd
+(%rdi,%rax,8), %ymm0, %ymm1
+Эта инструкция есть точно в AVX, но почему-то Rust ее не генерирует.
+Возможно это связано с переполнением, которе мы пытаемся отключить, но это не
+помогает.
+Хочется какой-то референсный код с которым можно сравниваться бенчится.</P>
+
+<p>gist: https://gist.github.com/5HT/dfbde5179fb6112e921fa686a5e459f0</p>
+
+<p>По пути было перепробовано несколько интринсикс библиотек: x86Intrin (Intel) и
+llvmint/simdty (LLVM). Раст для векторизации использует встроенную
+core::intrinsics.</p>
+
+</section>
+
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
+
+
+
+
+
+

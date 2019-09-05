@@ -1,0 +1,231 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2016-12-30</title>
+    <link rel="stylesheet" href="https://n2o.dev/blank.css" />
+    <link rel="stylesheet" href="../../journal.css" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2016-12-30</a>
+</nav>
+<main>
+    <section>
+        <h3>Последний гвоздь в гроб Хаскеля/C++ в этом году!</h3>
+
+<p>TL;DR Больше микробенчмарков богу микробенчмарков!</p>
+
+<p>Дошли руки до микробенчмарков, где известные фокусники всея Руси -- Лев Валкин
+и Сергей Зефиров тролят байтойобов и показывают, что если разложить Data Flow в
+свободные монады то получится что стрим можно выгребать пачками (генерируются
+MMX инструкции). Сегодня мы покажем, что в нашем цирке (Rust) иллюзионисты не
+хуже, а может быть даже и лучше.</p>
+
+<p>Итак, как говорят хранители интернета, мы можем это написать двумя способами:</p>
+
+<p>1. Циклы<br>
+2. Итераторы</p>
+
+<p>Первое обычно относят к байтойобским языкам, а второе к чистым аппликативным,
+так как там это имеет смысл и реально сразу помогает для векторизации. Мы же
+напишем на расте и так и так и проверим:</p>
+
+            <figure><code>
+#![feature(step_by)]
+
+pub fn lpa(sz: usize, iter_num: usize, ) -> usize {
+    let mut sum = 0_usize;
+    for e in 0..sz {
+        sum = 0;
+        let mut x: Vec = Vec::with_capacity(iter_num);
+        for i in 0..iter_num {
+            x.push(i);
+        }
+        let mut y: Vec = Vec::with_capacity(iter_num - 1);
+        for i in 0..iter_num - 1 {
+            y.push(x[i] + x[i + 1]);
+        }
+        for i in (0..iter_num).step_by(100) {
+            sum += y[i];
+        }
+    }
+    sum
+}
+
+pub fn lpv(iter_num: usize, sz: usize) -> usize {
+    let sums: Vec<_> = (0..iter_num)
+        .map(|_| {
+            let x: Vec<_> = (0..sz).map(|i| i).collect();
+            let y: Vec<_> = x.iter().zip(x.iter().skip(1)).map(|(x, y)| x + y).collect();
+            (0..sz).step_by(100).map(|i| y[i]).sum()
+        })
+        .collect();
+    *sums.last().unwrap()
+}
+
+fn main() {
+    println!("{:?}", lpa(20, 1000000));
+}
+
+$ rustc -O main-lpv.rs
+
+$ time ./main-lpv
+9999010000
+
+real    0m0.055s
+user    0m0.044s
+sys     0m0.008s
+
+$ time ./main-lpa
+9999010000
+
+real    0m0.107s
+user    0m0.096s
+sys     0m0.012s
+  </code></figure>
+
+<p>Теперь сишечка:</p>
+
+            <figure><code>
+#include &lt;stdint.h>
+#include &lt;vector>
+#include &lt;iostream>
+
+int main() {
+    int64_t sum = 0;
+
+    for(int e = 0; e &lt; 20; e++) {
+        sum = 0;
+
+        std::vector&lt;int64_t> x;
+        x.reserve(1000000);
+        for(int i = 0; i &lt; 1000000; i++) {
+
+            x.push_back(i);
+        }
+
+        std::vector&lt;int64_t> y;
+        y.reserve(1000000-1);
+        for(int i = 0; i &lt; 1000000-1; i++) {
+            y.push_back(x[i] + x[i+1]);
+        }
+
+        for (int i = 0; i &lt; 1000000; i += 100) {
+            sum += y[i];
+        }
+    }
+
+    std::cout &lt;&lt; sum &lt;&lt; std::endl;
+}
+
+g++ main-c.cc -Ofast -march=native -funroll-loops  -o main-c
+$ time ./main-c
+9999010000
+
+real    0m0.129s
+user    0m0.100s
+sys     0m0.028s
+  </code></figure>
+
+<p>Теперь божественная "неоптимизированная" ГеАшЦешечка</p>
+
+            <figure><code>
+{-# LANGUAGE ParallelListComp #-}
+import Control.Monad
+
+main = times 20 (compute 1000000) >>= print
+    where
+        times n m = do
+            results <- replicateM n m
+            return ((sum results) `seq` (head results))
+
+compute n = do
+    let xs = [0 .. (n-1)]
+        ys = [x+k | x <- xs | k <- drop 1 xs]
+    return $ sum $ map snd $ filter fst [((i`mod`100)==0,y) | y <- ys | i <- [0,1..]]
+
+$ ghc -O3 -o main-hs ./main-hs.hs
+$ time ./main-hs
+9999010000
+
+real    0m0.115s
+user    0m0.108s
+sys     0m0.004s
+  </code></figure>
+
+
+<p>По требованию трудящихся на арену выходит божественный ЛуаДЖИТик:</p>
+
+            <figure><code>
+ffi=require('ffi')
+jit.opt.start("hotloop=5", "loopunroll=100", "instunroll=100")
+jit.flush()
+local ct=ffi.typeof('int64_t[?]')
+
+function lpa(size, iter_num)
+    local sum
+    for e=0,size-1 do
+        sum=0LL
+        local x=ffi.new(ct, iter_num)
+        for i=0,iter_num-1 do
+            x[i]=i
+        end
+        local y=ffi.new(ct, iter_num-1)
+        for i=0,iter_num-2 do
+            y[i]=x[i]+x[i+1]
+        end
+        for i=0,iter_num-1,100 do
+            sum = sum + y[i]
+        end
+    end
+    return sum
+end
+
+print(lpa(20, 1000000))
+os.exit(1)
+
+$ time luajit lpa.lua
+9999010000LL
+
+real    0m0.099s
+user    0m0.032s
+sys     0m0.064s
+  </code></figure>
+
+<p>Swift и Go -- ниже дна (С++). Поэтому эту хуйню даже ставить на машину не буду.
+Свифт лично мне нравится и желаю ему взросления, но его не будет так как Apple
+не технологичная компания уже (хотя за LLVM низкий поклон). С Go чуда не будет
+-- язык откровенно делался плохим (как и С++), поэтому его любят гидроцефалы с
+лоботомией пишущих лапшу вида if err != nil. Если видете чувака, который
+рекламиурет Go -- знайте, ебанат, инфа 100%. До существования Go эти люди
+называли себя системными администраторами (POSIX, KISS, UNIX, Керниган и Ритчи
+головного мозга), теперь гугл их пересадила из беша в гошечку. А мы вернемся из
+благодатного оазиса рассовой ненависти в лоно микробенчмарков.</p>
+
+<p>Раздача шампанского:</p>
+
+            <figure><code>
+Lang             ms
+--------------- ---
+Rust Iterators   55
+LuaJIT 2.1       99
+Rust Arrays     107
+GHC             115
+C++             119
+  </code></figure>
+
+<p>С Новым Годом, Сережа и Лев!<br>
+Всем желаю успешного байтойобства и глубокого аппликативного фьюжена в 2017!</P>
+
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
+
