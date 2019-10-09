@@ -123,6 +123,11 @@ proto(#comboNext{pos=Pos,count=Count}) ->
    ok.
      </code></figure>
      <p><b>Підключення протоколу до модуля строрінки:</b></p>
+     <p>Позаяк протокол сторінки — це кінцева точка усіх
+        клієнтських повідомлень NITRO протоколу, аби
+        доставити повідомлення в модуль контрольного елементу
+        потрібно підключити протокол comboLookup в модуль сторінки
+        з відповідними форвардами.</p>
      <figure><code>
 $ cat src/container.erl
 
@@ -131,6 +136,7 @@ event(#comboSearch{}=X) -> nx_comboLookup:proto(X);
 event(#comboNext{}  =X) -> nx_comboLookup:proto(X).
      </code></figure>
      <p><b>Розробка клієнтської частини</b></p>
+     <p>Мінімальне публічне API контрольного елементу.</p>
      <figure><code>
 $ cat priv/js/comboLookup.js
 
