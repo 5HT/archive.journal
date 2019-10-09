@@ -94,9 +94,7 @@ $ cat src/nx_comboLookup.erl
 -export([render_element/1,proc/1]).
 
 render_element(#comboLookup{}=Record) ->
-   nitro:wire(#event{ type=click, postback=Postback, target=ID,
-                      source=Record#comboLookup.source,
-                      delegate=Record#comboLookup.delegate }),
+   nitro:wire("console.log(\"Hello comboLookup!\")"),
    "&lt;input type=\"comboLookup\"&gt;&lt;/input&gt;".
      </code></figure>
      <p><b>Імплементація протоколу</b></p>
