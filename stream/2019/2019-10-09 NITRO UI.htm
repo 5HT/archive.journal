@@ -108,6 +108,12 @@ proc(#comboNext{pos=Pos,count=Count}) ->
    Reader = kvs:reader(Feed),
    ok.
      </code></figure>
+     <p><b>Підключення протоколу до модуля строрінки:</b></p>
+     <figure><code>
+event(#comboInit{}  =X) -> nx_comboLookup:proc(X);
+event(#comboSearch{}=X) -> nx_comboLookup:proc(X);
+event(#comboNext{}  =X) -> nx_comboLookup:proc(X).
+     </code></figure>
      <p><b>Розробка клієнтської частини</b></p>
      <figure><code>
 function comboId()     { return localStorage.getItem("comboLookup-1218297")  || ''; };
