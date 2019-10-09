@@ -91,7 +91,7 @@ render_element(#comboLookup{}=Record) ->
    nitro:wire(#event{ type=click, postback=Postback, target=ID,
                       source=Record#comboLookup.source,
                       delegate=Record#comboLookup.delegate }),
-   "<input type=\"comboLookup\"></input>".
+   "&lt;input type=\"comboLookup\">&gt;&lt;/input&gt;".
      </code></figure>
      <p><b>Імплементація протоколу</b></p>
      <figure><code>
