@@ -95,24 +95,24 @@ render_element(#comboLookup{}=Record) ->
      </code></figure>
      <p><b>Імплементація протоколу</b></p>
      <figure><code>
-proc(#comboInit{feed=Feed,name=Name}) ->
+proto(#comboInit{feed=Feed,name=Name}) ->
    kvs:save(kvs:reader(Feed)),
    n2o:session(Name,Feed),
    ok;
-proc(#comboSearch{prefix=Name}) ->
+proto(#comboSearch{prefix=Name}) ->
    Feed = n2o:session(Name),
    lists:map(fun (X) -> nitro:insert_top(comboContainer, nitro:render(X)) end,
        lists:all(fun(#process{name=N}) -> N == Name end, kvs:all(Feed))),
    ok;
-proc(#comboNext{pos=Pos,count=Count}) ->
+proto(#comboNext{pos=Pos,count=Count}) ->
    Reader = kvs:reader(Feed),
    ok.
      </code></figure>
      <p><b>Підключення протоколу до модуля строрінки:</b></p>
      <figure><code>
-event(#comboInit{}  =X) -> nx_comboLookup:proc(X);
-event(#comboSearch{}=X) -> nx_comboLookup:proc(X);
-event(#comboNext{}  =X) -> nx_comboLookup:proc(X).
+event(#comboInit{}  =X) -> nx_comboLookup:proto(X);
+event(#comboSearch{}=X) -> nx_comboLookup:proto(X);
+event(#comboNext{}  =X) -> nx_comboLookup:proto(X).
      </code></figure>
      <p><b>Розробка клієнтської частини</b></p>
      <figure><code>
