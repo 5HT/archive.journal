@@ -101,7 +101,7 @@ proc(#comboInit{feed=Feed,name=Name}) ->
    ok;
 proc(#comboSearch{prefix=Name}) ->
    Feed = n2o:session(Name),
-   lists:map(fun (X) -> nitro:insert_top(comboContainer) end,
+   lists:map(fun (X) -> nitro:insert_top(comboContainer, nitro:render(X)) end,
        lists:all(fun(#process{name=N}) -> N == Name end, kvs:all(Feed))),
    ok;
 proc(#comboNext{pos=Pos,count=Count}) ->
