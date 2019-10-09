@@ -105,6 +105,9 @@ render_element(#comboLookup{}=Record) ->
    "&lt;input type=\"comboLookup\"&gt;&lt;/input&gt;".
      </code></figure>
      <p><b>Імплементація протоколу</b></p>
+     <p>Завдання написати найбільш компактну імплементацію
+        з індивідуальними курсорами для кожного екземпляру
+        контрольного елементу на стороні клієнта.</p>
      <figure><code>
 proto(#comboInit{feed=Feed,name=Name}) ->
    kvs:save(kvs:reader(Feed)),
