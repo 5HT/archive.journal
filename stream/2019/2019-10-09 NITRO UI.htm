@@ -76,6 +76,7 @@
 
      <figure><code>
 $ cat include/comboLookup.hrl
+
 -record(comboLookup, { ?ELEMENT_BASE(nx_comboLookup),
                        feed="/bpe/proc",
                        reader=[],
@@ -85,6 +86,7 @@ $ cat include/comboLookup.hrl
      <p><b>Рендер, бінд та налаштування івентінгу</b></p>
      <figure><code>
 $ cat src/nx_comboLookup.erl
+
 -module(nx_comboLookup).
 -include("comboLookup.hrl").
 -include_lib("nitro/include/nitro.hrl").
@@ -115,6 +117,7 @@ proto(#comboNext{pos=Pos,count=Count}) ->
      <p><b>Підключення протоколу до модуля строрінки:</b></p>
      <figure><code>
 $ cat src/container.erl
+
 event(#comboInit{}  =X) -> nx_comboLookup:proto(X);
 event(#comboSearch{}=X) -> nx_comboLookup:proto(X);
 event(#comboNext{}  =X) -> nx_comboLookup:proto(X).
@@ -122,6 +125,7 @@ event(#comboNext{}  =X) -> nx_comboLookup:proto(X).
      <p><b>Розробка клієнтської частини</b></p>
      <figure><code>
 $ cat priv/js/comboLookup.js
+
 function comboId()     { return localStorage.getItem("comboLookup-1218297")  || ''; };
 function comboInit()   { ws.send(enc(tuple(atom('direct'),tuple(atom('comboInit'),string(comboId()))))); }
 function comboSearch() { ws.send(enc(tuple(atom('direct'),tuple(atom('comboSearch'),'Maxi')))); }
