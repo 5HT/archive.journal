@@ -111,9 +111,9 @@ proc(#comboNext{name=Name}) ->
      <p><b>Розробка клієнтської частини</b></p>
      <figure><code>
        function comboId()     { return localStorage.getItem("comboLookup-1218297")  || ''; };
-       function comboInit()   { ws.send(enc(tuple(atom('comboInit'),string(comboId())))); }
-       function comboSearch() { ws.send(enc(tuple(atom('comboSearch'),'Maxi'))); }
-       function comboNext()   { ws.send(enc(tuple(atom('comboNext'),1,1))); }
+       function comboInit()   { ws.send(enc(tuple(atom('direct'),tuple(atom('comboInit'),string(comboId()))))); }
+       function comboSearch() { ws.send(enc(tuple(atom('direct'),tuple(atom('comboSearch'),'Maxi')))); }
+       function comboNext()   { ws.send(enc(tuple(atom('direct'),tuple(atom('comboNext'),1,1)))); }
      </code></figure>
      <p><b>Специфікація на стилі</b></p>
 
