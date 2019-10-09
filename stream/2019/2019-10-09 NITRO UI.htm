@@ -99,12 +99,12 @@ proc(#comboInit{feed=Feed,name=Name}) ->
    kvs:save(kvs:reader(Feed)),
    n2o:session(Name,Feed),
    ok;
-proc(#comboSearch{name=Name}) ->
+proc(#comboSearch{prefix=Name}) ->
    Feed = n2o:session(Name),
    lists:map(fun (X) -> nitro:insert_top(comboContainer) end,
        lists:all(fun(#process{name=N}) -> N == Name end, kvs:all(Feed))),
    ok;
-proc(#comboNext{name=Name}) ->
+proc(#comboNext{pos=Pos,count=Count}) ->
    Reader = kvs:reader(Feed),
    ok.
      </code></figure>
