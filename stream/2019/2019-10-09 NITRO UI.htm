@@ -116,7 +116,7 @@ render_obj(#'Person'{cn=CommonName,type=Type}=Person) ->
 
 render_element(#comboLookup{}=Record) ->
    nitro:wire("console.log(\"Hello comboLookup!\");"),
-   "&lt;input type=\"comboLookup\"&gt;&lt;/input&gt;".
+   "&lt;input id=\"comboContainer\" type=\"comboLookup\"&gt;&lt;/input&gt;".
      </code></figure>
      <p><b>Імплементація протоколу</b></p>
      <p>Завдання написати найбільш компактну імплементацію
