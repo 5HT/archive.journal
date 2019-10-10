@@ -104,9 +104,15 @@ $ cat src/nx_comboLookup.erl
 
 -module(nx_comboLookup).
 -include("comboLookup.hrl").
+-include("erp.hrl").
 -include_lib("nitro/include/nitro.hrl").
 -include_lib("nitro/include/event.hrl").
 -export([render_element/1,proc/1]).
+
+render_obj(#'Person'{cn=CommonName,type=Type}=Person) ->
+   #panel{ body=[ #image { src  = "default.png" },
+                  #h1    { body = CommonName },
+                  #p     { body = Type } ] }.
 
 render_element(#comboLookup{}=Record) ->
    nitro:wire("console.log(\"Hello comboLookup!\");"),
@@ -123,7 +129,7 @@ proto(#comboInit{feed=Feed,name=Name}) ->
    ok;
 proto(#comboSearch{prefix=Name}) ->
    Feed = n2o:session(Name),
-   lists:map(fun (X) -> nitro:insert_top(comboContainer, nitro:render(X)) end,
+   lists:map(fun (X) -> nitro:insert_top(comboContainer, render_obj(X)) end,
        lists:all(fun(#process{name=N}) -> N == Name end, kvs:all(Feed))),
    ok;
 proto(#comboNext{pos=Pos,count=Count}) ->
