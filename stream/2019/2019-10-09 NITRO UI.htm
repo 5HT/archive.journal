@@ -82,6 +82,9 @@
      <figure><code>
 $ cat include/comboLookup.hrl
 
+-record(comboInit,   { name=[], feed=[]}).
+-record(comboSearch, { prefix=[]}).
+-record(comboNext,   { pos=[],  count=[]}).
 -record(comboLookup, { ?ELEMENT_BASE(nx_comboLookup),
                        feed="/bpe/proc",
                        reader=[],
