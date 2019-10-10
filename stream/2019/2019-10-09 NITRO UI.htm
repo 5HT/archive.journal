@@ -86,11 +86,11 @@ $ cat include/comboLookup.hrl
 -record(comboSearch, { prefix=[]}).
 -record(comboNext,   { pos=[],  count=[]}).
 -record(comboLookup, { ?ELEMENT_BASE(nx_comboLookup),
-                       feed="/bpe/proc",
+                       feed="/erp/people",
                        reader=[],
                        chunk=20 }).
      </code></figure>
-     <p>Де "/bpe/proc" — адреса фіду на сервері (можна подивитися за допомогою <b>:kvs.all</b>)</p>
+     <p>Де "/erp/people" — адреса фіду на сервері (можна подивитися за допомогою <b>:kvs.all</b>)</p>
      <p><b>Рендер, бінд та налаштування івентінгу</b></p>
      <p>Оскільки контрольні елементи породжують HTML та JavaScript,
         рендер контрольного елементу по module полю — це саме те місце,
