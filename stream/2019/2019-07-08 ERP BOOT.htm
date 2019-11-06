@@ -276,7 +276,7 @@ accounts() ->
            ERP. Для каждого конкретного предприятия мы используем свою Github
            организацию, можно даже другое имя репозитория, но всегда это же имя Erlang/OTP
            приложления.</p>
-          <p>— <a href="https://github.com/enterprizing/erp">enterprizing/erp</a></p>
+          <p>— <a href="https://github.com/erpuno/erp">erpuno/erp</a></p>
         <p>В этом репозитории будут всегда какие-то реальные данные компании которую мы автоматизируем,
            если она нам разрешает публиковать свою организационную структуру, первичные данные и словари.
            Делаем этот репозиторий приватный в отдельных случаях. Сами приложения способны
@@ -360,10 +360,8 @@ end
    {:Loc, '1562329445378240000', [], 'BG', 'Varna', [], []}}
 ]
     </code></figure>
-
-        <p>Список контрагентнов:</p>
-
-   <figure><code>
+    <p>Список контрагентнов:</p>
+    <figure><code>
 > :kvs.feed '/erp/partners'
 [
   {:Organization, 'Catalx Exchange Inc.', 'catalx.io', [], []},
@@ -375,10 +373,8 @@ end
   {:Organization, '3Stars', [], [], []}
 ]
     </code></figure>
-
     <p>Бюджетирование проекта по статьям субконто:</p>
-
-   <figure><code>
+    <figure><code>
 > :kvs.feed '/fin/acc/NYNJA'
 [
   {:Acc, 'NYNJA/insurance', {2, 70}},
@@ -387,10 +383,8 @@ end
   {:Acc, 'NYNJA/R&D', {2, 10}}
 ]
     </code></figure>
-
     <p>Выплаты по опционам для программистов:</p>
-
-   <figure><code>
+    <figure><code>
 > :kvs.feed '/fin/tx/CATALX/options'
 [
   {:Payment, '1562868880497278000', {0, 1}, {2, 150000}, 'USD', :crypto, [], []},
@@ -407,9 +401,7 @@ end
   {:Payment, '1562868880492234000', {0, 1}, {2, 120000}, 'USD', :crypto, [], []}
 ]
     </code></figure>
-
     <p>Люди, работающие на проекте:</p>
-
    <figure><code>
 > :kvs.feed '/plm/NYNJA/staff'
 [
@@ -420,7 +412,6 @@ end
   {:Person, '1562868880467883000', 'Georgi Spasov', [], [], [], 8, []}
 ]
     </code></figure>
-
     </section>
 </main>
 <footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
