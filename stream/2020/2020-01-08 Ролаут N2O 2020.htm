@@ -1,0 +1,64 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2018-10-22</title>
+    <link rel="stylesheet" href="https://n2o.dev/blank.css" />
+    <link rel="stylesheet" href="../../journal.css" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2018-10-22</a>
+</nav>
+<main>
+    <section>
+        <h3>Новый ролаут N2O для 2020 года</h3>
+
+        <p>Давайте уже после праздников!</p>
+
+        <p>Итак, как вы знаете, теперь Сохацкий работает на МВД Украины, а именно в госпредприятии "Инфотех".
+           Как обычно, команда была сформирована благодаря моей скандальной репутации и безжалостному хедхантингу.
+           В результате, за 3 месяца у нас написан прототип национальной системы документооборота,
+           и как следствие, новый ролаут N2O стека.</p>
+
+        <p>Мы используем две системы релизов: первая --- это система релизов HEX.PM, куда мы релизим ежедневно;
+           и вторая --- это система релизов Github, фактически просто система тегов, здесь мы релизим раз в пол года,
+           и это главным образом влияет на rebar3 и mad сборки, которые используют rebar.config, mix сборки же
+           всегда используют только релизы HEX. Каждый ролаут это фриз всех совместимых между собой версий,
+           которую мы делаем обычно редко, поэтому рассматривайте этот как праздник.</p>
+
+        <p>Это первый ролаут, где для <b>каждой</b> либы:
+           1) прописан mix.exs файл с полной поддержкой Elixir (мы пишем на Elixir) и публикацией на HEX,
+           2) прописаны Erlang type spec,
+           3) билд проверяется dialyzer,
+           4) тригерится два CI (Github Action и Travis CI),
+           5) создана папка man с XHTML документацией которая может быть конвертирована в ROFF с помощью mad.</p>
+
+        <h4>N2O</h4>
+
+        <p></p>
+
+        <p>
+           — <a href="https://github.com/synrc/sample">https://github.com/synrc/sample</a> — 1.1<br>
+           — <a href="https://github.com/synrc/rpc">https://github.com/synrc/rpc</a> — 3.1<br>
+           — <a href="https://github.com/synrc/exe">https://github.com/synrc/exe</a> — 4.1<br>
+           — <a href="https://github.com/synrc/nitro">https://github.com/synrc/nitro</a> — 5.1<br>
+           — <a href="https://github.com/synrc/form">https://github.com/synrc/form</a> — 5.1<br>
+           — <a href="https://github.com/synrc/bpe">https://github.com/synrc/bpe</a> — 5.1<br>
+           — <a href="https://github.com/synrc/fs">https://github.com/synrc/fs</a> — 6.1<br>
+           — <a href="https://github.com/synrc/active">https://github.com/synrc/active</a> — 6.1<br>
+           — <a href="https://github.com/synrc/n2o">https://github.com/synrc/n2o</a> — 7.1<br>
+           — <a href="https://github.com/synrc/kvs">https://github.com/synrc/kvs</a> — 7.1<br>
+           — <a href="https://github.com/synrc/mad">https://github.com/synrc/mad</a> — 7.1<br>
+        </p>
+        <p>Максим</p>
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2019</footer>
+</body>
+</html>
