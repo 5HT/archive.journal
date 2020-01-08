@@ -1,0 +1,102 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2020-01-08</title>
+    <link rel="stylesheet" href="https://n2o.dev/blank.css" />
+    <link rel="stylesheet" href="../../journal.css" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2020-01-08</a>
+</nav>
+<main>
+    <section>
+        <h3>Новый ролаут N2O для 2020 года</h3>
+
+        <p>Давайте уже после праздников!</p>
+
+        <p>Итак, как вы знаете, теперь Сохацкий работает на МВД Украины, а именно в <a href="https://infotech.gov.ua">ДП&nbsp;"Інфотех"</a>.
+           Как обычно, команда была сформирована благодаря моей скандальной репутации и безжалостному хедхантингу.
+           В результате, за 3 месяца у нас написан прототип национальной системы документооборота,
+           и как следствие, новый ролаут N2O стека.</p>
+
+        <p>Мы используем две системы релизов: первая — это система релизов HEX.PM, куда мы релизим ежедневно;
+           и вторая — это система релизов Github, фактически просто система тегов, здесь мы релизим раз в пол года,
+           и это главным образом влияет на rebar3 и mad сборки, которые используют rebar.config, mix сборки же
+           всегда используют только релизы HEX. Каждый ролаут — это фриз всех совместимых между собой версий,
+           который мы делаем обычно редко, поэтому рассматривайте этот как праздник.</p>
+
+        <p>Это первый ролаут, где для <b>каждой</b> либы:
+           1) прописан mix.exs файл с полной поддержкой Elixir (мы пишем на Elixir) и публикацией на HEX,
+           2) прописаны Erlang type spec,
+           3) билд проверяется dialyzer,
+           4) тригерится два CI (Github Action и Travis CI),
+           5) создана папка man с XHTML документацией которая может быть конвертирована в ROFF с помощью mad.</p>
+
+        <h4>N2O</h4>
+
+        <p>Новая версия N2O стала еще легче, она теперь не содержит ни одной части NITRO имплементации Nitrogen Web Framework.
+           Имплементация NITRO протокола вместе с JavaScript companion library переехала, как и полагается, в NITRO.
+           Теперь N2O занимает 700 строк эрланга и 500 строк джаваскрипта. Пофиксан критический баг в кодировании UTF-8 бинарей в BERT.JS.</p>
+
+        <h4>KVS</h4>
+
+        <p>KVS был полностью переписан (если кто помнит экспериментальную версию KVX), и был обратно забекпортирован в мастер.
+           Был значительно изменён код работы с курсорами (Ирина Костюк), а из баз теперь поддерживаются только MNESIA и ROCKSDB.
+           Также KVS теперь получил свою админку (пока не зарелижена в нем самом, чтобы не тащить зависимость от NITRO)
+           и имеет возможность быть выставленым в мир через REST библиотеку Дмитрия Бушмелева.</p>
+
+        <h4>BPE</h4>
+
+        <p>Главная новость BPE — это поддержка BPMN 2.0 семантики (паралельные процесы, гейтвеи), поддержка BPMN 2.0 XML формата
+           и анонс понятия группы процессов (для супервижена). Благодарности и деньги на кофе можете присылать на мой патреон,
+           я передам их главному автору этих нововведений Александру Наумову.</p>
+
+        <h4>NITRO</h4>
+
+        <p>Больше всего нововведений получила библиотека NITRO, так как наш проект во многом зависит от специализированых контрольных элементов.
+           Если грамотно провести анализ требований, почти любое приложение можно закрыть двумя-тремя сложными абстрактными контролами.
+           Такой контрольный элемент, хедлайнер этих нововведений, — это <a href="https://n2o.dev/deps/nitro/man/ua/nx_comboLookup.htm">comboLookup</a>.</p>
+
+        <figure><img src="https://n2o.dev/deps/nitro/man/ua/img/comboLookup.png"></figure>
+
+        <p>Он позволяет указывать адрес фида в базе данных из которого вы хотите получать итемы по автокомплишину.
+           Вы просто опреляете функцию стриминга на стороне сервера (которая знает рекорды хранящиеся в фиде) и всё.
+           Автор контрольного элемента --- Руслан Мороз.
+           Его расширенная (мультиселект) векторная версия использует Sortable.js и адаптирована Александром Наумовым. Следующие версии
+           будут иметь более матурный внутрениий протокол querySource.</p>
+
+        <h4>FORM</h4>
+
+        <p>Библиотека форм обзавелась <a href="https://form.n2o.dev/man/form.htm">публичным API</a>, поддержкой новых контрольных элементов NITRO,
+           поддержкой векторных и скалярных полей, NITRO биндингами (когда nitro:q возвращает сразу Erlang термы) и фиксами старых контролов (calendar и т.п).
+           Формы форсировал Александр Пальчиковский.</p>
+
+        <p>
+           — <a href="https://github.com/synrc/sample">https://github.com/synrc/sample</a> — 1.1<br>
+           — <a href="https://github.com/synrc/rpc">https://github.com/synrc/rpc</a> — 3.1<br>
+           — <a href="https://github.com/synrc/exe">https://github.com/synrc/exe</a> — 4.1<br>
+           — <a href="https://github.com/synrc/nitro">https://github.com/synrc/nitro</a> — 5.1<br>
+           — <a href="https://github.com/synrc/form">https://github.com/synrc/form</a> — 5.1<br>
+           — <a href="https://github.com/synrc/bpe">https://github.com/synrc/bpe</a> — 5.1<br>
+           — <a href="https://github.com/synrc/fs">https://github.com/synrc/fs</a> — 6.1<br>
+           — <a href="https://github.com/synrc/active">https://github.com/synrc/active</a> — 6.1<br>
+           — <a href="https://github.com/synrc/n2o">https://github.com/synrc/n2o</a> — 7.1<br>
+           — <a href="https://github.com/synrc/kvs">https://github.com/synrc/kvs</a> — 7.1<br>
+           — <a href="https://github.com/synrc/mad">https://github.com/synrc/mad</a> — 7.1<br>
+        </p>
+
+        <figure><img src="https://5ht.co/img/infotech.jpg"></figure>
+
+        <p>Ваш Эрланг отдел ДП "Інфотех".</p>
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2020</footer>
+</body>
+</html>
