@@ -71,6 +71,18 @@ X.520 ---
          <p>Щоб показати як користуватися КЕП, та прочитати атрибутивну інформацію з сертифікату,
             який вшитий в PCKS-7 повідомлення з криптографічним підписом:</p>
          <figure><code>
+  Record.defrecord(:certAttrs,
+     serial: "", cn: "", givenName: "", surname: "",
+     o: "", title: "", ou: "", c: "", locality: "")
+
+  def extract(code, person) do
+    case :lists.keyfind(code, 2, person) do
+      false -> ""
+      {_, _, {:printable, str}} -> str
+      {_, _, {:utf8, str}} -> str
+    end
+  end
+
   def parseSignData(bin) do
     {_, {:ContentInfo, _, ci}} = :KEP.decode(:ContentInfo, bin)
     {:ok, {:SignedData, _, alg, x, c, x1, x2}} = :KEP.decode(:SignedData, ci)
