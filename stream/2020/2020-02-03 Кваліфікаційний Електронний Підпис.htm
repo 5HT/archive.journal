@@ -24,7 +24,7 @@
            та міжнародних стандартів на його конверти: X.501, X.509, X.511, X.520.</p>
 
         <p>Серія міжнародних стандартів X.500, групується по категоріям, кожна
-           з яких має свій перелік файлів. Аби підключити усі визначення необхідні
+           з яких має свій перелік ASN.1 файлів. Аби підключити усі визначення необхідні
            для КЕП використані наступі компоненти стандартів (виділені болдом):
             X.501 ---
 <a href="https://www.itu.int/ITU-T/formal-language/itu-t/x/x501/2019/BasicAccessControl.html"><b>BasicAccessControl</b></a>,
@@ -45,20 +45,74 @@ X.520 ---
 <a href="https://www.itu.int/ITU-T/formal-language/itu-t/x/x520/2019/UpperBounds.html"><b>UpperBounds</b></a>,
 <a href="https://www.itu.int/ITU-T/formal-language/itu-t/x/x520/2019/SelectedAttributeTypes.html"><b>SelectedAttributeTypes</b></a>.
          Можно було би винести необхідні визначення одразу в KEP.asn1, однак
-         цим хотілося підкреслити сумісність з міжнародними стандартами.</p>
+         цим хотілося підкреслити сумісність з міжнародними стандартами. Окрім серії
+         протоколів X.500, КЕП ще визначає також запити та відповіді OCSP, також у ASN.1 форматі.
+         </p>
 
-<!--a href=""></a-->
-<!--a href=""></a-->
-<!--a href=""></a-->
-<!--a href=""></a-->
-<!--a href=""></a-->
-<!--a href=""></a-->
-<!--a href=""></a-->
-<!--a href=""></a-->
-<!--a href=""></a-->
-<!--a href=""></a-->
-<!--a href=""></a-->
+         <p>На відміну від самого алгоритму КЕП, який визначено ДСТУ 4145,
+            конверти визначаються не стандартами, а наказами міністерства юстиції:
+         <a href="http://www.dsszzi.gov.ua/dsszzi/control/uk/publish/article?art_id=77726">Проект наказу Адміністрації Держспецзв'язку та Держкомінфоматизації (2009)</a>,
+         <a href="https://zakon.rada.gov.ua/laws/show/z1401-12">1236/5/453 (2017)</a>.
+         Саме керуючись цими нормативними документами було створено файл KEP.asn1,
+         який є одним з трьох top-level файлів необхідниї для компіляції ASN.1 компілятором.
+         </p>
 
+         <p>Існує небагато безкоштовних та повних компіляторів (генераторів парсерів),
+            ASN.1 специфікацій. Erlang є прикладом система, до складу якої входить
+            першокласний безкоштовний з відкритою ліценцією ASN.1 компілятор. Тому
+            файли в ASN.1 нотації можуть бути зкомпільовані безпосередньо Erlang компілятором:</p>
+         <figure><code> $ erlc AuthenticationFramework.asn1
+ $ erlc InformationFramework.asn1
+ $ erlc KEP.asn1</code></figure>
+         <p>Створити файл підпису PKCS-7 можна за допомогою будь якої програми сертифікованої в Україні.
+            Найпростіше отримати свою КЕП печатку будучи клієнтом приватбанку. За допомогою
+            "Користувача ЦСК" компанії ІІТ ви можете підписувати файли використовуючи безкоштовну
+            форму приватного ключа у вигляді звичайного файлу.</p>
+         <p>Щоб показати як користуватися КЕП, та прочитати атрибутивну інформацію з сертифікату,
+            який вшитий в PCKS-7 повідомлення з криптографічним підписом:</p>
+         <figure><code>
+  def parseSignData(bin) do
+    {_, {:ContentInfo, _, ci}} = :KEP.decode(:ContentInfo, bin)
+    {:ok, {:SignedData, _, alg, x, c, x1, x2}} = :KEP.decode(:SignedData, ci)
+    parseSignDataCert({alg,x,c,x1,x2})
+  end
+
+  def parseSignDataCert({_,_,:asn1_NOVALUE,_,_}), do: []
+  def parseSignDataCert({_,_,[cert],_,_}), do: parseCert(cert)
+
+  def parseCert(cert) do
+    {:Certificate, a, _, _} = cert
+    {:Certificate_toBeSigned, _, _, _, issuer, _, issuee, _, _, _, _} = a
+    person = :lists.flatten(:erlang.element(2, issuee))
+    ca = :lists.flatten(:erlang.element(2, issuer))
+    {parseAttrs(person),parseAttrs(ca)}
+  end
+
+  def parseAttrs(attrs) do
+    certAttrs(
+      o: extract({2, 5, 4, 10}, attrs),
+      ou: extract({2, 5, 4, 11}, attrs),
+      title: extract({2, 5, 4, 12}, attrs),
+      cn: extract({2, 5, 4, 3}, attrs),
+      givenName: extract({2, 5, 4, 42}, attrs),
+      surname: extract({2, 5, 4, 4}, attrs),
+      locality: extract({2, 5, 4, 7}, attrs),
+      serial: extract({2, 5, 4, 5}, attrs),
+      c: extract({2, 5, 4, 6}, attrs)
+    )
+  end
+</code></figure>
+         <p>У результаті отримуємо наступний високорівневий інтерфейс:</p>
+         <figure><code> > {:ok,bin} = :file.read_file("priv/5HT.p7s")
+ > KEP.parseSignData bin
+ {{:certAttrs, "1786046", "СОХАЦЬКИЙ МАКСИМ ЕРОТЕЙОВИЧ",
+   "МАКСИМ ЕРОТЕЙОВИЧ", "СОХАЦЬКИЙ",
+   "СОХАЦЬКИЙ МАКСИМ ЕРОТЕЙОВИЧ",
+   "Електронна печатка", "", 'UA', "КИЇВ"},
+  {:certAttrs, "UA-14360570-2018", "АЦСК АТ КБ «ПРИВАТБАНК»",
+   "", "",
+   "АКЦІОНЕРНЕ ТОВАРИСТВО КОМЕРЦІЙНИЙ БАНК «ПРИВАТБАНК»",
+   "", "АЦСК", 'UA', "Київ"}}</code></figure>
     </section>
 </main>
 <footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2020</footer>
