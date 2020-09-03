@@ -57,10 +57,10 @@
         <p>Для начала хочу рассказать, что такое компьютер, с точки зрения каких
            критериев мы его представляем в этой статье.
            Компьютер это система из устройств:
-           1) процессор,
-           2) память,
-           3) видеокарта,
-           4) диск,
+           1) процессор;
+           2) память;
+           3) видеокарта;
+           4) диск;
            5) сетевая карта;
            6) система питания и другие технические модули;
            которые соединены определенным образом (обычно это шина или
@@ -69,8 +69,7 @@
            где компонуется вся электроника. В случае PCIe такой хаб называется корневой комплекс,
            куда сходятся все линии PCIe. Основной принцип DYI электроники &mdash; это
            максимально гибкая система расширений, позволяющая добавлять дополнительные устройства
-           в виде плат-расширений в специальные места которые подключены к шине или к хабу.
-           </p>
+           в виде плат-расширений в специальные места которые подключены к шине или к хабу.</p>
 
         <figure><figcaption>Cоединения компонент в типичном PC</figcaption>
                 <img src="img/PCIe.png?v=2" height=380></figure>
@@ -206,7 +205,7 @@
 
        <figure><table cellspacing=10>
        <thead>
-       <th>Socket</th><th>x/Vsn/DMI</th><th>Chip</th><th>Motherboard</th><th>CPU</th><th>Alternative CPU</th>
+       <th>Socket</th><th>x/PCIe/DMI</th><th>Chip</th><th>Motherboard</th><th>CPU</th><th>Alternative CPU</th>
        </thead>
        <tbody>
        <tr><td>LGA775</td><td>1.0/1.0</td><td>Q35</td><td>ATX P5E-VM DO</td><td>Q9650</td><td>ED-965, P4-672, D-960</td></tr>
@@ -234,7 +233,7 @@
 
        <figure><table cellspacing=10>
        <thead>
-       <th>Socket</th><th>x/Vsn/DMI</th><th>Chip</th><th>Motherboard</th><th>CPU</th><th>Alternative CPU</th>
+       <th>Socket</th><th>x/PCIe/DMI</th><th>Chip</th><th>Motherboard</th><th>CPU</th><th>Alternative CPU</th>
        </thead>
        <tbody>
        <tr><td>LGA3647</td><td>20/3.0/3.0</td><td>C621</td><td>CEB PRO WS C621</td><td>W-3275</td><td>Platinum 8280</td></tr>
@@ -263,6 +262,25 @@
           массивов &mdash; DeepCool Quadstellar. Всего 5 корпусов.</p>
 
        <h4>Видеокарты</h4>
+
+       <figure><table cellspacing=10>
+       <thead>
+       <th>Model</th><th>PCIe</th><th>Chip</th><th>Memory</th><th>Process</th><th>Transistors</th>
+       </thead>
+       <tbody>
+       <tr><td>8800 GTX</td><td>1.0</td><td>G80</td><td>768MB DDR3</td><td>90nm</td><td>681M</td></tr>
+       <tr><td>8800 GT</td><td>2.0</td><td>G92</td><td>1GB DDR3</td><td>65nm</td><td>754M</td></tr>
+       <tr><td>GTX 280</td><td>2.0</td><td>GT200</td><td>1GB DDR3</td><td>65nm</td><td>1.4B</td></tr>
+       <tr><td>GTX 340</td><td>2.0</td><td>GT215</td><td>1GB DDR5</td><td>40nm</td><td>727M</td></tr>
+       <tr><td>GTX 480</td><td>2.0</td><td>GF100</td><td>1.5GB DDR5</td><td>40nm</td><td>3B</td></tr>
+       <tr><td>GTX 580</td><td>2.0</td><td>GF110</td><td>3GB DDR5</td><td>40nm</td><td>3B</td></tr>
+       <tr><td>GTX 680</td><td>3.0</td><td>GK104</td><td>4GB DDR5</td><td>28nm</td><td>3540M</td></tr>
+       <tr><td>GTX 780 Ti</td><td>3.0</td><td>GK110</td><td>3GB DDR5</td><td>28nm</td><td>7080M</td></tr>
+       <tr><td>GTX 980 Ti</td><td>3.0</td><td>GM200</td><td>6GB DDR5</td><td>28nm</td><td>8B</td></tr>
+       <tr><td>GTX 1080 Ti</td><td>3.0</td><td>GP102</td><td>11GB DDR5</td><td>16nm</td><td>12B</td></tr>
+       <tr><td>RTX 2080 Ti</td><td>3.0</td><td>TU102</td><td>11GB DDR6</td><td>12nm</td><td>18.6B</td></tr>
+       <tr><td>RTX 3090</td><td>3.0</td><td>GA102</td><td>24GB DDR6</td><td>8nm</td><td>28B</td></tr>
+       </tbody></table></figure>
 
        <h4>Дисковые массивы</h4>
 
