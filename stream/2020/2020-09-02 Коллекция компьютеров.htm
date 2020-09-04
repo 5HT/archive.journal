@@ -37,7 +37,7 @@
            который требовал только печатную машинку и процессор уровня ARM32,
            теперь хочется занятся настоящими вычислительными задачами,
            которые требуют ресурсов уровня рабочих станций. В основном
-           я планирую заняться системами хранения NVMe с использованием spdk и RocksDB,
+           я планирую заняться системами хранения NVMe с использованием spdk и RocksDB/NVMe,
            а для строительства этих масивов нужны желательно невиртуальные диски,
            и побольше, речь идет о 32 линиях PCI Express (PCIe) для дисковой подсистемы.
            Поэтому денег это все, с учетом желания работать на современном
@@ -153,7 +153,9 @@
           3) версия PCIe: 1.0, 2.0, 3.0, 4.0.
           Первые коллекционные, рассматриваемые мной чипсеты, это первые чипсеты для PCIe,
           которые имели графическую шину 16 PCIe линий и были созданы для первых
-          процессоров Intel Core.</p>
+          процессоров Intel Core. Поскольку в рамках проекта RocksDB/NVMe нужны
+          диски M.2, можно ограничить коллекцию только версиями PCIe 3.0
+          и 4.0 (только эти версии поддерживают M.2 NVMe).</p>
 
        <p>Intel Core ведет свою родословную от процессоров Intel Pentium Pro (P6).
           Поколения 32-битных x86 процессоров Intel:
@@ -378,24 +380,47 @@
           памяти хоста, которая подключена к PCIe. Такие винчестеры
           не работают в Thunderbolt переходниках USB-to-PCIe. Нужно покупать только
           те NVMe которые предлагают показателти производительности близкие к
-          теоретическому пределу PCIe 3.0 (4ГБ/с), и максимально
-          не зависят от обьема передаваемых данных (большой DRAM/SLC кеш).
-          В 2020 году покупать NVMe меньше 1Т смысла нет, они быстрее, в них больше кеша,
+          теоретическому пределу PCIe 3.0 x4 (3938.5МБ/с), и максимально
+          не зависят от обьема передаваемых данных (SLC кеш),
+          DRAM кеш на 1Т обычно составляет 1ГБ.
+          В 2020 году покупать NVMe меньше 1Т смысла нет, они быстрее, в них больше SLC кеша,
           более качественные микросхемы, выгодная удельная стоимость единицы объема.</p>
-
 
        <figure><table cellspacing=10>
        <thead>
        <th>Model</th><th>PCIe</th><th>Size</th><th>Chip</th><th>Flash</th><th>MB/s</th><th>Lifetime</th>
        </thead>
        <tbody>
-       <tr><td>Samsung 970 EVO+</td><td>3.0&nbsp;x4</td><td>1T</td><td>Samsung Phoenix</td><td>64 TLC Samsung 256G</td><td>3500/3300</td><td>600T</td></tr>
+       <tr style="font-weight: bold;"><td>Samsung&nbsp;970&nbsp;EVO+</td><td>3.0&nbsp;x4</td><td>1T</td><td>Samsung&nbsp;Phoenix</td><td>64&nbsp;TLC&nbsp;Samsung&nbsp;256G</td><td>3500/3300</td><td>600T</td></tr>
        <tr><td>WS Black SN750</td><td>3.0&nbsp;x4</td><td>1T</td><td>SanDisk</td><td>64 TLC SanDisk 256G</td><td>3470/3000</td><td>600T</td></tr>
        <tr><td>Patriot VPN100</td><td>3.0&nbsp;x4</td><td>1T</td><td>Phison PS5012-E12</td><td>64 TLC Toshiba 256G</td><td>3450/3000</td><td>1665T</td></tr>
        <tr><td>Intel 760P</td><td>3.0&nbsp;x4</td><td>1T</td><td>SMI SM2262</td><td>64 TLC Intel 256G</td><td>3230/1625</td><td>576T</td></tr>
        <tr><td>ATADA XPG S11 Pro</td><td>3.0&nbsp;x4</td><td>1T</td><td>SMI SM2262EN</td><td>64 TLC Micron 512G</td><td>3500/3000</td><td>640T</td></tr>
        <tr><td>Transcend MTE220S</td><td>3.0&nbsp;x4</td><td>1T</td><td>SMI SM2262EN</td><td>64 TLC Micron 512G</td><td>3500/2800</td><td>640T</td></tr>
        <tr><td>Kingston KC2000</td><td>3.0&nbsp;x4</td><td>1T</td><td>SMI SM2262EN</td><td>96 TLC Toshiba 512G</td><td>3200/2200</td><td>600T</td></tr>
+       <tr><td>Sabrent Rocket</td><td>4.0&nbsp;x4</td><td>1T</td><td>Phison PS5016-E16</td><td>96 TLC Toshiba 512G</td><td>5000/4400</td><td>1800T</td></tr>
+       <tr><td>Corsair Force MP600</td><td>4.0&nbsp;x4</td><td>1T</td><td>Phison PS5016-E16</td><td>96 TLC Toshiba 512G</td><td>4950/2500</td><td>1800Т</td></tr>
+       <tr style="font-weight: bold;"><td>FireCUDA&nbsp;520</td><td>4.0&nbsp;x4</td><td>1T</td><td><nobr>Phison PS5016-E16</nobr></td><td>96 TLC Toshiba 512G</td><td>5000/4400</td><td>1800Т</td></tr>
+       <tr><td>ADATA GAMMIX S50</td><td>4.0&nbsp;x4</td><td>1T</td><td>Phison PS5016-E16</td><td>96 TLC Toshiba 512G</td><td>5000/4400</td><td>1800Т</td></tr>
+       </tbody></table></figure>
+
+       <p>Коллекционными считаются четырехканальные RAID-0 переходники
+          на 16 линий PCIe, т.е. четыре винчестера (если меньше &mdash; не берите).
+          Если на материнской плате остаются свободные х8 слоты и хочется их использовать для RAID,
+          то можно использовать x8 M.2 адаптеры на два винчестера.</p>
+
+       <figure><table cellspacing=10>
+       <thead>
+       <th>Model</th><th>PCIe</th>
+       </thead>
+       <tbody>
+       <tr style="font-weight: bold;"><td>ASUS Hyper M.2 V2</td><td>3.0&nbsp;x16</td></tr>
+       <tr style="font-weight: bold;"><td>ASUS Hyper M.2</td><td>4.0&nbsp;x16</td></tr>
+       <tr><td>ASRock ULTRA QUAD</td><td>3.0&nbsp;x16</td></tr>
+       <tr><td>AORUS Gen4 AIC</td><td>4.0&nbsp;x16</td></tr>
+       <tr><td>Startech x8 Dual M.2</td><td>3.0&nbsp;x8</td></tr>
+       <tr><td>Sonnet M.2 4x4</td><td>3.0&nbsp;x8</td></tr>
+       <tr><td>Synology M2D18</td><td>4.0&nbsp;x8</td></tr>
        </tbody></table></figure>
 
        <h4>Сеть</h4>
