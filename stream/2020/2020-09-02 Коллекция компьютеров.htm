@@ -147,7 +147,7 @@
 
        <h4>Структура коллекции</h4>
 
-       <p>Свою коллекцию вижу как подрешету нескольких измерений:
+       <p>Свою коллекцию вижу как подрешетку нескольких измерений:
           1) форм-фактор материнской платы: Mini-ITX (компактные), EEB/EATX/XLATX (рабочие станции);
           2) тип микропроцессорной архитектуры: Intel, AMD, ARM64, POWER9, RISC-V;
           3) версия PCIe: 3.0, 4.0 (версии, которые поддерживают NVMe M.2).
@@ -203,20 +203,49 @@
        односокетными и популярной стала минитюаризация, рынок наполнился Mini-ITX
        платами и энергоэффетивность стала важнее производительности.</p>
 
+       <p>Чипсет долгожитель для платформы Intel является Z370/X299, указан как единая спецификация,
+          потому, что X299 и Z370 в смысле южных мостов одинковы с точки зрения программирования,
+           они предлагают
+          следующую модель распределения своих 30 HSIO линий чипсета,
+          24 из которых мультиплексируются через свичи и лишь 16 из которых могут работать одноврменно!</p>
+
+       <p>1-6: USB <br>
+          7-9: USB/PCIe (3) <br>
+          10: USB/PCIe/LAN (1) <br>
+          11: PCIe/LAN (1) <br>
+          12-14: PCIe (3) <br>
+          15-16: PCIe/SATA (2) <br>
+          17: PCIe (1) <br>
+          18: PCIe/LAN (1) <br>
+          19: PCIe/LAN/SATA (1) <br>
+          20-24: PCIe/SATA (5) <br>
+          25-26: PCIe (2) <br>
+          27-30: PCIe RST (4)</p>
+
+       <P>Разница в чипсете X299 и Z370 лишь в количестве лининий, которыми может обладать процессор,
+          и которые будут разведены на материнской плате к PCIe портам (желательно без свичей). Эти
+          линий определяют сколько SLI карточек вы можете вставить одновременно (для полноценного
+          паралельного линка четырех x16 видеокарт нужно 64 линии PCIe это около 16 дисков NVMe
+          на которых можно построить RAID-0). К сожалению на десктопной платформе
+          LGA2066/X299 получить можно максимум 48 линий процессор, и то его стоимость будет $1K,
+          а материнская плата от $350 (Mini-ATX) до $700. Строить RAID-0 средствами VROC
+          может быть даже выгодней, потому, что вряд ли какая-то RAID-0 карточка может
+          быть лучше чем топовые Intel процессоры с мегабайтными кешами.</p>
+
        <figure><table cellspacing=10>
        <thead>
-       <th>Socket</th><th>x/PCIe/DMI</th><th>Chip</th><th>Motherboard</th><th>CPU</th><th>Alternative CPU</th>
+       <th>Platform</th><th>x/PCIe/DMI</th><th>Motherboard</th><th>CPU</th><th>Alternative CPU</th>
        </thead>
        <tbody>
-       <tr style="font-weight: bold;"><td>ZIF1331</td><td>24/4.0</td><td>X570</td><td>mITX STRIX X570-I</td><td>Rizen 9</td><td></td></tr>
-       <tr style="font-weight: bold;"><td>LGA1151</td><td>24/3.0/3.0</td><td>Z370</td><td>mITX STRIX Z370-I</td><td>i7-8700K</td><td>i9-9900K</td></tr>
-       <tr style="font-weight: bold;"><td>LGA2066</td><td>24/3.0/3.0</td><td>X299</td><td>mITX ASRock X299E-ITX/ac</td><td>i7-9800X</td><td>i9-10980XE</td></tr>
-       <tr><td>LGA2011-v3</td><td>8/3.0/2.0</td><td>X99</td><td>mITX ASRock X99E-ITX/ac</td><td>i7-6950X</td><td>E5-4669 v4</td></tr>
-       <tr><td>LGA1150</td><td>8/3.0/2.0</td><td>Z97</td><td>mITX MAXIMUS VII IMPACT</td><td>i7-4790K</td><td>E3-1286 v3</td></tr>
-       <tr><td>LGA1155</td><td>8/3.0/2.0</td><td>Z77</td><td>mITX P8Z77-I DELUXE</td><td>i7-3770K</td><td>E3-1245 v2</td></tr>
-       <!--tr><td>LGA1151</td><td>24/3.0/3.0</td><td>Z270</td><td>mITX STRIX Z270</td><td>i7-7700K</td><td></td></tr-->
-       <!--tr><td>LGA775</td><td>1.0/1.0</td><td>Q35</td><td>ATX P5E-VM DO</td><td>Q9650</td><td>ED-965, P4-672, D-960</td></tr>
-       <tr><td>LGA775</td><td>1.0/1.0</td><td>Q45</td><td>ATX P5Q-EM DO</td><td>Q9650</td><td>ED-965</td></tr-->
+       <tr style="font-weight: bold;"><td>ZIF1331/X570</td><td>24/4.0</td><td>mITX STRIX X570-I</td><td>Rizen 9</td><td></td></tr>
+       <tr style="font-weight: bold;"><td>LGA1151/Z370</td><td>24/3.0/3.0</td><td>mITX STRIX Z370-I</td><td>i7-8700K</td><td>i9-9900K</td></tr>
+       <tr style="font-weight: bold;"><td>LGA2066/X299</td><td>24/3.0/3.0</td><td>mITX ASRock X299E-ITX/ac</td><td>i7-9800X</td><td>i9-10980XE</td></tr>
+       <tr><td>LGA2011-v3/X99</td><td>8/3.0/2.0</td><td>mITX ASRock X99E-ITX/ac</td><td>i7-6950X</td><td>E5-4669 v4</td></tr>
+       <tr><td>LGA1150/Z97</td><td>8/3.0/2.0</td><td>mITX MAXIMUS VII IMPACT</td><td>i7-4790K</td><td>E3-1286 v3</td></tr>
+       <tr><td>LGA1155/Z77</td><td>8/3.0/2.0</td><td>mITX P8Z77-I DELUXE</td><td>i7-3770K</td><td>E3-1245 v2</td></tr>
+       <!--tr><td>LGA1151/Z270</td><td>24/3.0/3.0</td><td>mITX STRIX Z270</td><td>i7-7700K</td><td></td></tr-->
+       <!--tr><td>LGA775/Q35</td><td>1.0/1.0</td><td>ATX P5E-VM DO</td><td>Q9650</td><td>ED-965, P4-672, D-960</td></tr>
+       <tr><td>LGA775/Q45</td><td>1.0/1.0</td><td>ATX P5Q-EM DO</td><td>Q9650</td><td>ED-965</td></tr-->
        </tbody></table></figure>
 
        <p>Несколько комментариев по поводу это таблицы. Здесь собраны все интересные для меня
@@ -231,16 +260,20 @@
 
        <p>На рынке серверных процессоров увеличение ядер шло еще более бодрыми темпами,
           для увеличивающегося количества PCIe линий, нужно было больше ядер, и это
-          стало основным приоритетом для эволюции действительно многоядерных архитектур.</p>
+          стало основным приоритетом для эволюции действительно многоядерных архитектур.
+          Mac Pro на платформе LGA3647 (Xeon-W) были построены с ипользованием чипсета C261,
+          поэтому если хочется максимально
+          оригинальный Хакинтош, то Dominus Extreme за $1800 разве звучит как разумный выбор?
+          Я сосредоточил свой фокус на Альфа и Омеге материнских плат для рабочих станций от ASUS.</p>
 
        <figure><table cellspacing=10>
        <thead>
-       <th>Socket</th><th>x/PCIe/DMI</th><th>Chip</th><th>Motherboard</th><th>CPU</th><th>Alternative CPU</th>
+       <th>Platform</th><th>x/PCIe/DMI</th><th>Motherboard</th><th>CPU</th><th>Alternative CPU</th>
        </thead>
        <tbody>
-       <tr style="font-weight: bold;"><td>LGA4094</td><td>88/4.0</td><td>TRX40</td><td>Zenith II Extreme Alpha</td><td>3990X</td><td></td></tr>
-       <tr><td>LGA3647</td><td>64/3.0/3.0</td><td>C621</td><td>Aorus/Dominus Extreme</td><td>W-3275</td><td>Platinum 8280</td></tr>
-       <tr style="font-weight: bold;"><td>LGA2066</td><td>48/3.0/3.0</td><td>X299</td><td>Rampage VI Extreme Omega</td><td>i9-10980XE</td><td></td></tr>
+       <tr style="font-weight: bold;"><td>LGA4094/TRX40</td><td>88/4.0</td><td>Zenith II Extreme Alpha</td><td>3990X</td><td></td></tr>
+       <tr><td>LGA3647/C621</td><td>64/3.0/3.0</td><td>Aorus/Dominus Extreme</td><td>W-3275</td><td>Platinum 8280</td></tr>
+       <tr style="font-weight: bold;"><td>LGA2066/X299</td><td>48/3.0/3.0</td><td>Rampage VI Extreme Omega</td><td>i9-10980XE</td><td></td></tr>
        </tbody></table></figure>
 
        <p><b>Процессоры</b></p>
@@ -363,6 +396,12 @@
           подключенные к корневому комплексу. В случае mITX систем,
           придется вытаскивать на время GPU и вставлять M.2 RAID-0
           в единственный x16 слот.</p>
+
+       <figure>
+         <img src="img/QS-1.jpg" height=200>
+         <img src="img/QS-2.jpg" height=200>
+         <img src="img/QS-3.jpg" height=200>
+       </figure>
 
        <p>M.2 слоты подключенные к проприетарному мосту типа DMI,
           можно использовать для единичных x4 NVMe инстансов, как загрузочные диски
