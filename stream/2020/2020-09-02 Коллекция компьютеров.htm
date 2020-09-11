@@ -372,6 +372,9 @@
 
        <p><b>Серия Rampage VI</b></p>
 
+       <p>На примере сериии материнских плат Rampage VI для X-Series процессоров Intel покажем
+          как производители компонуют PCIe линии.</p>
+
        <p>Первая плата Rampage VI Apex была представлена на COMPUTEX в 2017 году.
           Через пол года вышла версия с U.2 портом Rampage VI Extreme.
           Через два года, на CES в 2019 была представлена плата Rampage VI Omega
@@ -383,19 +386,38 @@
 
         <p><b>RAMPAGE VI APEX Q1 2017</b></p>
 
-        <figure><img style="padding: 20px" src="img/RAMPAGE VI APEX.svg?v=1" height=300></figure>
+        <p>Достаточно классическая и минималистичная конфигурация с двумя полными x16 слотами
+           и еще одним дисковым массивом для VROC на DIMM.2 слоте на два NVMe x4. И еще остается
+           один x4 PCIe слот для карты расширения, куда можно вставить NVMe x4. Таким
+           образом можно сказать что эта плата спроектирована для процессоров с 44 линиями
+           и позволяют строить SLI x16 конфигурации + VROC 3x RAID-0.</p>
+
+        <figure><img style="padding: 20px" src="img/RAMPAGE VI APEX.svg?v=2" height=300></figure>
 
         <p><b>RAMPAGE VI EXTREME Q3 2017</b></p>
 
-        <figure><img style="padding: 20px" src="img/RAMPAGE VI EXTREME.svg?v=1" height=300></figure>
+        <p>На мой взгляд переусложненная конфигурация с большим количеством PCIe свичей,
+           но с дополнительной опцией в виде U.2 порта (правда придется пожертвовать одним
+           диском в VROC массиве), и дополнительного M.2 сокета на X299 чипсете, который
+           обычно используется для загрузочных дисков.</p>
+
+        <figure><img style="padding: 20px" src="img/RAMPAGE VI EXTREME.svg?v=2" height=300></figure>
 
         <p><b>RAMPAGE VI EXTREME OMEGA Q1 2019</b></p>
+
+        <p>Омега вернула былую простоту разводки APEX, так же есть M.2 слот на X299 и U.2 слот,
+           который так же конфликтует с 3x VROC массивом, но при этом не с DIMM с еще одним дополнительным M.2
+           разеведенный на процессор. Второй M.2 конфликтует с PCIe x4 слотом.</p>
 
         <figure><img style="padding: 20px" src="img/RAMPAGE VI EXTREME OMEGA.svg?v=1" height=300></figure>
 
         <p><b>RAMPAGE VI EXTREME ENCORE Q3 2019</b></p>
 
+        <p>Последняя ревизия платы без U.2 слота, с обеими M.2 дисками разведенными на X299.</p>
+
         <figure><img style="padding: 20px" src="img/RAMPAGE VI EXTREME ENCORE.svg?v=1" height=300></figure>
+
+        <br><br>
 
        <hr>
 
