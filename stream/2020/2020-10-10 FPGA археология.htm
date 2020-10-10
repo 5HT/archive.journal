@@ -122,6 +122,28 @@
 
            <figure><img width=600 src="https://pbs.twimg.com/media/EjoF6AdWkAEv0MF?format=png&name=small"></figure>
 
+           <p></p>
+
+       <figure><figcaption>Команды графического сопроцессора Yamaha VDP-V9938</figcaption><table cellspacing=10>
+       <thead>
+       <th>Команда</th><th>Описание</th><th>Регистры</th>
+       </thead>
+       <tbody>
+       <tr><td>HMMC</td><td>Fill VRAM From CPU</td><td>36-46</td></tr>
+       <tr><td>YMMM</td><td>Fast Copy (Y axis)</td><td>34-39,42-26</td></tr>
+       <tr><td>HMMM</td><td>Fast Copy</td><td>32-46</td></tr>
+       <tr><td>HMMV</td><td>Fill</td><td>36-46</td></tr>
+       <tr><td>LMMC</td><td>Logical Fill VRAM From CPU</td><td>36-46</td></tr>
+       <tr><td>LMCM</td><td>Logical transfer data to CPU</td><td>32-35,40-46</td></tr>
+       <tr><td>LMMM</td><td>Logical Vram to VRAM</td><td>32-46</td></tr>
+       <tr><td>LMMV</td><td>Logical Fill</td><td>36-46</td></tr>
+       <tr><td>LINE</td><td>Line</td><td>36-46</td></tr>
+       <tr><td>SRCH</td><td>Search (Xaxis)</td><td>32-36,44-46</td></tr>
+       <tr><td>PSET</td><td>Pset</td><td>36-39,44-46</td></tr>
+       <tr><td>POINT</td><td>Read Point</td><td>32-36,44-46</td></tr>
+       <tr><td>STOP</td><td>Async Cancel</td><td>46</td></tr>
+       </tbody></table></figure>
+
        <h4>PDP-11/70 на Arty A7</h4>
 
         <p>К сожалению бренда, который бы продвигал культовый PDP-11/70 нет. Делают какие-то дети игрушки на Raspberry Pie,
