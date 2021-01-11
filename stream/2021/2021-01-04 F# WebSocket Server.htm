@@ -122,13 +122,15 @@
         <h4>Архитектура асинхронных процессов</h4>
 
         <p>Для тех, кто знаком с архитектурой Erlang/OTP, известно, что проектирование сетевых приложений
-           начинается с дерева легковесных процессов и протоколов которые определяют их взаимодействие.
-           Подчиненный дочерние процессы обычно разделяют токены времени жизни <b>CancellationToken</b>,
+           начинается с дерева супервижина легковесных процессов и протоколов которые определяют их взаимодействие.
+           Подчиненные дочерние процессы обычно разделяют токены времени жизни <b>CancellationToken</b>,
            благодаря чему исключения возникшие в родительских процессах могут отменить все дерево подпроцессов.</p>
 
         <figure><figcaption>Дерево супервижина F# WebSocket Server</figcaption>
         <code>
-       [S]
+     [start]
+        |
+       [S]---[Sup]
       /   \
     [C]   [H]
     /  \  /
@@ -136,38 +138,50 @@
         </code>
         </figure>
 
+        <p>Легенда этого дерева такова:
+           [start] нода представляет собой точку входа, из которой будут рождаться остальные асинхронные
+                   процессы, соотвествует функции <b>start</b></p>;
+           [S] нода соовтествует асинхронному процессу, который представлен функцией <b>listen</b>;
+           [Sup] нода соотвествует функции <b>startSupervisor</b>;
+           [C] нода соотвествует функции <b>startClient</b>;
+           [H] нода соотвествует функции <b>heartbeat</b>;
+           [L] нода соотвествует функции <b>loop</b>;
+           [T] нода соотвествует функции <b>telemetry</b>.
+
+        <h4>Протоколы взаимодействия</h4>
+
+        <figure>
+        <code>
+module Types =
+
+    type Msg =
+        | Bin of byte array
+        | Text of string
+        | Nope
+
+    type Sup =
+        | Connect of MailboxProcessor<Msg> * WebSocket
+        | Disconnect of MailboxProcessor<Msg>
+        | Close of WebSocket
+        | Tick
+        </code>
+        </figure>
+
         <h4>Сервер</h4>
 
         <figure>
         <code>
-namespace N2O
-
-open System
-open System.IO
-open System.Net
-open System.Net.Sockets
-open System.Net.WebSockets
-open System.Threading
-
-[&lt;AutoOpen>]
-module Server =
-
-    let mutable interval = 5000
-    let mutable ticker = true // enable server-initiated Tick messages
-        </code>
-        </figure>
-
-
-        <figure>
-        <code>
-    let startClient (tcp: TcpClient) (sup: MailboxProcessor&lt;Sup>) (ct: CancellationToken) =
+    let startClient (tcp: TcpClient)
+                    (sup: MailboxProcessor&lt;Sup>)
+                    (ct: CancellationToken) =
         MailboxProcessor.Start(
             (fun (inbox: MailboxProcessor&lt;Msg>) ->
                 async {
-                    let ns = tcp.GetStream()
-                    let size = tcp.ReceiveBufferSize
+                    let ns    = tcp.GetStream()
+                    let size  = tcp.ReceiveBufferSize
                     let bytes = Array.create size (byte 0)
-                    let! len = ns.ReadAsync(bytes, 0, bytes.Length) |> Async.AwaitTask
+                    let! len  = ns.ReadAsync(bytes, 0, bytes.Length)
+                                |> Async.AwaitTask
                     let lines = getLines bytes len
                     match isWebSocketsUpgrade lines with
                     | true ->
@@ -176,7 +190,7 @@ module Server =
                             WebSocket.CreateFromStream(
                                 (ns :> Stream), true, "n2o", TimeSpan(1, 0, 0))
                         sup.Post(Connect(inbox, ws))
-                        if ticker then Async.StartImmediate(telemetry ws inbox ct sup, ct)
+                        if ticker then Async.Start(telemetry ws inbox ct sup, ct)
                         return! looper ws size ct sup
                     | _ -> tcp.Close()
                 }),
@@ -186,7 +200,9 @@ module Server =
         </figure>
         <figure>
         <code>
-    let heartbeat (interval: int) (ct: CancellationToken) (sup: MailboxProcessor&lt;Sup>) =
+    let heartbeat (interval: int)
+                  (ct: CancellationToken)
+                  (sup: MailboxProcessor&lt;Sup>) =
         async {
             while not ct.IsCancellationRequested do
                 do! Async.Sleep interval
@@ -196,7 +212,9 @@ module Server =
         </figure>
         <figure>
         <code>
-    let listen (listener: TcpListener) (ct: CancellationToken) (sup: MailboxProcessor&lt;Sup>) =
+    let listen (listener: TcpListener)
+               (ct: CancellationToken)
+               (sup: MailboxProcessor&lt;Sup>) =
         async {
             while not ct.IsCancellationRequested do
                 let! client = listener.AcceptTcpClientAsync() |> Async.AwaitTask
@@ -249,18 +267,6 @@ module Server =
         </figure>
 
         <h4>Прелюдия протокола RFC 6455</h4>
-
-        </code>
-        </figure>
-        <figure>
-        <code>
-
-        <figure>
-        <code>
-        </code>
-        </figure>
-
-        
 
         <h4>Стримы</h4>
 
