@@ -23,9 +23,9 @@
 
         <p>Идея писать веб-сервера и веб-фреймворки на всех языках у меня возникла с тех пор,
            когда я понял, что то что я сделал для Erlang: направление фреймворков
-           для предприятий под общим брендом N2O, а сейчас в виде <a href="https://n2o.dev">N2O.DEV</a>;
+           для предприятий под общим брендом N2O, а сейчас в виде <a href="https://n2o.dev">n2o.dev</a>;
            вполне применимо и для других языков и платформ. В этой статье представлена версия
-           вебсокет-сервера для языка программирования F# &mdash; <a href="https://ws.erp.uno">WS.ERP.UNO</a>.</p>
+           вебсокет-сервера для языка программирования F# &mdash; <a href="https://ws.erp.uno">ws.erp.uno</a>.</p>
 
         <h4>Предисловие</h4>
 
@@ -88,7 +88,7 @@
            9) и так далее.</p>
 
         <p>Основополагающей статье по F# async я бы назвал <a href="https://medium.com/@eulerfx/f-async-guide-eb3c8a2d180a">F# Async Guide</a> Лео Городинского,
-           <a href="https://JET.COM">JET.COM</a>. Основной презентацией по F# Async я бы назвал
+           <a href="https://jet.com">jet.com</a>. Основной презентацией по F# Async я бы назвал
            доклад Дона Сайма на митапе в Лондоне &mdash;
           <a href="https://www.erlang-factory.com/upload/presentations/270/FSharp-ef.pdf">Some F#
            for the Erlang programmer</a>. Основной книгой, которую я бы порекомендовал
@@ -119,7 +119,7 @@
         </code>
         </figure>
 
-        <h4>Архитектура асик циклов</h4>
+        <h4>Архитектура асинхронных процессов</h4>
 
         <p>Для тех, кто знаком с архитектурой Erlang/OTP, известно, что проектирование сетевых приложений
            начинается с дерева легковесных процессов и протоколов которые определяют их взаимодействие.
@@ -136,13 +136,124 @@
         </code>
         </figure>
 
-
-        <h4>Прелюдия протокола RFC 6455</h4>
+        <h4>Сервер</h4>
 
         <figure>
         <code>
+namespace N2O
+
+open System
+open System.IO
+open System.Net
+open System.Net.Sockets
+open System.Net.WebSockets
+open System.Threading
+
+[&lt;AutoOpen>]
+module Server =
+
+    let mutable interval = 5000
+    let mutable ticker = true // enable server-initiated Tick messages
         </code>
         </figure>
+
+
+        <figure>
+        <code>
+    let startClient (tcp: TcpClient) (sup: MailboxProcessor&lt;Sup>) (ct: CancellationToken) =
+        MailboxProcessor.Start(
+            (fun (inbox: MailboxProcessor&lt;Msg>) ->
+                async {
+                    let ns = tcp.GetStream()
+                    let size = tcp.ReceiveBufferSize
+                    let bytes = Array.create size (byte 0)
+                    let! len = ns.ReadAsync(bytes, 0, bytes.Length) |> Async.AwaitTask
+                    let lines = getLines bytes len
+                    match isWebSocketsUpgrade lines with
+                    | true ->
+                        do! ns.AsyncWrite (handshake lines)
+                        let ws =
+                            WebSocket.CreateFromStream(
+                                (ns :> Stream), true, "n2o", TimeSpan(1, 0, 0))
+                        sup.Post(Connect(inbox, ws))
+                        if ticker then Async.StartImmediate(telemetry ws inbox ct sup, ct)
+                        return! looper ws size ct sup
+                    | _ -> tcp.Close()
+                }),
+            cancellationToken = ct
+        )
+        </code>
+        </figure>
+        <figure>
+        <code>
+    let heartbeat (interval: int) (ct: CancellationToken) (sup: MailboxProcessor&lt;Sup>) =
+        async {
+            while not ct.IsCancellationRequested do
+                do! Async.Sleep interval
+                sup.Post(Tick)
+        }
+        </code>
+        </figure>
+        <figure>
+        <code>
+    let listen (listener: TcpListener) (ct: CancellationToken) (sup: MailboxProcessor&lt;Sup>) =
+        async {
+            while not ct.IsCancellationRequested do
+                let! client = listener.AcceptTcpClientAsync() |> Async.AwaitTask
+
+                client.NoDelay &lt;- true
+                startClient client sup ct |> ignore
+        }
+        </code>
+        </figure>
+        <figure>
+        <code>
+    let startSupervisor (ct: CancellationToken) =
+        MailboxProcessor.Start(
+            (fun (inbox: MailboxProcessor&lt;Sup>) ->
+                let listeners = ResizeArray&lt;_>()
+                async {
+                    while not ct.IsCancellationRequested do
+                        match! inbox.Receive() with
+                        | Close ws -> ()
+                        | Connect (l, ns) -> listeners.Add(l)
+                        | Disconnect l -> listeners.Remove(l) |> ignore
+                        | Tick -> listeners.ForEach(fun l -> l.Post Nope)
+                }),
+            cancellationToken = ct
+        )
+        </code>
+        </figure>
+        <figure>
+        <code>
+    let start (addr: string) (port: int) =
+        let cts = new CancellationTokenSource()
+        let token = cts.Token
+        let sup = startSupervisor token
+        let listener = TcpListener(IPAddress.Parse(addr), port)
+
+        try
+            listener.Start(10)
+        with
+            | :? SocketException ->
+                failwithf "%s:%i is using by another program" addr port
+            | err ->
+                failwithf "%s" err.Message
+
+        Async.StartImmediate(listen listener token sup, token)
+        if ticker then Async.StartImmediate(heartbeat interval token sup, token)
+
+        { new IDisposable with
+            member x.Dispose() = cts.Cancel() }
+        </code>
+        </figure>
+
+        <h4>Прелюдия протокола RFC 6455</h4>
+
+        </code>
+        </figure>
+        <figure>
+        <code>
 
         <figure>
         <code>
@@ -150,13 +261,6 @@
         </figure>
 
         
-
-        <h4>Сервер</h4>
-
-        <figure>
-        <code>
-        </code>
-        </figure>
 
         <h4>Стримы</h4>
 
