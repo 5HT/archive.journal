@@ -87,13 +87,13 @@
            8) ECMAScript async 2017<br>
            9) и так далее.</p>
 
-        <p>Основополагающей статье по F# async я бы назвал F# Async Guid Лео Городинского,
+        <p>Основополагающей статье по F# async я бы назвал <a href="https://medium.com/@eulerfx/f-async-guide-eb3c8a2d180a">F# Async Guide</a> Лео Городинского,
            <a href="https://JET.COM">JET.COM</a>. Основной презентацией по F# Async я бы назвал
            доклад Дона Сайма на митапе в Лондоне &mdash;
           <a href="https://www.erlang-factory.com/upload/presentations/270/FSharp-ef.pdf">Some F#
            for the Erlang programmer</a>. Основной книгой, которую я бы порекомендовал
-           тоже полистать &mdash; это <b>"Expert F# 4.0"</b> автора языка Дона Сайма. Вооружившись этими документами
-           и <a href="https://gist.github.com/sgtz/95e7db96fd0858a28b5a/stargazers">этим
+           полистать перед знакомством с F# &mdash; это <b>"Expert F# 4.0"</b> автора языка Дона Сайма.
+           Вооружившись этими документами и <a href="https://gist.github.com/sgtz/95e7db96fd0858a28b5a/stargazers">этим
            Gist сниппетом</a> я ухал во Львов писать самый идиоматичный вебсокет-сервер.</p>
 
         <h4>Витрина</h4>
@@ -119,7 +119,51 @@
         </code>
         </figure>
 
+        <h4>Архитектура асик циклов</h4>
+
+        <p>Для тех, кто знаком с архитектурой Erlang/OTP, известно, что проектирование сетевых приложений
+           начинается с дерева легковесных процессов и протоколов которые определяют их взаимодействие.
+           Подчиненный дочерние процессы обычно разделяют токены времени жизни <b>CancellationToken</b>,
+           благодаря чему исключения возникшие в родительских процессах могут отменить все дерево подпроцессов.</p>
+
+        <figure><figcaption>Дерево супервижина F# WebSocket Server</figcaption>
+        <code>
+       [S]
+      /   \
+    [C]   [H]
+    /  \  /
+  [L]  [T]
+        </code>
+        </figure>
+
+
+        <h4>Прелюдия протокола RFC 6455</h4>
+
+        <figure>
+        <code>
+        </code>
+        </figure>
+
+        <figure>
+        <code>
+        </code>
+        </figure>
+
+        
+
         <h4>Сервер</h4>
+
+        <figure>
+        <code>
+        </code>
+        </figure>
+
+        <h4>Стримы</h4>
+
+        <figure>
+        <code>
+        </code>
+        </figure>
 
     </section>
 </main>
