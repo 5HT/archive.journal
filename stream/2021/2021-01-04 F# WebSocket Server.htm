@@ -112,10 +112,13 @@
         <figure>
         <code>
   open N2O
+
   module Program =
+
     [&lt;EntryPoint>]
     let main _ =
         let mutable ret = 0
+
         try Stream.protocol &lt;- fun x -> x
             use ws = Server.start "0.0.0.0" 1900
             System.Threading.Thread.Sleep -1
