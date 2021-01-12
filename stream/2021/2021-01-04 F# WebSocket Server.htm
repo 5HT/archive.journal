@@ -213,7 +213,6 @@
         </code>
         </figure>
 
-
         <figure>
         <code>
     let startClient (tcp: TcpClient)
@@ -243,6 +242,58 @@
         )
         </code>
         </figure>
+
+        <h4>Сервер</h4>
+
+        <p>Точка входа.</p>
+
+        <figure>
+        <code>
+    let start (addr: string) (port: int) =
+        let cts = new CancellationTokenSource()
+        let token = cts.Token
+        let sup = startSupervisor token
+        let listener = TcpListener(IPAddress.Parse(addr), port)
+
+        try
+            listener.Start(10)
+        with
+            | :? SocketException ->
+                failwithf "%s:%i is using by another program" addr port
+            | err ->
+                failwithf "%s" err.Message
+
+        Async.StartImmediate(listen listener token sup, token)
+        if ticker then Async.StartImmediate(heartbeat interval token sup, token)
+
+        { new IDisposable with
+            member x.Dispose() = cts.Cancel() }
+        </code>
+        </figure>
+
+        <p>Супервизор</p>
+
+        <figure>
+        <code>
+    let startSupervisor (ct: CancellationToken) =
+        MailboxProcessor.Start(
+            (fun (inbox: MailboxProcessor&lt;Sup>) ->
+                let listeners = ResizeArray&lt;_>()
+                async {
+                    while not ct.IsCancellationRequested do
+                        match! inbox.Receive() with
+                        | Close ws -> ()
+                        | Connect (l, ns) -> listeners.Add(l)
+                        | Disconnect l -> listeners.Remove(l) |> ignore
+                        | Tick -> listeners.ForEach(fun l -> l.Post Nope)
+                }),
+            cancellationToken = ct
+        )
+        </code>
+        </figure>
+
+        <p>Хартбит и TcpListener.</p>
+
         <figure>
         <code>
     let heartbeat (interval: int)
@@ -256,27 +307,22 @@
         </code>
         </figure>
 
-        <h4>Сервер</h4>
-
         <figure>
         <code>
-    let sendBytes (ws: WebSocket) ct bytes =
-        ws.SendAsync(ArraySegment&lt;byte>(bytes),
-            WebSocketMessageType.Binary, true, ct) |> ignore
-        </code>
-        </figure>
-
-        <figure>
-        <code>
-    let send ws ct (msg: Msg) =
+    let listen (listener: TcpListener)
+               (ct: CancellationToken)
+               (sup: MailboxProcessor&lt;Sup>) =
         async {
-            match msg with
-            | Text text -> sendBytes ws ct (Encoding.UTF8.GetBytes text)
-            | Bin arr -> sendBytes ws ct arr
-            | Nope -> ()
+            while not ct.IsCancellationRequested do
+                let! client = listener.AcceptTcpClientAsync() |> Async.AwaitTask
+
+                client.NoDelay &lt;- true
+                startClient client sup ct |> ignore
         }
         </code>
         </figure>
+
+        <p>Телеметрия и главный вебсокет цикл обработки сообщений</p>
 
         <figure>
         <code>
@@ -332,65 +378,25 @@
         </code>
         </figure>
 
+        <p>Функции терминации канала</p>
+
         <figure>
         <code>
-    let listen (listener: TcpListener)
-               (ct: CancellationToken)
-               (sup: MailboxProcessor&lt;Sup>) =
+    let sendBytes (ws: WebSocket) ct bytes =
+        ws.SendAsync(ArraySegment&lt;byte>(bytes),
+            WebSocketMessageType.Binary, true, ct) |> ignore
+        </code>
+        </figure>
+
+        <figure>
+        <code>
+    let send ws ct (msg: Msg) =
         async {
-            while not ct.IsCancellationRequested do
-                let! client = listener.AcceptTcpClientAsync() |> Async.AwaitTask
-
-                client.NoDelay &lt;- true
-                startClient client sup ct |> ignore
+            match msg with
+            | Text text -> sendBytes ws ct (Encoding.UTF8.GetBytes text)
+            | Bin arr -> sendBytes ws ct arr
+            | Nope -> ()
         }
-        </code>
-        </figure>
-        <figure>
-        <code>
-    let startSupervisor (ct: CancellationToken) =
-        MailboxProcessor.Start(
-            (fun (inbox: MailboxProcessor&lt;Sup>) ->
-                let listeners = ResizeArray&lt;_>()
-                async {
-                    while not ct.IsCancellationRequested do
-                        match! inbox.Receive() with
-                        | Close ws -> ()
-                        | Connect (l, ns) -> listeners.Add(l)
-                        | Disconnect l -> listeners.Remove(l) |> ignore
-                        | Tick -> listeners.ForEach(fun l -> l.Post Nope)
-                }),
-            cancellationToken = ct
-        )
-        </code>
-        </figure>
-
-        <figure>
-        <code>
-    let start (addr: string) (port: int) =
-        let cts = new CancellationTokenSource()
-        let token = cts.Token
-        let sup = startSupervisor token
-        let listener = TcpListener(IPAddress.Parse(addr), port)
-
-        try
-            listener.Start(10)
-        with
-            | :? SocketException ->
-                failwithf "%s:%i is using by another program" addr port
-            | err ->
-                failwithf "%s" err.Message
-
-        Async.StartImmediate(listen listener token sup, token)
-        if ticker then Async.StartImmediate(heartbeat interval token sup, token)
-
-        { new IDisposable with
-            member x.Dispose() = cts.Cancel() }
-        </code>
-        </figure>
-
-        <figure>
-        <code>
         </code>
         </figure>
 
