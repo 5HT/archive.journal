@@ -427,11 +427,7 @@
     let sendBytes (ws: WebSocket) ct bytes =
         ws.SendAsync(ArraySegment&lt;byte>(bytes),
             WebSocketMessageType.Binary, true, ct) |> ignore
-        </code>
-        </figure>
 
-        <figure>
-        <code>
     let send ws ct (msg: Msg) =
         async {
             match msg with
