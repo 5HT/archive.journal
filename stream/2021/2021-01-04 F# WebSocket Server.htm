@@ -204,10 +204,14 @@
             |> fun hs -> hs.Split([| "\r\n" |], StringSplitOptions.RemoveEmptyEntries)
         else
             [||]
+        </code>
+        </figure>
 
         <p>Функция RFC 6455 ответа называется <b>handshake</b>. Этой функциональности
            насколько мне известно нет в системных неймспейсах.</p>
 
+        <figure>
+        <code>
     let acceptString6455 acceptCode =
         "HTTP/1.1 101 Switching Protocols\r\n" +
         "Upgrade: websocket\r\n" +
@@ -433,6 +437,11 @@
         }
         </code>
         </figure>
+
+        <h4>Благодарности</h4>
+
+        <p>Хочется поблагодарить всех, кто ставил лайки нашему проекту, а осоебнно Филипа Картера,
+           програмного менеджера .NET и F# &heart;</p>
 
         <h4>Авторы</h4>
 
