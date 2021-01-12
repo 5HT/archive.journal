@@ -162,8 +162,6 @@
         <p>Процесы [T], [L] и [C] разделяют WebSocket стрим и все связаны с супервизором сервера, нотифицируя его
            в случае возникновения исключений.</p>
 
-        </code>
-        </figure>
         <figure>
         <code>
     type Msg =
@@ -172,10 +170,89 @@
         | Nope
 
     type Sup =
-        | Connect of MailboxProcessor<Msg> * WebSocket
-        | Disconnect of MailboxProcessor<Msg>
+        | Connect of MailboxProcessor&lt;Msg> * WebSocket
+        | Disconnect of MailboxProcessor&lt;Msg>
         | Close of WebSocket
         | Tick
+        </code>
+        </figure>
+
+        <h4>RFC 6455 Хендшейк</h4>
+
+        <figure>
+        <code>
+    let isWebSocketsUpgrade (lines: string array) =
+        Array.exists (fun (x:string) -> "upgrade: websocket" = x.ToLower()) lines
+
+    let getKey (key: String) arr =
+        try let f (s: String) = s.StartsWith(key)
+            (Array.find f arr).[key.Length + 1..]
+        with _ -> ""
+
+    let getLines (bytes: Byte []) len =
+        if len > 8 then
+            bytes.[..(len - 9)]
+            |> UTF8Encoding.UTF8.GetString
+            |> fun hs -> hs.Split([| "\r\n" |], StringSplitOptions.RemoveEmptyEntries)
+        else
+            [||]
+
+    let acceptString6455 acceptCode =
+        "HTTP/1.1 101 Switching Protocols\r\n" +
+        "Upgrade: websocket\r\n" +
+        "Connection: Upgrade\r\n" +
+        "Sec-WebSocket-Accept: " + acceptCode + "\r\n\r\n"
+
+    let handshake lines =
+        (getKey "Sec-WebSocket-Key:" lines) + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
+        |> Encoding.ASCII.GetBytes
+        |> SHA1CryptoServiceProvider.Create().ComputeHash
+        |> Convert.ToBase64String
+        |> acceptString6455
+        |> Encoding.ASCII.GetBytes
+        </code>
+        </figure>
+
+
+        <figure>
+        <code>
+    let startClient (tcp: TcpClient)
+                    (sup: MailboxProcessor&lt;Sup>)
+                    (ct: CancellationToken) =
+        MailboxProcessor.Start(
+            (fun (inbox: MailboxProcessor&lt;Msg>) ->
+                async {
+                    let ns    = tcp.GetStream()
+                    let size  = tcp.ReceiveBufferSize
+                    let bytes = Array.create size (byte 0)
+                    let! len  = ns.ReadAsync(bytes, 0, bytes.Length)
+                                |> Async.AwaitTask
+                    let lines = getLines bytes len
+                    match isWebSocketsUpgrade lines with
+                    | true ->
+                        do! ns.AsyncWrite (handshake lines)
+                        let ws =
+                            WebSocket.CreateFromStream(
+                                (ns :> Stream), true, "n2o", TimeSpan(1, 0, 0))
+                        sup.Post(Connect(inbox, ws))
+                        if ticker then Async.Start(telemetry ws inbox ct sup, ct)
+                        return! looper ws size ct sup
+                    | _ -> tcp.Close()
+                }),
+            cancellationToken = ct
+        )
+        </code>
+        </figure>
+        <figure>
+        <code>
+    let heartbeat (interval: int)
+                  (ct: CancellationToken)
+                  (sup: MailboxProcessor&lt;Sup>) =
+        async {
+            while not ct.IsCancellationRequested do
+                do! Async.Sleep interval
+                sup.Post(Tick)
+        }
         </code>
         </figure>
 
@@ -257,47 +334,6 @@
 
         <figure>
         <code>
-    let startClient (tcp: TcpClient)
-                    (sup: MailboxProcessor&lt;Sup>)
-                    (ct: CancellationToken) =
-        MailboxProcessor.Start(
-            (fun (inbox: MailboxProcessor&lt;Msg>) ->
-                async {
-                    let ns    = tcp.GetStream()
-                    let size  = tcp.ReceiveBufferSize
-                    let bytes = Array.create size (byte 0)
-                    let! len  = ns.ReadAsync(bytes, 0, bytes.Length)
-                                |> Async.AwaitTask
-                    let lines = getLines bytes len
-                    match isWebSocketsUpgrade lines with
-                    | true ->
-                        do! ns.AsyncWrite (handshake lines)
-                        let ws =
-                            WebSocket.CreateFromStream(
-                                (ns :> Stream), true, "n2o", TimeSpan(1, 0, 0))
-                        sup.Post(Connect(inbox, ws))
-                        if ticker then Async.Start(telemetry ws inbox ct sup, ct)
-                        return! looper ws size ct sup
-                    | _ -> tcp.Close()
-                }),
-            cancellationToken = ct
-        )
-        </code>
-        </figure>
-        <figure>
-        <code>
-    let heartbeat (interval: int)
-                  (ct: CancellationToken)
-                  (sup: MailboxProcessor&lt;Sup>) =
-        async {
-            while not ct.IsCancellationRequested do
-                do! Async.Sleep interval
-                sup.Post(Tick)
-        }
-        </code>
-        </figure>
-        <figure>
-        <code>
     let listen (listener: TcpListener)
                (ct: CancellationToken)
                (sup: MailboxProcessor&lt;Sup>) =
@@ -328,6 +364,7 @@
         )
         </code>
         </figure>
+
         <figure>
         <code>
     let start (addr: string) (port: int) =
@@ -351,10 +388,6 @@
             member x.Dispose() = cts.Cancel() }
         </code>
         </figure>
-
-        <h4>Прелюдия протокола RFC 6455</h4>
-
-        <h4>Стримы</h4>
 
         <figure>
         <code>
