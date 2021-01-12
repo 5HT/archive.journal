@@ -232,43 +232,6 @@
         </code>
         </figure>
 
-        <p>Асихронный процесс с очередью (MailboxProcessor) обработки TCP соединений или, проще говоря, TCP клиент.
-           Это точка входа для клиентского соединения, именно здесь происходит хендшейк. В случае успешного
-           хендшейка мы шлем RFC 6455 ответ и запускаем сразу два асинхронных процесса: первый это сам
-           цикл обработки вебсокет сообщений [L], а также, если установлен флаг Server.ticker мы
-           запускаем процесс телеметрии [T], который разделяет WebSocket стрим и может осуществлять
-           туда асинхронный сброс сообщений, конкурируя с основным циклом [L]. Такие процессы
-           существуют всегда в паре.</p>
-
-        <figure>
-        <code>
-    let startClient (tcp: TcpClient)
-                    (sup: MailboxProcessor&lt;Sup>)
-                    (ct: CancellationToken) =
-        MailboxProcessor.Start(
-            (fun (inbox: MailboxProcessor&lt;Msg>) ->
-                async {
-                    let ns    = tcp.GetStream()
-                    let size  = tcp.ReceiveBufferSize
-                    let bytes = Array.create size (byte 0)
-                    let! len  = ns.ReadAsync(bytes, 0, bytes.Length)
-                                |> Async.AwaitTask
-                    let lines = getLines bytes len
-                    match isWebSocketsUpgrade lines with
-                    | true ->
-                        do! ns.AsyncWrite (handshake lines)
-                        let ws =
-                            WebSocket.CreateFromStream(
-                                (ns :> Stream), true, "n2o", TimeSpan(1, 0, 0))
-                        sup.Post(Connect(inbox, ws))
-                        if ticker then Async.Start(telemetry ws inbox ct sup, ct)
-                        return! looper ws size ct sup
-                    | _ -> tcp.Close()
-                }),
-            cancellationToken = ct
-        )
-        </code>
-        </figure>
 
         <h4>Асинхронные процессы сервера</h4>
 
@@ -355,6 +318,44 @@
                 client.NoDelay &lt;- true
                 startClient client sup ct |> ignore
         }
+        </code>
+        </figure>
+
+        <p>Асихронный процесс с очередью (MailboxProcessor) обработки TCP соединений или, проще говоря, TCP клиент.
+           Это точка входа для клиентского соединения, именно здесь происходит хендшейк. В случае успешного
+           хендшейка мы шлем RFC 6455 ответ и запускаем сразу два асинхронных процесса: первый это сам
+           цикл обработки вебсокет сообщений [L], а также, если установлен флаг Server.ticker мы
+           запускаем процесс телеметрии [T], который разделяет WebSocket стрим и может осуществлять
+           туда асинхронный сброс сообщений, конкурируя с основным циклом [L]. Такие процессы
+           существуют всегда в паре.</p>
+
+        <figure>
+        <code>
+    let startClient (tcp: TcpClient)
+                    (sup: MailboxProcessor&lt;Sup>)
+                    (ct: CancellationToken) =
+        MailboxProcessor.Start(
+            (fun (inbox: MailboxProcessor&lt;Msg>) ->
+                async {
+                    let ns    = tcp.GetStream()
+                    let size  = tcp.ReceiveBufferSize
+                    let bytes = Array.create size (byte 0)
+                    let! len  = ns.ReadAsync(bytes, 0, bytes.Length)
+                                |> Async.AwaitTask
+                    let lines = getLines bytes len
+                    match isWebSocketsUpgrade lines with
+                    | true ->
+                        do! ns.AsyncWrite (handshake lines)
+                        let ws =
+                            WebSocket.CreateFromStream(
+                                (ns :> Stream), true, "n2o", TimeSpan(1, 0, 0))
+                        sup.Post(Connect(inbox, ws))
+                        if ticker then Async.Start(telemetry ws inbox ct sup, ct)
+                        return! looper ws size ct sup
+                    | _ -> tcp.Close()
+                }),
+            cancellationToken = ct
+        )
         </code>
         </figure>
 
