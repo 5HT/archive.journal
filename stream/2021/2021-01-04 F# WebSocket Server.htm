@@ -128,19 +128,18 @@
 
         <figure><figcaption>Дерево супервижина F# WebSocket Server</figcaption>
         <code>
-     [start]
-        |
-       [S]---[Sup]
-      /   \
-    [C]   [H]
-    /  \  /
-  [L]  [T]
+             [H]
+            /   \
+        [Sup]---[S]&lt;--[start]
+            \  /
+       [T]---[C]
+            /
+          [L]
         </code>
         </figure>
 
-        <p>Легенда этого дерева такова:
-           [start] нода представляет собой точку входа, из которой будут рождаться остальные асинхронные
-                   процессы, соотвествует функции <b>start</b></p>;
+        <p>Легенда этого дерева такова: [start] нода представляет собой точку входа,
+           из которой будут рождаться остальные асинхронные процессы, соотвествует функции <b>start</b>;
            [S] нода соовтествует асинхронному процессу, который представлен функцией <b>listen</b>;
            [Sup] нода соотвествует функции <b>startSupervisor</b>;
            [C] нода соотвествует функции <b>startClient</b>;
@@ -150,10 +149,20 @@
 
         <h4>Протоколы взаимодействия</h4>
 
+        <p>В момент рождения клиента [C] в родительском процессе сервера [S] происходит нотификация [S]->[Sup]
+           по так называемому протоколу супервижина <b>Sup</b> с одноименным типом. Публичный протокол
+           публичной функции Stream.protocol представлен типом <b>Msg</b>, который предназначен для управления
+           асинхронным процессом [L].</p>
+
+        <p>Система серверных пингов реализована совместимой с протоколами <b>Sup</b> и <b>Msg</b>,
+           хартбит процесс [H] через интервал времени посылает <b>Tick</b> сообщение в супервизор [Sup],
+           который в свою очередь шлет броадкаст для всех клиентов телеметрии [T] созданных на той же очереди,
+           что и [C], т.е. тот же протокол.</p>
+
+        </code>
+        </figure>
         <figure>
         <code>
-module Types =
-
     type Msg =
         | Bin of byte array
         | Text of string
@@ -168,6 +177,80 @@ module Types =
         </figure>
 
         <h4>Сервер</h4>
+
+        <figure>
+        <code>
+    let sendBytes (ws: WebSocket) ct bytes =
+        ws.SendAsync(ArraySegment&lt;byte>(bytes),
+            WebSocketMessageType.Binary, true, ct) |> ignore
+        </code>
+        </figure>
+
+        <figure>
+        <code>
+    let send ws ct (msg: Msg) =
+        async {
+            match msg with
+            | Text text -> sendBytes ws ct (Encoding.UTF8.GetBytes text)
+            | Bin arr -> sendBytes ws ct arr
+            | Nope -> ()
+        }
+        </code>
+        </figure>
+
+        <figure>
+        <code>
+    let telemetry (ws: WebSocket)
+                  (inbox: MailboxProcessor&lt;Msg>)
+                  (ct: CancellationToken)
+                  (sup: MailboxProcessor&lt;Sup>) =
+        async {
+            try
+                while not ct.IsCancellationRequested do
+                    let! _ = inbox.Receive()
+                    do! send ws ct (Text "TICK")
+            finally
+                sup.Post(Disconnect &lt;| inbox)
+
+                ws.CloseAsync(WebSocketCloseStatus.PolicyViolation, "TELEMETRY", ct)
+                |> ignore
+        }
+        </code>
+        </figure>
+
+        <figure>
+        <code>
+    let looper (ws: WebSocket)
+               (bufferSize: int)
+               (ct: CancellationToken)
+               (sup: MailboxProcessor&lt;Sup>) =
+        async {
+            try
+                let mutable bytes = Array.create bufferSize (byte 0)
+                while not ct.IsCancellationRequested do
+                    let! result =
+                        ws.ReceiveAsync(ArraySegment&lt;byte>(bytes), ct)
+                        |> Async.AwaitTask
+
+                    let recv = bytes.[0..result.Count - 1]
+
+                    match (result.MessageType) with
+                    | WebSocketMessageType.Text ->
+                        do! protocol (Text (Encoding.UTF8.GetString recv))
+                            |> send ws ct
+                    | WebSocketMessageType.Binary ->
+                        do! protocol (Bin recv)
+                            |> send ws ct
+                    | WebSocketMessageType.Close -> ()
+                    | _ -> printfn "PROTOCOL VIOLATION"
+            finally
+                sup.Post(Close &lt;| ws)
+
+                ws.CloseAsync(WebSocketCloseStatus.PolicyViolation, "LOOPER", ct)
+                |> ignore
+        }
+        </code>
+        </figure>
 
         <figure>
         <code>
