@@ -7,11 +7,11 @@ footer { color: #18F8F8; }
 nav a { background-color: #335; color: #5BC2E7; }
 nav a:visited { color: #5BC2E7; }
 aside { background-color: #433363; }
-aside h3 { color: #5BC2E7; } { #18F8F8; }
+aside h3 { color: #5BC2E7; }
 aside div { color: white; }
 aside a, main a, main a:visited { color: white; }
 figure code, figure pre { color:white; background-color: #356; }
-main b { color: #121212; }
+main b { color: #5BC2E7; }
 
 @media(min-width: 550px)  { figure code { border: 10px solid #D3D3F3; } }
 @media(min-width: 768px)  { figure code { border: 10px solid #D3D3F3; } }
