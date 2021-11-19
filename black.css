@@ -2,7 +2,7 @@
 
 h1, h2, h3 { color: #5BC2E7; }
 nav, body, header { background-color: #002; }
-header { margin-bottom: -200px; }
+header { margin-bottom: -100px; }
 header h1 { color: white; }
 main, footer { background-color: #002; }
 footer { color: #18F8F8; }
@@ -21,5 +21,5 @@ main b { color: #5BC2E7; }
 @media(min-width: 1280px) { figure code { border: 10px solid #D3D3F3; } }
 
 main section { color:white; background-color: #002; }
-main section:nth-of-type(even) { background-color: white;margin-left: auto; margin-right: auto; max-width: 1200px; }
+main section:nth-of-type(even) { margin-left: auto; margin-right: auto; max-width: 1200px; }
 
