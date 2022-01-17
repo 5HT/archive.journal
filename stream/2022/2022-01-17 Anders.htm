@@ -425,7 +425,8 @@ act:
 
 conv:
   | VPLam f, VPLam g -> conv f g
-  | VPLam f, v | v, VPLam f -> let (_, _, i) = freshDim () in conv (appFormula v i) (app (f, i))
+  | VPLam f, v | v, VPLam f ->
+    let (_, _, i) = freshDim () in conv (appFormula v i) (app (f, i))
   | VPathP a, VPathP b -> conv a b
 
 infer:
