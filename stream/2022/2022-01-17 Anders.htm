@@ -50,7 +50,7 @@
   | EIm of exp | EInf of exp | EIndIm of exp * exp | EJoin of exp
 </code></figure>
 
-        <h4>КОСМОС</h4>
+        <h4>Космос или структура вселенных</h4>
 
 <p>Начать статью хотим у стройства тайп чекера. В сущности своей тайп чекер это id функция (A -> A), где A -- это
 пространство программ на языке выражений exp:</P>
@@ -505,7 +505,42 @@ and appFormula v x = match v with
 
 <h4>Glue-тип</h4>
 
-<figure><code></code></figure>
+<figure><code>
+conv:
+  | VGlue v, VGlue u -> conv u v
+  | VUnglue v, VUnglue u -> conv u v
+  | VGlueElem (r1,u1,a1), VGlueElem (r2,u2,a2) ->
+    conv r1 r2 && conv u1 u2 && conv a1 a2
+  
+act:
+  | VGlue v -> VGlue (act rho v)
+  | VGlueElem (r, u, a) -> VGlueElem (act rho r, act rho u, act rho a)
+  | VUnglue v -> VUnglue (act rho v)
+
+infer:
+  | EGlue e -> ignore (extKan (infer ctx e)); inferGlue (eval e ctx)
+  | EGlueElem (e, u0, a) ->
+    check ctx e VI; let r = eval e ctx in let t = infer ctx a in
+    check ctx u0 (partialv (equivPtSingl t) r); let u = eval u0 ctx in
+    List.iter (fun mu -> let v = app (upd mu u, VRef vone) in
+      let f = vfst (vfst (vsnd v)) in
+      eqNf (eval a (faceEnv mu ctx)) (app (f, vsnd (vsnd v)))) (solve r One);
+    inferGlueElem r u t
+  | EUnglue e -> let (t, _, _) = extGlue (infer ctx e) in t
+
+inferV:
+  | VGlue t -> inferGlue t
+  | VGlueElem (r, u, a) -> inferGlueElem r u (inferV a)
+  | VUnglue v -> let (t, _, _) = extGlue (inferV v) in t
+
+and inferGlue t = let (r, _, _) = freshDim () in let k = inferV t in
+  VPi (VI, (r, fun r -> implv (partialv (equivSingl t) r) k))
+
+and inferGlueElem r u t =
+  VApp (VApp (VGlue t, r),
+        VSystem (walk (fun v -> VPair (ref None, vfst v, vfst (vsnd v))) r u))
+
+</code></figure>
 
 <h4>Стек де Рама</h4>
 
@@ -513,7 +548,111 @@ and appFormula v x = match v with
 
 <h4>Операции Кана</h4>
 
-<figure><code></code></figure>
+<figure><code>
+infer:
+  | ETransp (p, i) -> inferTransport ctx p i
+  | EHComp (e, i, u, u0) -> let t = eval e ctx in let r = eval i ctx in
+    ignore (extKan (infer ctx e)); check ctx i VI;
+    check ctx u (implv VI (partialv t r)); check ctx u0 t;
+    List.iter (fun phi -> let ctx' = faceEnv phi ctx in
+      eqNf (eval (hcompval u) ctx') (eval u0 ctx')) (solve r One); t
+
+inferV:
+  | VTransp (p, _) -> implv (appFormula p vzero) (appFormula p vone)
+  | VHComp (t, _, _, _) -> t
+
+conv:
+  | VTransp (p, i), VTransp (q, j) -> conv p q && conv i j
+  | VHComp (t1, r1, u1, v1), VHComp (t2, r2, u2, v2) ->
+    conv t1 t2 && conv r1 r2 && conv u1 u2 && conv v1 v2
+
+act:
+  | VTransp (p, i)       -> VTransp (act rho p, act rho i)
+  | VHComp (t, r, u, u0) -> hcomp (act rho t) (act rho r) (act rho u) (act rho u0)
+  
+and inferTransport ctx p i =
+  check ctx i VI;
+  let u0 = appFormulaE ctx p ezero in
+  let u1 = appFormulaE ctx p eone in
+  let (t, _, _) = extPathP (infer ctx p) in
+  ignore (extKan (inferV (appFormula t (Var (freshName "ι", VI)))));
+  let (j, e, v) = freshDim () in let ctx' = upLocal ctx j VI v in
+  List.iter (fun phi -> let rho = faceEnv phi ctx' in
+    eqNf (appFormulaE rho p ezero) (appFormulaE rho p e))
+    (solve (eval i ctx) One);
+  implv u0 u1
+
+and transport i p phi u0 = match p, phi, u0 with
+  | _, VDir One, _ -> u0
+  | VKan _, _, _ -> u0
+  | VEmpty, _, _ -> u0
+  | VUnit, _, _ -> u0
+  | VBool, _, _ -> u0
+  | VPi (t, (_, b)), _, _ -> let x = fresh (name "x") in
+    let j = freshName "ι" in let k = freshName "κ" in
+    VLam (act0 i vone t, (x, fun x ->
+      let v = transFill j (act0 i (VNeg (dim j)) t) phi x in
+      transport k (swap i k (b (v (VNeg (dim k)))))
+        phi (app (u0, v vone))))
+  | VSig (t, (_, b)), _, _ ->
+    let j = freshName "ι" in let k = freshName "κ" in
+    let v1 = transFill j (swap i j t) phi (vfst u0) in
+    let v2 = transport k (swap i k (b (v1 (dim k)))) phi (vsnd u0) in
+    VPair (ref None, v1 vone, v2)
+  | VApp (VApp (VPathP p, v), w), _, _ ->
+    let j = freshName "ι" in let k = freshName "κ" in
+    VPLam (VLam (VI, (j, fun j ->
+      let uj = appFormula u0 j in let r = evalOr phi (evalOr j (negFormula j)) in
+      comp (fun k -> appFormula (act0 i k p) j) r k
+        (VSystem (unionSystem (border (solve phi One) uj)
+                 (unionSystem (border (solve j Zero) (swap i k v))
+                              (border (solve j One)  (swap i k w))))) uj)))
+  | W (t, (x, b)), _, VApp (VApp (VSup _, a), f) ->
+    let j = freshName "ι" in let k = freshName "κ" in
+    let v1 = transFill j (swap i j t) phi a in
+    let v2 = transport k (swap i k (implv (b (v1 (dim k))) (W (t, (x, b))))) phi f in
+    let t' = act0 i vone t in
+    VApp (VApp (VSup (t', VLam (t', (fresh x, b >> act0 i vone))), v1 vone), v2)
+  | VIm t, _, VInf a -> inf (transport i t phi a)
+  | _, _, _ -> VApp (VTransp (VPLam (VLam (VI, (i, fun j -> act0 i j p))), phi), u0)
+
+and transFill i p phi u0 j = let (k, _, _) = freshDim () in
+  transport k (act0 i (evalAnd (dim k) j) p) (evalOr phi (negFormula j)) u0
+
+and hcomp t r u u0 = let i = freshName "ι" in kan t r i (app (u, dim i)) u0
+
+and kan t r i u u0 = match t, r, u, u0 with
+  | _, VDir One, _, _ -> app (act0 i vone u, VRef vone)
+  | VPi (t, (x, b)), _, _, _ -> VLam (t, (fresh x, fun y -> kan (b y) r i
+    (VSystem (walk (fun v -> app (v, y)) r u)) (app (u0, y))))
+  | VSig (t, (_, b)), _, _, _ -> let k = freshName "κ" in
+    let v1 = hfill t r k (VSystem (walk (vfst >> act0 i (dim k)) r u)) (vfst u0) in
+    let v2 = comp (v1 >> b) r i (VSystem (walk vsnd r u)) (vsnd u0) in
+    VPair (ref None, v1 vone, v2)
+  | VApp (VApp (VPathP t, v), w), _, _, _ ->
+    let j = freshName "ι" in
+    VPLam (VLam (VI, (j, fun j ->
+      kan (appFormula t j) (evalOr r (evalOr j (negFormula j))) i
+          (VSystem (unionSystem (walk (flip appFormula j) r u)
+                   (unionSystem (border (solve j One)  w)
+                                (border (solve j Zero) v))))
+          (appFormula u0 j))))
+  | VIm t, _, VSystem u, VInf u0 when System.for_all (fun _ -> isInf) u ->
+    VInf (kan t r i (VSystem (System.map extInf u)) u0)
+  | _, _, _, _ -> VHComp (t, r, VLam (VI, (i, fun j ->
+    VSystem (walk (act0 i j) r u))), u0)
+
+and comp t r i u u0 = let j = freshName "ι" in
+  kan (t vone) r i
+      (VSystem (walk (transport j (t (evalOr (dim i) (dim j))) (dim i)) r u))
+      (transport j (t (dim j)) vzero u0)
+
+and hfill t r i u u0 j = let k = freshName "κ" in
+  kan t (evalOr (negFormula j) r) k
+    (VSystem (unionSystem (walk (act0 i (evalAnd (dim k) j)) r u)
+      (border (solve j Zero) u0))) u0
+
+</code></figure>
 
 <p></p>
 
