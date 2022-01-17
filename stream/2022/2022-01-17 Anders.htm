@@ -205,6 +205,108 @@ let rec getField p v = function
     else getField p (vsnd v) (g (vfst v))
   | t -> raise (ExpectedSig t)
 
+let vfst : value -> value = function
+  | VPair (_, u, _) -> u
+  | v -> VFst v
+
+let vsnd : value -> value = function
+  | VPair (_, _, u) -> u
+  | v -> VSnd v
+</code></figure>
+
+<h4>0-тип</h4>
+
+<figure><code>eval:
+  | EEmpty -> VEmpty
+  | EIndEmpty e -> VIndEmpty (eval e ctx)
+
+inferV:
+  | VEmpty -> VKan Z.zero
+  | VIndEmpty t -> implv VEmpty t
+
+act:
+  | VEmpty -> VEmpty
+  | VIndEmpty v -> VIndEmpty (act rho v)
+
+conv:
+  | VEmpty, VEmpty -> true
+  | VIndEmpty u, VIndEmpty v -> conv u v
+
+infer:
+  | EEmpty | EUnit
+  | EIndEmpty e -> ignore (extSet (infer ctx e)); implv VEmpty (eval e ctx)
+</code></figure>
+
+<h4>1-тип</h4>
+
+<figure><code>eval:
+  | EUnit -> VUnit
+  | EStar -> VStar
+  | EIndUnit e -> VIndUnit (eval e ctx)
+
+app:
+  | VApp (VIndUnit _, x), VStar -> x
+
+inferV:
+  | VUnit -> VKan Z.zero
+  | VStar -> VUnit
+  | VIndUnit t -> recUnit t
+
+act:
+  | VUnit -> VUnit
+  | VStar -> VStar
+  | VIndUnit v -> VIndUnit (act rho v)
+
+conv:
+  | VUnit, VUnit -> true
+  | VStar, VStar -> true
+  | VIndUnit u, VIndUnit v -> conv u v
+
+infer:
+  | EStar -> VUnit
+  | EIndUnit e -> inferInd false ctx VUnit e recUnit
+
+and recUnit t = let x = freshName "x" in
+  implv (app (t, VStar)) (VPi (VUnit, (x, fun x -> app (t, x))))
+</code></figure>
+
+<h4>2-тип</h4>
+
+<figure><code>eval:
+  | EBool -> VBool
+  | EFalse -> VFalse
+  | ETrue -> VTrue
+  | EIndBool e -> VIndBool (eval e ctx)
+
+app:
+  | VApp (VApp (VIndBool _, a), _), VFalse -> a
+  | VApp (VApp (VIndBool _, _), b), VTrue -> b
+
+inferV:
+  | VBool -> VKan Z.zero
+  | VFalse | VTrue -> VBool
+  | VIndBool t -> recBool t
+
+act:
+  | VBool -> VBool
+  | VFalse -> VFalse
+  | VTrue -> VTrue
+  | VIndBool v -> VIndBool (act rho v)
+
+conv:
+  | VBool, VBool -> true
+  | VFalse, VFalse -> true
+  | VTrue, VTrue -> true
+  | VIndBool u, VIndBool v -> conv u v
+
+infer:
+  | EBool -> VKan Z.zero
+  | EFalse | ETrue -> VBool
+  | EIndBool e -> inferInd false ctx VBool e recBool
+
+and recBool t = let x = freshName "x" in
+  implv (app (t, VFalse)) (implv (app (t, VTrue))
+    (VPi (VBool, (x, fun x -> app (t, x)))))
 </code></figure>
 
 <h4>W-тип</h4>
@@ -258,7 +360,15 @@ infer:
     eqNf (wtype t (eval b ctx)) w';
     ignore (extSet (h (Var (q, w'))));
     inferIndW t (eval b ctx) (eval c ctx)
-  </code></figure>
+
+and inferIndW a b c = let t = wtype a b in
+    implv (VPi (a, (freshName "x", fun x ->
+      VPi (implv (app (b, x)) t, (freshName "f", fun f ->
+        implv (VPi (app (b, x), (freshName "b", fun b -> app (c, (app (f, b))))))
+          (app (c, VApp (VApp (VSup (a, b), x), f))))))))
+      (VPi (t, (freshName "w", fun w -> app (c, w))))
+
+   </code></figure>
 
 <p></p>
 
