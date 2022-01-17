@@ -24,18 +24,14 @@
 <p>Начать статью хотим у стройства тайп чекера. В сущности своей тайп чекер это id функция (A -> A), где A -- это
 пространство программ на языке выражений exp:</P>
 
-<figure><code>type exp =
-  | EPre of Z.t | EKan of Z.t (* cosmos *)
-  | EVar of name | EHole (* variables *)</code></figure>
+<figure><code>type exp = | EPre of Z.t | EKan of Z.t | EVar of name | EHole </code></figure>
 
 <p>Сам тайпчекер устроен таким образом (стандартная практика, см. например ставшие уже классическими
 тайпчекеры Mini-TT или cubicaltt), что для процесса бета-нормализации (эвалуации) или интерпретирования
 выражения используется внутреннее представление, оптимизированное для нужд эффективных
 вычислений.</p>
 
-<figure><code>type value =
-  | VKan of Z.t | VPre of Z.t
-  | Var of name * value | VHole</code></figure>
+<figure><code>type value = | VKan of Z.t | VPre of Z.t | Var of name * value | VHole</code></figure>
 
 <p>Таким образом сигнатура тайпчекера выглядит так:</p>
 
@@ -55,35 +51,25 @@
   | e, t -> eqNf (infer ctx e) t</code></figure>
 
 <figure><code>conv:
-  | VKan u, VKan v -> ieq u v
-  | VPre u, VPre v -> ieq u v
+  | VKan u, VKan v -> ieq u v | VPre u, VPre v -> ieq u v
   | Var (u, _), Var (v, _) -> u = v</code></figure>
 
 <figure><code>eval:
-  | EPre u -> VPre u
-  | EKan u -> VKan u
-  | EVar x -> getRho ctx x
-  | EHole -> VHole</code></figure>
+  | EPre u -> VPre u | EKan u -> VKan u
+  | EVar x -> getRho ctx x | EHole -> VHole</code></figure>
 
 <figure><code>infer:
-  | VPre n -> VPre (Z.succ n)
-  | VKan n -> VKan (Z.succ n)
-  | EPre u -> VPre (Z.succ u)
-  | EKan u -> VKan (Z.succ u)
+  | VPre n -> VPre (Z.succ n) | VKan n -> VKan (Z.succ n)
+  | EPre u -> VPre (Z.succ u) | EKan u -> VKan (Z.succ u)
   | EVar x -> lookup x ctx</code></figure>
 
 <figure><code>inferV:
-  | Var (_, t) -> t
-  | VPre n -> VPre (Z.succ n)
-  | VKan n -> VKan (Z.succ n)</code></figure>
+  | Var (_, t) -> t | VPre n -> VPre (Z.succ n) | VKan n -> VKan (Z.succ n)</code></figure>
 
 <figure><code>act:
-  | Var (i, VI) -> actVar rho i
-  | Var (x, t) -> Var (x, act rho t)
-  | VHole -> VHole
-  | VKan u -> VKan u
-  | VPre u -> VPre u</code></figure>
+  | Var (i, VI) -> actVar rho i | Var (x, t) -> Var (x, act rho t) | VHole -> VHole
+  | VKan u -> VKan u | VPre u -> VPre u</code></figure>
 
-<p>Здесь описывается так называемся база рекурсии и работа с контекстом прувера (getRho, lookup).</p>
+<p>Здесь описывается так называемся база рекурсии и работа с контекстом верификатора (getRho, lookup).</p>
 
 
