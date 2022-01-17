@@ -381,6 +381,7 @@ and inferIndW a b c = let t = wtype a b in
 
 inferV:
   | VI -> VPre Z.zero
+  | VDir _ | VOr _ | VAnd _ | VNeg _ -> VI
 
 act:
   | VI -> VI
@@ -396,6 +397,42 @@ conv:
 infer:
   | EI -> VPre Z.zero | EDir _ -> VI | ENeg e -> check ctx e VI; VI
   | EOr (e1, e2) | EAnd (e1, e2) -> check ctx e1 VI; check ctx e2 VI; VI
+</code></figure>
+
+<h4>Id-тип</h4>
+
+<figure><code>eval:
+  | EId e -> VId (eval e ctx)
+  | ERef e -> VRef (eval e ctx)
+  | EJ e -> VJ (eval e ctx)
+
+infer:
+  | EId e -> let v = eval e ctx in let n = extSet (infer ctx e) in implv v (implv v (VPre n))
+  | ERef e -> let v = eval e ctx in let t = infer ctx e in VApp (VApp (VId t, v), v)
+  | EJ e -> inferJ (eval e ctx) (infer ctx e)
+
+app:
+  | VApp (VApp (VApp (VApp (VJ _, _), _), f), _), VRef _ -> f
+
+inferV:
+  | VId v -> let n = extSet (inferV v) in implv v (implv v (VPre n))
+  | VJ v -> inferJ v (inferV v)
+
+act:
+  | VId v -> VId (act rho v)
+  | VRef v -> VRef (act rho v)
+  | VJ v -> VJ (act rho v)
+
+and inferJ v t =
+  let x = freshName "x" in let y = freshName "y" in let pi = freshName "P" in let p = freshName "p" in
+  let k = extSet t in let t = VPi (v, (x, fun x -> VPi (v, (y, fun y -> implv (idv v x y) (VPre k))))) in
+
+  VPi (t, (pi, fun pi ->
+    VPi (v, (x, fun x ->
+      implv (app (app (app (pi, x), x), VRef x))
+            (VPi (v, (y, fun y ->
+              VPi (idv v x y, (p, fun p ->
+                app (app (app (pi, x), y), p))))))))))
 </code></figure>
 
 <h4>Path-тип</h4>
@@ -455,6 +492,30 @@ and appFormula v x = match v with
     end
 </code></figure>
 
+<h4>Частичные типы, кубические системы</h4>
+
+<figure><code></code></figure>
+
+<h4>Кубические субтипы</h4>
+
+<figure><code></code></figure>
+
+<h4>Glue-тип</h4>
+
+<figure><code></code></figure>
+
+<h4>Стек де Рама</h4>
+
+<figure><code></code></figure>
+
+<h4>Операции Кана</h4>
+
+<figure><code></code></figure>
+
 <p></p>
 
-
+</section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2022</footer>
+</body>
+</html>
