@@ -17,7 +17,38 @@
 </nav>
 <main>
     <section>
-        <h3>Anders Theorem Prover</h3>
+        <h3>Anders: верификатор математики</h3>
+
+        <p>Верификатор математики Anders все лишь один из трех гомотопических пруверов Групоид Инфинити.
+           Другие два &mdash; это: 1) верификатор под названием Hurricane системы типов HoTT-I,
+           которая используется в теорем прувере JetBrains Arend, а также 2) верификатор
+           под названием Castle Bravo авторской системы типов HoTT-∂. В отличии от Anders,
+           обе системы HoTT-I и HoTT-∂ обладают инетерсным свойством β-дефинициального равенства путей.
+           Посмотрите на них, они тоже интересные! Эта же статья посвящена целиком верификатору гомотопической
+           системы типов с двумя равенствами (известной также как HTS система Воеводского или
+           система 2LTT Крауса и Анненкова). Также Андерс содержит в качестве примитива стек де Рама,
+           что делает его пригодным для программирования когомологий и синтетической дифференциальной геометрии.
+        </div></p>
+
+        <figure><code>type exp =
+  | EPre of Z.t | EKan of Z.t
+  | EVar of name | EHole
+  | EPi of exp * (name * exp) | ELam of exp * (name * exp) | EApp of exp * exp
+  | ESig of exp * (name * exp) | EPair of tag * exp * exp
+  | EFst of exp | ESnd of exp | EField of exp * string
+  | EId of exp | ERef of exp | EJ of exp
+  | EPathP of exp | EPLam of exp | EAppFormula of exp * exp
+  | EI | EDir of dir | EAnd of exp * exp | EOr of exp * exp | ENeg of exp
+  | ETransp of exp * exp | EHComp of exp * exp * exp * exp
+  | EPartial of exp | EPartialP of exp * exp | ESystem of exp System.t
+  | ESub of exp * exp * exp | EInc of exp * exp | EOuc of exp
+  | EGlue of exp | EGlueElem of exp * exp * exp | EUnglue of exp
+  | EEmpty | EIndEmpty of exp
+  | EUnit | EStar | EIndUnit of exp
+  | EBool | EFalse | ETrue | EIndBool of exp
+  | EW of exp * (name * exp) | ESup of exp * exp | EIndW of exp * exp * exp
+  | EIm of exp | EInf of exp | EIndIm of exp * exp | EJoin of exp
+</code></figure>
 
         <h4>КОСМОС</h4>
 
@@ -71,5 +102,15 @@
   | VKan u -> VKan u | VPre u -> VPre u</code></figure>
 
 <p>Здесь описывается так называемся база рекурсии и работа с контекстом верификатора (getRho, lookup).</p>
+
+        <h4>Π-тип</h4>
+
+<figure><code>eval:
+  | EPi (a, (p, b)) -> let t = eval a ctx in VPi (t, (fresh p, closByVal ctx p t b))
+  | ELam (a, (p, b)) -> let t = eval a ctx in VLam (t, (fresh p, closByVal ctx p t b))
+  | EApp (f, x) -> app (eval f ctx, eval x ctx)
+</code></figure>
+
+<p></p>
 
 
