@@ -207,6 +207,59 @@ let rec getField p v = function
 
 </code></figure>
 
+<h4>W-тип</h4>
+
+<figure><code>
+eval:
+  | EW (a, (p, b))       -> let t = eval a ctx in W (t, (fresh p, closByVal ctx p t b))
+  | ESup (a, b)          -> VSup (eval a ctx, eval b ctx)
+  | EIndW (a, b, c)      -> VIndW (eval a ctx, eval b ctx, eval c ctx)
+
+app: 
+  | VApp (VIndW (a, b, c), g), VApp (VApp (VSup (_, _), x), f) ->
+    app (app (app (g, x), f),
+      VLam (app (b, x), (freshName "b", fun y ->
+        app (VApp (VIndW (a, b, c), g), app (f, y)))))
+
+inferV:
+  | VSup (a, b) -> inferSup a b
+  | VIndW (a, b, c) -> inferIndW a b c
+
+and wtype a b = W (a, (freshName "x", fun x -> app (b, x)))
+
+and inferSup a b = let t = wtype a b in let x = freshName "x" in
+  VPi (a, (x, fun x -> implv (implv (app (b, x)) t) t))
+
+and inferIndW a b c = let t = wtype a b in
+  implv (VPi (a, (freshName "x", fun x ->
+    VPi (implv (app (b, x)) t, (freshName "f", fun f ->
+      implv (VPi (app (b, x), (freshName "b", fun b -> app (c, (app (f, b))))))
+        (app (c, VApp (VApp (VSup (a, b), x), f))))))))
+    (VPi (t, (freshName "w", fun w -> app (c, w))))
+
+act:
+  | W (t, (x, g))        -> W (act rho t, (x, g >> act rho))
+  | VSup (a, b)          -> VSup (act rho a, act rho b)
+  | VIndW (a, b, c)      -> VIndW (act rho a, act rho b, act rho c)
+
+conv:
+  | VSup (a1, b1), VSup (a2, b2) -> conv a1 a2 && conv b1 b2
+  | VIndW (a1, b1, c1), VIndW (a2, b2, c2) -> conv a1 a2 && conv b1 b2 && conv c1 c2
+
+infer:
+  | ESup (a, b) -> let t = eval a ctx in ignore (extSet (infer ctx a));
+    let (t', (p, g)) = extPiG (infer ctx b) in eqNf t t';
+    ignore (extSet (g (Var (p, t))));
+    inferSup t (eval b ctx)
+  | EIndW (a, b, c) -> let t = eval a ctx in ignore (extSet (infer ctx a));
+    let (t', (p, g)) = extPiG (infer ctx b) in
+    eqNf t t'; ignore (extSet (g (Var (p, t))));
+    let (w', (q, h)) = extPiG (infer ctx c) in
+    eqNf (wtype t (eval b ctx)) w';
+    ignore (extSet (h (Var (q, w'))));
+    inferIndW t (eval b ctx) (eval c ctx)
+  </code></figure>
+
 <p></p>
 
 
