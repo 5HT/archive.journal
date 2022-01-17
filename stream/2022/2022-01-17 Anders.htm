@@ -370,6 +370,90 @@ and inferIndW a b c = let t = wtype a b in
 
    </code></figure>
 
+   <h4>I-претип</h4>
+
+<figure><code>eval:
+  | EI -> VI
+  | EDir d -> VDir d
+  | EAnd (e1, e2) -> evalAnd (eval e1 ctx) (eval e2 ctx)
+  | EOr (e1, e2) -> evalOr (eval e1 ctx) (eval e2 ctx)
+  | ENeg e -> negFormula (eval e ctx)
+
+inferV:
+  | VI -> VPre Z.zero
+
+act:
+  | VI -> VI
+  | VDir d -> VDir d
+  | VAnd (u, v) -> evalAnd (act rho u) (act rho v)
+  | VOr (u, v) -> evalOr (act rho u) (act rho v)
+  | VNeg u -> negFormula (act rho u)
+
+conv:
+  | VI, VI -> true
+  | VDir u, VDir v -> u = v
+
+infer:
+  | EI -> VPre Z.zero | EDir _ -> VI | ENeg e -> check ctx e VI; VI
+  | EOr (e1, e2) | EAnd (e1, e2) -> check ctx e1 VI; check ctx e2 VI; VI
+</code></figure>
+
+<h4>Path-тип</h4>
+
+<figure><code>eval:
+  | EPathP e -> VPathP (eval e ctx)
+  | EPLam e -> VPLam (eval e ctx)
+  
+check:
+  | EPLam (ELam (EI, (i, e))), VApp (VApp (VPathP p, u0), u1) ->
+    let v = Var (i, VI) in let ctx' = upLocal ctx i VI v in
+    let v0 = eval e (upLocal ctx i VI vzero) in
+    let v1 = eval e (upLocal ctx i VI vone) in
+    check ctx' e (appFormula p v); eqNf v0 u0; eqNf v1 u1
+
+inferV:
+  | VPLam (VLam (VI, (_, g))) -> let t = VLam (VI, (freshName "ι", g >> inferV)) in
+    VApp (VApp (VPathP (VPLam t), g vzero), g vone)
+  | VAppFormula (f, x)       -> let (p, _, _) = extPathP (inferV f) in appFormula p x
+  | VPathP p -> let (_, _, v) = freshDim () in let t = inferV (appFormula p v) in
+    let v0 = appFormula p vzero in let v1 = appFormula p vone in implv v0 (implv v1 t)
+
+act:
+  | VPLam f -> VPLam (act rho f)
+  | VPathP v -> VPathP (act rho v)
+  | VAppFormula (f, x)   -> appFormula (act rho f) (act rho x)
+
+conv:
+  | VPLam f, VPLam g -> conv f g
+  | VPLam f, v | v, VPLam f -> let (_, _, i) = freshDim () in conv (appFormula v i) (app (f, i))
+  | VPathP a, VPathP b -> conv a b
+
+infer:
+  | EPathP p -> inferPath ctx p
+  | EPLam (ELam (EI, (i, e))) ->
+    let ctx' = upLocal ctx i VI (Var (i, VI)) in ignore (infer ctx' e);
+    let g = fun j -> eval e (upLocal ctx i VI j) in
+    let t = VLam (VI, (freshName "ι", g >> inferV)) in
+    VApp (VApp (VPathP (VPLam t), g vzero), g vone)
+  | EPLam _ -> raise (InferError e)
+  | VAppFormula (f, x), VAppFormula (g, y) -> conv f g && conv x y
+
+and inferPath ctx p =
+  let (_, t0, t1) = extPathP (infer ctx p) in
+  (* path cannot connect different universes,
+     so if one endpoint is in U, then so other *)
+  let k = extSet (inferV t0) in implv t0 (implv t1 (VKan k))
+
+and appFormula v x = match v with
+  | VPLam f -> app (f, x)
+  | _       -> let (_, u0, u1) = extPathP (inferV v) in
+    begin match x with
+      | VDir Zero -> u0
+      | VDir One  -> u1
+      | i         -> VAppFormula (v, i)
+    end
+</code></figure>
+
 <p></p>
 
 
