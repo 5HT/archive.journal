@@ -407,8 +407,8 @@ infer:
   | EJ e -> VJ (eval e ctx)
 
 infer:
-  | EId e -> let v = eval e ctx in let n = extSet (infer ctx e) in implv v (implv v (VPre n))
-  | ERef e -> let v = eval e ctx in let t = infer ctx e in VApp (VApp (VId t, v), v)
+  | EId e -> let v = eval e ctx in implv v (implv v (VPre (extSet (infer ctx e))))
+  | ERef e -> let v = eval e ctx in VApp (VApp (VId (infer ctx e)), v), v)
   | EJ e -> inferJ (eval e ctx) (infer ctx e)
 
 app:
@@ -424,9 +424,12 @@ act:
   | VJ v -> VJ (act rho v)
 
 and inferJ v t =
-  let x = freshName "x" in let y = freshName "y" in let pi = freshName "P" in let p = freshName "p" in
-  let k = extSet t in let t = VPi (v, (x, fun x -> VPi (v, (y, fun y -> implv (idv v x y) (VPre k))))) in
-
+  let x = freshName "x" in
+  let y = freshName "y" in
+  let pi = freshName "P" in
+  let p = freshName "p" in
+  let k = extSet t in
+  let t = VPi (v, (x, fun x -> VPi (v, (y, fun y -> implv (idv v x y) (VPre k))))) in
   VPi (t, (pi, fun pi ->
     VPi (v, (x, fun x ->
       implv (app (app (app (pi, x), x), VRef x))
