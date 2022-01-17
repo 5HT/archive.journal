@@ -139,9 +139,9 @@ app:
   | f, x -> VApp (f, x)
 
 conv:
-  | VPi  (a, (p, f)), VPi  (b, (_, g)) -> let x = Var (p, a) in conv a b && conv (f x) (g x)
-  | VLam (a, (p, f)), VLam (b, (_, g))
-  | VApp (f, a), VApp (g, b) -> conv f g && conv a b
+  | VPi (a,(p,f)), VPi (b,(_,g)) -> let x = Var (p,a) in conv a b && conv (f x) (g x)
+  | VLam (a,(p,f)), VLam (b,(_,g))
+  | VApp (f,a), VApp (g,b) -> conv f g && conv a b
   
 check:
   | ELam (a, (p, b)), VPi (t, (_, g)) ->
@@ -211,9 +211,9 @@ let rec getField p v = function
 
 <figure><code>
 eval:
-  | EW (a, (p, b))       -> let t = eval a ctx in W (t, (fresh p, closByVal ctx p t b))
-  | ESup (a, b)          -> VSup (eval a ctx, eval b ctx)
-  | EIndW (a, b, c)      -> VIndW (eval a ctx, eval b ctx, eval c ctx)
+  | EW (a, (p, b)) -> let t = eval a ctx in W (t, (fresh p, closByVal ctx p t b))
+  | ESup (a, b) -> VSup (eval a ctx, eval b ctx)
+  | EIndW (a, b, c) -> VIndW (eval a ctx, eval b ctx, eval c ctx)
 
 app: 
   | VApp (VIndW (a, b, c), g), VApp (VApp (VSup (_, _), x), f) ->
@@ -238,13 +238,13 @@ and inferIndW a b c = let t = wtype a b in
     (VPi (t, (freshName "w", fun w -> app (c, w))))
 
 act:
-  | W (t, (x, g))        -> W (act rho t, (x, g >> act rho))
-  | VSup (a, b)          -> VSup (act rho a, act rho b)
-  | VIndW (a, b, c)      -> VIndW (act rho a, act rho b, act rho c)
+  | W (t, (x, g)) -> W (act rho t, (x, g >> act rho))
+  | VSup (a, b) -> VSup (act rho a, act rho b)
+  | VIndW (a, b, c) -> VIndW (act rho a, act rho b, act rho c)
 
 conv:
-  | VSup (a1, b1), VSup (a2, b2) -> conv a1 a2 && conv b1 b2
-  | VIndW (a1, b1, c1), VIndW (a2, b2, c2) -> conv a1 a2 && conv b1 b2 && conv c1 c2
+  | VSup (a1,b1), VSup (a2,b2) -> conv a1 a2 && conv b1 b2
+  | VIndW (a1,b1,c1), VIndW (a2,b2,c2) -> conv a1 a2 && conv b1 b2 && conv c1 c2
 
 infer:
   | ESup (a, b) -> let t = eval a ctx in ignore (extSet (infer ctx a));
