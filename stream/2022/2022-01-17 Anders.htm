@@ -1117,7 +1117,7 @@ and inferGlueElem r u t =
 
 </code></figure>
 
-<p>Тестируются Glue типы обычно типом-унивалентностью (Equiv -> Path) Воеводского:</p>
+<p>Тестируются Glue типы обычно типом-унивалентностью [Equiv -> Path] Воеводского:</p>
 
 <figure><code>
 def univ-formation (A B : U)
@@ -1139,7 +1139,8 @@ def univ-computation (A B : U) (p : PathP (&lt;_> U) A B)
             (j = 1) → (p @ i, univ-elim (p @ i) B (&lt;k> p @ (i \/ k))) ]
 </code></figure>
 
-<P>А также Минивалентностью (Iso -> Equiv):</P>
+<P>А также Минивалентностью [Iso -> Equiv] авторства Шульмана, Люмсдейна, Уоррена и Ликаты,
+   известные также как авторы gradLemma:</P>
 
 <figure><code>def mini-Form (A B : U) : U
  := iso A B -> equiv A B
@@ -1158,7 +1159,8 @@ def mini-Elim (A B : U)
       star
     )
 </code></figure>
-<p>и Юниморфизмом (Iso -> Path):</P>
+<p>и Юниморфизмом [Iso -> Path] авторства CCHM (Коэн, Кокан, Губер, Мортберг)
+   с большим термом lemIso:</P>
 
 <figure><code>def iso-Form (A B: U) : U₁
  := iso A B -> PathP (&lt;_>U) A B
