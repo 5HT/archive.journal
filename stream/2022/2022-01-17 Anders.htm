@@ -109,6 +109,19 @@ act:
 
 check:
   | e, t -> eqNf (infer ctx e) t
+
+and getRho ctx x = match Env.find_opt x ctx with
+  | Some (_, _, Value v) -> v
+  | Some (_, _, Exp e) -> eval e ctx
+  | None -> raise (VariableNotFound x)
+
+and eqNf v1 v2 : unit = traceEqNF v1 v2;
+  if conv v1 v2 then () else raise (Ineq (v1, v2))
+
+and lookup (x : name) (ctx : ctx) = match Env.find_opt x ctx with
+  | Some (_, Value v, _) -> v
+  | Some (_, Exp e, _) -> eval e ctx
+  | None -> raise (VariableNotFound x)
 </code></figure>
 
 <p>Здесь описывается так называемся база рекурсии и работа с контекстом верификатора (getRho, lookup).</p>
