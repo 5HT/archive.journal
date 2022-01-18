@@ -527,7 +527,8 @@ infer:
 and evalSystem ctx = bimap (getRho ctx) (fun beta t -> eval t (faceEnv beta ctx))
 
 and faceEnv alpha ctx =
-  Env.map (fun (p, t, v) -> if p = Local then (p, updTerm alpha t, updTerm alpha v) else (p, t, v)) ctx
+  Env.map (fun (p, t, v) ->
+  if p = Local then (p, updTerm alpha t, updTerm alpha v) else (p, t, v)) ctx
   |> Env.fold (fun p dir -> Env.add p (Local, Value VI, Value (VDir dir))) alpha
 
 let reduceSystem ts x =
