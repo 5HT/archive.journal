@@ -491,17 +491,87 @@ and appFormula v x = match v with
     begin match x with
       | VDir Zero -> u0
       | VDir One  -> u1
-      | i         -> VAppFormula (v, i)
+      | i -> VAppFormula (v, i)
     end
 </code></figure>
 
 <h4>Частичные типы, кубические системы</h4>
 
-<figure><code></code></figure>
+<figure><code>eval:
+  | EPartial e -> let (i, _, _) = freshDim () in
+    VLam (VI, (i, fun r -> let ts = mkSystem (List.map (fun mu ->
+      (mu, eval e (faceEnv mu ctx))) (solve r One)) in VPartialP (VSystem ts, r)))
+  | EPartialP (t, r) -> VPartialP (eval t ctx, eval r ctx)
+  | ESystem xs -> VSystem (evalSystem ctx xs)
 
-<h4>Кубические субтипы</h4>
+app:
+  | VSystem ts, x -> reduceSystem ts x
 
-<figure><code></code></figure>
+inferV:
+  | VPartialP (VSystem ts, _) -> begin match System.choose_opt ts with
+    | Some (_, t) -> VPre (extSet (inferV t))
+    | None        -> VPre Z.zero end
+  | VPartialP (t, _) -> inferV (inferV t)
+  | VSystem ts -> VPartialP (VSystem (System.map inferV ts), getFormulaV ts)
+
+infer:
+  | EPartial e -> let n = extSet (infer ctx e) in implv VI (VPre n)
+  | EPartialP (u, r0) ->
+    check ctx r0 VI; let t = infer ctx u in begin match t with
+    | VPartialP (ts, r) -> eqNf r (eval r0 ctx); inferV (inferV ts)
+    | _ -> failwith "Expected partial function into universe" end
+  | ESystem ts -> checkOverlapping ctx ts;
+    VPartialP (VSystem (System.mapi (fun mu -> infer (faceEnv mu ctx)) ts),
+           eval (getFormula ts) ctx)
+
+and evalSystem ctx = bimap (getRho ctx) (fun beta t -> eval t (faceEnv beta ctx))
+
+and faceEnv alpha ctx =
+  Env.map (fun (p, t, v) -> if p = Local then (p, updTerm alpha t, updTerm alpha v) else (p, t, v)) ctx
+  |> Env.fold (fun p dir -> Env.add p (Local, Value VI, Value (VDir dir))) alpha
+
+let reduceSystem ts x =
+  match System.find_opt eps ts with
+  | Some v -> v
+  | None   -> VApp (VSystem ts, x)
+</code></figure>
+
+<h4>Кубические подтипы</h4>
+
+<figure><code>eval:
+  | ESub (a, i, u) -> VSub (eval a ctx, eval i ctx, eval u ctx)
+  | EInc (t, r) -> VInc (eval t ctx, eval r ctx)
+  | EOuc e -> ouc (eval e ctx)
+
+app:
+  | VInc (t, r), v -> inc t r v
+
+inferV:
+  | VSub (t, _, _) -> VPre (extSet (inferV t))
+  | VInc (t, i) -> inferInc t i
+  | VOuc v -> begin match inferV v with
+    | VSub (t, _, _) -> t
+    | _ -> raise (ExpectedSubtypeV v)  end
+
+infer:
+  | ESub (a, i, u) -> let n = extSet (infer ctx a) in check ctx i VI;
+    check ctx u (partialv (eval a ctx) (eval i ctx)); VPre n
+  | EInc (e, r) -> ignore (extKan (infer ctx e)); check ctx r VI;
+    inferInc (eval e ctx) (eval r ctx)
+  | EOuc e -> begin match infer ctx e with
+      | VSub (t, _, _) -> t
+      | _ -> raise (ExpectedSubtype e) end
+
+conv:
+  | VInc (t1, r1), VInc (t2, r2) -> conv t1 t2 && conv r1 r2
+  | VOuc u, VOuc v -> conv u v
+
+and inc t r = function | VOuc v -> v | v -> VApp (VInc (t, r), v)
+and ouc v = match v, inferV v with
+  | _, VSub (_, VDir One, u) -> app (u, VRef vone)
+  | VApp (VInc _, v), _ -> v
+  | _, _ -> VOuc v
+</code></figure>
 
 <h4>Glue-тип</h4>
 
@@ -512,10 +582,19 @@ conv:
   | VGlueElem (r1,u1,a1), VGlueElem (r2,u2,a2) ->
     conv r1 r2 && conv u1 u2 && conv a1 a2
   
+app:
+  | VApp (VGlue _, VDir One), u -> vfst (app (u, VRef vone))
+
 act:
   | VGlue v -> VGlue (act rho v)
   | VGlueElem (r, u, a) -> VGlueElem (act rho r, act rho u, act rho a)
   | VUnglue v -> VUnglue (act rho v)
+
+conv:
+  | VGlue v, VGlue u -> conv u v
+  | VUnglue v, VUnglue u -> conv u v
+  | VGlueElem (r1, u1, a1), VGlueElem (r2, u2, a2) ->
+    conv r1 r2 && conv u1 u2 && conv a1 a2
 
 infer:
   | EGlue e -> ignore (extKan (infer ctx e)); inferGlue (eval e ctx)
@@ -533,6 +612,17 @@ inferV:
   | VGlueElem (r, u, a) -> inferGlueElem r u (inferV a)
   | VUnglue v -> let (t, _, _) = extGlue (inferV v) in t
 
+and fiber t1 t2 f y =
+  VSig (t1, (freshName "a", fun x -> pathv (idp t2) y (app (f, x)))) (* right fiber *)
+
+and isContr t = let x = freshName "x" in let y = freshName "y" in
+  VSig (t, (x, fun x -> VPi (t, (y, fun y -> pathv (idp t) x y))))
+  
+and isEquiv t1 t2 f = VPi (t2, (freshName "b", isContr << fiber t1 t2 f))
+and equiv t1 t2 = VSig (implv t1 t2, (freshName "f", isEquiv t1 t2))
+and equivSingl t0 = VSig (inferV t0, (freshName "T", fun t -> equiv t t0))
+and equivPtSingl t0 = VSig (inferV t0, (freshName "T", fun t -> prodv (equiv t t0) t))
+
 and inferGlue t = let (r, _, _) = freshDim () in let k = inferV t in
   VPi (VI, (r, fun r -> implv (partialv (equivSingl t) r) k))
 
@@ -544,7 +634,45 @@ and inferGlueElem r u t =
 
 <h4>Стек де Рама</h4>
 
-<figure><code></code></figure>
+<figure><code>eval:
+  | EIm e -> VIm (eval e ctx)
+  | EInf e -> inf (eval e ctx)
+  | EJoin e -> join (eval e ctx)
+  | EIndIm (a, b) -> VIndIm (eval a ctx, eval b ctx)
+
+act:
+  | VIm t -> VIm (act rho t)
+  | VInf v -> inf (act rho v)
+  | VJoin v -> join (act rho v)
+  | VIndIm (a, b) -> VIndIm (act rho a, act rho b)
+
+inferV:
+  | VIm t -> inferV t
+  | VInf v -> VIm (inferV v)
+  | VJoin v -> extIm (inferV v)
+  | VIndIm (a, b) -> inferIndIm a b
+
+infer:
+  | EIm e -> let t = infer ctx e in ignore (extSet t); t
+  | EInf e -> VIm (infer ctx e)
+  | EJoin e -> let t = extIm (infer ctx e) in ignore (extIm t); t
+  | EIndIm (a, b) -> ignore (extSet (infer ctx a)); let t = eval a ctx in
+    let (c, (x, g)) = extPiG (infer ctx b) in eqNf (VIm t) c;
+    ignore (extSet (g (Var (x, c)))); inferIndIm t (eval b ctx)
+
+conv:
+  | VIm u, VIm v -> conv u v
+  | VInf u, VInf v -> conv u v
+  | VJoin u, VJoin v -> conv u v
+  | VIndIm (a1, b1), VIndIm (a2, b2) -> conv a1 a2 && conv b1 b2
+
+app:
+  | VApp (VIndIm _, f), VInf a -> app (f, a)
+
+and join = function | VInf v -> v | v -> VJoin v
+and inf = function | VJoin v -> v | v -> VInf v
+
+</code></figure>
 
 <h4>Операции Кана</h4>
 
@@ -566,10 +694,17 @@ conv:
   | VHComp (t1, r1, u1, v1), VHComp (t2, r2, u2, v2) ->
     conv t1 t2 && conv r1 r2 && conv u1 u2 && conv v1 v2
 
+app:
+  | VTransp (p, i), u0 -> transp p i u0
+
 act:
   | VTransp (p, i)       -> VTransp (act rho p, act rho i)
   | VHComp (t, r, u, u0) -> hcomp (act rho t) (act rho r) (act rho u) (act rho u0)
-  
+
+and transp p phi u0 = match p with
+  | VPLam (VLam (VI, (i, g))) -> transport i (g (Var (i, VI))) phi u0
+  | _ -> VApp (VTransp (p, phi), u0)
+
 and inferTransport ctx p i =
   check ctx i VI;
   let u0 = appFormulaE ctx p ezero in
