@@ -901,6 +901,8 @@ and inferJ v t =
              app (app (app (pi, x), y), p))))))))))
 </code></figure>
 
+<p>Тестирование равенства на претипах</p>
+
 <figure><code>def ≤ (i j : I) := Id I (i ∧ j) i
 def ≥ (i j : I) := ≤ j i
 
@@ -987,6 +989,8 @@ let reduceSystem ts x =
   | None   -> VApp (VSystem ts, x)
 </code></figure>
 
+<p>Тестирование кубические систем</p>
+
 <figure><code>
 def φ (i : I) : Partial U₁ (i ∨ -i) := [(i = 0) → U, (i = 1) → U → U]
 def φ′ (i : I) : Partial U₁ (i ∨ -i) := [(i = 1) → U → U, (i = 0) → U]
@@ -1045,6 +1049,8 @@ and ouc v = match v, inferV v with
   | VApp (VInc _, v), _ -> v
   | _, _ -> VOuc v
 </code></figure>
+
+ <P>Интернализация кубических подтипов</P>
 
 <figure><code>
 def sub (A : U) (i : I) (u : Partial A i) : V := A[i ↦ u]
@@ -1171,7 +1177,11 @@ def iso-Elim (A B : U)
         star
       )
 
-def fiber (A B : U) (f: A -> B) (y : B): U := Σ (x : A), Path B y (f x)
+    </code></figure>
+    
+    <p>Впервые гомотопическая система на Coq была разработана Пелайо, Уорреном и Воеводским в 2012 году.</P>
+    
+    <figure><code>def fiber (A B : U) (f: A -> B) (y : B): U := Σ (x : A), Path B y (f x)
 def isContr' (A: U) : U := Σ (x: A), Π (y: A), Path A x y
 def isEquiv (A B : U) (f : A -> B) : U := Π (y : B), isContr (fiber A B f y)
 def equiv (A B : U) : U := Σ (f : A -> B), isEquiv A B f
@@ -1200,8 +1210,11 @@ def ret-equiv (A B : U) (w : equiv A B) (y : B)
 def sec-equiv (A B : U) (w : equiv A B) (x : A)
   : Path A (inv-equiv A B w (w.1 x)) x
  := &lt;i> ((w.2 (w.1 x)).2 (x, &lt;j> w.1 x) @ i).1
+</code></figure>
 
-def Glue′ (A : U) (φ : I) (e : Partial (Σ (T : U), equiv T A) φ)
+<p>Интернализация Glue типов</p>
+
+<figure><code>def Glue′ (A : U) (φ : I) (e : Partial (Σ (T : U), equiv T A) φ)
   : U := Glue A φ e
 
 def glue′ (A : U) (φ : I) (u : Partial (Σ (T : U), equiv T A × T) φ)
@@ -1211,11 +1224,15 @@ def glue′ (A : U) (φ : I) (u : Partial (Σ (T : U), equiv T A × T) φ)
 def unglue′ (A : U) (φ : I) (e : Partial (Σ (T : U), equiv T A) φ)
     (b : Glue A φ e)
   : A := unglue b
-   
-    </code></figure>
+   </code></figure>
 
 
 <h4>Стек де Рама</h4>
+
+<p>Стек де Рама или Инфинитиземальная Модальность Формы &mdash; это базовый примитива
+   для доказательства теорем из синтетической дифференциальной геометрии. Данный
+   теоретико-типовой аппарт был разработан впервые Феликсом Черубини под руководством Урса Шрайбера.
+   Прувер Anders реализует вычислительную семантику стека де Рама.</p>
 
 <figure><code>eval:
   | EIm e -> VIm (eval e ctx)
@@ -1257,7 +1274,7 @@ and inf = function | VJoin v -> v | v -> VInf v
 
 </code></figure>
 
-<p>Стек де Рама тестируется докторской диссертацией Феликса Черубини:</p>
+<p>Стек де Рама тестируется докторской диссертацией Феликса Черубини посвященной картановой геометрии:</p>
 
 <figure><code>
 def ι (A : U) (a : A) : ℑ A := ℑ-unit a
