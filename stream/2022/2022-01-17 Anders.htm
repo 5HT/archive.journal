@@ -480,8 +480,6 @@ infer:
 
 and inferPath ctx p =
   let (_, t0, t1) = extPathP (infer ctx p) in
-  (* path cannot connect different universes,
-     so if one endpoint is in U, then so other *)
   let k = extSet (inferV t0) in implv t0 (implv t1 (VKan k))
 
 and appFormula v x = match v with
@@ -613,7 +611,7 @@ inferV:
   | VUnglue v -> let (t, _, _) = extGlue (inferV v) in t
 
 and fiber t1 t2 f y =
-  VSig (t1, (freshName "a", fun x -> pathv (idp t2) y (app (f, x)))) (* right fiber *)
+  VSig (t1, (freshName "a", fun x -> pathv (idp t2) y (app (f, x)))) 
 
 and isContr t = let x = freshName "x" in let y = freshName "y" in
   VSig (t, (x, fun x -> VPi (t, (y, fun y -> pathv (idp t) x y))))
