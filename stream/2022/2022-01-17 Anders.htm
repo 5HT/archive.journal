@@ -1688,6 +1688,20 @@ def Bundle=Pi (B : U) (F : B → U) (y : B)
  
             </code></figure>
 
+            <h4>Дальшейшие планы</h4>
+
+            <p>В качестве эксперимента с такой минималистичной кубической теорией типов
+               мы хотим попытаться построить максимальное количество высших индуктивных типов
+               используя только <b>W</b>, коэквалайзер <b>coeq</b> и двухмерный спицевый диск<b>hubSpoke</b> .
+            </p>
+
+            <figure><code>type extension =
+              | ECoeq of exp | EIota of exp | EResp of exp | EIndCoeq of exp
+              | EDisc of exp | EBase of exp | EHub of exp | ESpoke of exp | EIndDisc of exp
+            </code></figure>
+
+            <h4>Вместо заключения</h4>
+
 <p>Для детального ознакомления с прувером предлагаем вам следующие страницы:<br>
   &mdash; Домашняя страница проекта: <a href="https://groupoid.space/homotopy/">Гомотопическая система типов.
           Модальная теория типов с двумя равенствами, ее синтаксис и семантика.</a><br>
