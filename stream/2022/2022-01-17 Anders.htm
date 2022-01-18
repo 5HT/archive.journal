@@ -753,30 +753,30 @@ def Vec-map (A B : U) (f : A → B) (n : ℕ) : Vec A n → Vec B n
    достаточно алгоритма представления дизъюнктивных нормальных форм.</p>
 
 <figure><code>eval:
-| EI -> VI
-| EDir d -> VDir d
-| EAnd (e1, e2) -> evalAnd (eval e1 ctx) (eval e2 ctx)
-| EOr (e1, e2) -> evalOr (eval e1 ctx) (eval e2 ctx)
-| ENeg e -> negFormula (eval e ctx)
+  | EI -> VI
+  | EDir d -> VDir d
+  | EAnd (e1, e2) -> evalAnd (eval e1 ctx) (eval e2 ctx)
+  | EOr (e1, e2) -> evalOr (eval e1 ctx) (eval e2 ctx)
+  | ENeg e -> negFormula (eval e ctx)
 
 inferV:
-| VI -> VPre Z.zero
-| VDir _ | VOr _ | VAnd _ | VNeg _ -> VI
+  | VI -> VPre Z.zero
+  | VDir _ | VOr _ | VAnd _ | VNeg _ -> VI
 
 act:
-| VI -> VI
-| VDir d -> VDir d
-| VAnd (u, v) -> evalAnd (act rho u) (act rho v)
-| VOr (u, v) -> evalOr (act rho u) (act rho v)
-| VNeg u -> negFormula (act rho u)
+  | VI -> VI
+  | VDir d -> VDir d
+  | VAnd (u, v) -> evalAnd (act rho u) (act rho v)
+  | VOr (u, v) -> evalOr (act rho u) (act rho v)
+  | VNeg u -> negFormula (act rho u)
 
 conv:
-| VI, VI -> true
-| VDir u, VDir v -> u = v
+  | VI, VI -> true
+  | VDir u, VDir v -> u = v
 
 infer:
-| EI -> VPre Z.zero | EDir _ -> VI | ENeg e -> check ctx e VI; VI
-| EOr (e1, e2) | EAnd (e1, e2) -> check ctx e1 VI; check ctx e2 VI; VI
+  | EI -> VPre Z.zero | EDir _ -> VI | ENeg e -> check ctx e VI; VI
+  | EOr (e1, e2) | EAnd (e1, e2) -> check ctx e1 VI; check ctx e2 VI; VI
 </code></figure>
 
 <p>Пример работы встроенного ДНФ солвера:</p>
