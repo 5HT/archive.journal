@@ -115,6 +115,16 @@ check:
 
         <h4>Π-тип</h4>
 
+  <p>Первым математическим прувером вообще и первым прувером на фибрационном типе считается AUTOMATH де Брейна.
+     Первая полная формальная система CoC и лямюда-куб были детально разработаны Барендрехтом. Однако отцом
+     формальной математики принято считать Мартина-Лёфа. Его типовая система до сих пор формирует вычислительную
+     основу современных пруверов. Традиционно MLTT состоит из Π, Σ, 0, 1, 2, W, Id типов.
+     При разработке верификатора Anders мы руководствовались мотивацией минималистичности поэтом отбросили
+     вариант имплементации общей схемы индуктивных типов и высших идуктивных типов (HIT), а реализовать
+     в качестве индуктивного ядра классические типы системы MLTT на базе W.
+  </div>
+  </p>
+
 <figure><code>eval:
   | EPi (a, (p, b)) -> let t = eval a ctx in VPi (t, (fresh p, closByVal ctx p t b))
   | ELam (a, (p, b)) -> let t = eval a ctx in VLam (t, (fresh p, closByVal ctx p t b))
@@ -159,6 +169,34 @@ and inferLam ctx p a e =
     ignore (infer (upLocal ctx p t (Var (p, t))) e);
     VPi (t, (p, fun x -> inferV (eval e (upLocal ctx p t x))))
     
+</code></figure>
+
+
+<figure><code>
+def Pi (A : U) (B : A → U) : U := Π (x : A), B x
+def lambda (A: U) (B: A → U) (b: Pi A B) : Pi A B := λ (x : A), b x
+def lam (A B: U) (f: A → B) : A → B := λ (x : A), f x
+def apply (A: U) (B: A → U) (f: Pi A B) (a: A) : B a := f a
+def app (A B: U) (f: A → B) (x: A): B := f x
+
+def Π-β (A : U) (B : A → U) (a : A) (f : Pi A B)
+  : Path (B a) (apply A B (lambda A B f) a) (f a) := idp (B a) (f a)
+def Π-η (A : U) (B : A → U) (a : A) (f : Pi A B)
+  : Path (Pi A B) f (λ (x : A), f x) := idp (Pi A B) f
+
+def funext-form (A B: U) (f g: A → B): U := Path (A → B) f g
+def funext (A B: U) (f g: A → B) (p: Π (x: A), Path B (f x) (g x))
+  : funext-form A B f g := &lt;i> λ (a: A), p a @ i
+
+def happly (A B: U) (f g : A → B) (p: funext-form A B f g) (x : A)
+  : Path B (f x) (g x) := cong (A → B) B (λ (h: A → B), app A B h x) f g p
+
+def funext-β (A B: U) (f g: A → B) (p: Π (x: A), Path B (f x) (g x))
+  : Π (x: A), Path B (f x) (g x) := λ (x: A), happly A B f g (funext A B f g p) x
+
+def funext-η (A B: U) (f g: A → B) (p: Path (A → B) f g)
+  : Path (Path (A → B) f g) (funext A B f g (happly A B f g p)) p
+ := idp (Path (A → B) f g) p
 </code></figure>
 
 <h4>Σ-тип</h4>
@@ -213,6 +251,37 @@ let vsnd : value -> value = function
   | VPair (_, _, u) -> u
   | v -> VSnd v
 </code></figure>
+
+<figure><code>def Sigma (A : U) (B : A → U) : U := summa (x: A), B x
+def prod (A B : U) : U := summa (_ : A), B
+def pair (A: U) (B: A → U) (a: A) (b: B a) : Sigma A B ≔ (a, b)
+def pr₁ (A: U) (B: A → U) (x: Sigma A B) : A ≔ x.1
+def pr₂ (A: U) (B: A → U) (x: Sigma A B) : B (pr₁ A B x) ≔ x.2
+  
+def Sigma-rec (A: U) (B: A -> U) (C: U) (g: Π (x: A), B(x) -> C)
+    (p: Σ (x: A), B x): C := g p.1 p.2
+  
+def Sigma-ind (A : U) (B : A -> U) (C : Π (s: Σ (x: A), B x), U) 
+    (g: Π (x: A) (y: B x), C (x,y)) (p: Σ (x: A), B x) : C p := g p.1 p.2
+  
+def ac (A B: U) (R: A -> B -> U) (g: Π (x: A), Σ (y: B), R x y)
+  : Σ (f: A -> B), Π (x: A), R x (f x) := (\(i:A),(g i).1,\(j:A),(g j).2)
+  
+def total (A:U) (B C : A -> U) (f : Π (x:A), B x -> C x) (w: Σ(x: A), B x)
+  : Σ(x: A), C x := (w.1,f (w.1) (w.2))
+  
+def funDepTr (A: U) (P: A -> U) (a0 a1: A) (p: PathP (&lt;_>A) a0 a1)
+    (u0: P a0) (u1: P a1)
+  : PathP (&lt;_>U) (PathP (&lt;i> P (p @ i)) u0 u1) (PathP (&lt;_>P a1)
+            (hcomp (P a1) 0 (λ (k : I), []) (transp (&lt;i> P (p @ i)) 0 u0)) u1)
+ := &lt;j> PathP (&lt;i> P (p @ j \/ i))
+            (comp (\(i:I), P (p @ j /\ i)) -j (\(k: I), [(j = 0) -> u0 ])
+            (inc (P a0) -j u0)) u1
+  
+def pathSig0 (A: U) (P: A -> U) (t u: Σ (x: A), P x) (p: PathP (&lt;_>A) t.1 u.1)
+  : PathP (&lt;_>U) (PathP (&lt;i>P (p @ i)) t.2 u.2) (PathP (&lt;_>P u.1)
+          (hcomp (P u.1) 0 (λ(k:I),[]) (transp (&lt;i> P (p @ i)) 0 t.2)) u.2)
+ := funDepTr A P t.1 u.1 p t.2 u.2</code></figure>
 
 <h4>0-тип</h4>
 
@@ -370,75 +439,48 @@ and inferIndW a b c = let t = wtype a b in
 
    </code></figure>
 
-   <h4>I-претип</h4>
+   <p>После того как мы определили W типы в ядре, для реализации принципа индукции нам потребуется
+      транспорт в фибрационном путе Path.</p>
 
-<figure><code>eval:
-  | EI -> VI
-  | EDir d -> VDir d
-  | EAnd (e1, e2) -> evalAnd (eval e1 ctx) (eval e2 ctx)
-  | EOr (e1, e2) -> evalOr (eval e1 ctx) (eval e2 ctx)
-  | ENeg e -> negFormula (eval e ctx)
+<figure><code>
+def indᵂ-β (A : U) (B : A → U) (C : (W (x : A), B x) → U) (g : Π (x : A)
+    (f : B x → (W (x : A), B x)), (Π (b : B x), C (f b)) → C (sup A B x f))
+    (a : A) (f : B a → (W (x : A), B x))
+  : PathP (&lt;_> C (sup A B a f))
+          (indᵂ A B C g (sup A B a f)) (g a f (λ (b : B a), indᵂ A B C g (f b)))
+ := &lt;_> g a f (λ (b : B a), indᵂ A B C g (f b))
 
-inferV:
-  | VI -> VPre Z.zero
-  | VDir _ | VOr _ | VAnd _ | VNeg _ -> VI
+def trans-W (A : I → U) (B : Π (i : I), A i → U)
+    (a : A 0) (f : B 0 a → (W (x : A 0), B 0 x))
+  : W (x : A 1), B 1 x
+ := sup (A 1) (B 1) (transp (&lt;i> A i) 0 a)
+        (transp (&lt;i> B i (transFill (A 0)
+                (A 1) (<j> A j) a @ i) → (W (x : A i), B i x)) 0 f)
 
-act:
-  | VI -> VI
-  | VDir d -> VDir d
-  | VAnd (u, v) -> evalAnd (act rho u) (act rho v)
-  | VOr (u, v) -> evalOr (act rho u) (act rho v)
-  | VNeg u -> negFormula (act rho u)
+def trans-W′ (A : I → U) (B : Π (i : I), A i → U)
+    (a : A 0) (f : B 0 a → (W (x : A 0), B 0 x))
+  : W (x : A 1), B 1 x
+ := transp (&lt;i> W (x : A i), B i x) 0 (sup (A 0) (B 0) a f)
 
-conv:
-  | VI, VI -> true
-  | VDir u, VDir v -> u = v
+def trans-W-is-correct (A : I → U) (B : Π (i : I), A i → U)
+    (a : A 0) (f : B 0 a → (W (x : A 0), B 0 x))
+  : Path (W (x : A 1), B 1 x) (trans-W A B a f) (trans-W′ A B a f)
+ := &lt;_> trans-W A B a f
 
-infer:
-  | EI -> VPre Z.zero | EDir _ -> VI | ENeg e -> check ctx e VI; VI
-  | EOr (e1, e2) | EAnd (e1, e2) -> check ctx e1 VI; check ctx e2 VI; VI
-</code></figure>
+def hcomp-W′ (A : U) (B : A → U) (r : I) (a : I → Partial A r)
+    (f : Π (i : I), PartialP [(r = 1) → B (a i 1=1) → (W (x : A), B x)] r)
+    (a₀ : A[r ↦ a 0]) (f₀ : (B (ouc a₀) → (W (x : A), B x)) [r ↦ f 0])
+  : W (x : A), B x
+ := hcomp (W (x : A), B x) r
+          (λ (i : I), [(r = 1) → sup A B (a i 1=1) (f i 1=1)])
+          (sup A B (ouc a₀) (ouc f₀))
 
-<h4>Id-тип</h4>
-
-<figure><code>eval:
-  | EId e -> VId (eval e ctx)
-  | ERef e -> VRef (eval e ctx)
-  | EJ e -> VJ (eval e ctx)
-
-infer:
-  | EId e -> let v = eval e ctx in implv v (implv v (VPre (extSet (infer ctx e))))
-  | ERef e -> let v = eval e ctx in VApp (VApp (VId (infer ctx e)), v), v)
-  | EJ e -> inferJ (eval e ctx) (infer ctx e)
-
-app:
-  | VApp (VApp (VApp (VApp (VJ _, _), _), f), _), VRef _ -> f
-
-inferV:
-  | VId v -> let n = extSet (inferV v) in implv v (implv v (VPre n))
-  | VJ v -> inferJ v (inferV v)
-
-act:
-  | VId v -> VId (act rho v)
-  | VRef v -> VRef (act rho v)
-  | VJ v -> VJ (act rho v)
-
-and inferJ v t =
-  let x = freshName "x" in
-  let y = freshName "y" in
-  let pi = freshName "P" in
-  let p = freshName "p" in
-  let k = extSet t in
-  let t = VPi (v, (x, fun x -> VPi (v, (y, fun y -> implv (idv v x y) (VPre k))))) in
-  VPi (t, (pi, fun pi ->
-    VPi (v, (x, fun x ->
-      implv (app (app (app (pi, x), x), VRef x))
-            (VPi (v, (y, fun y ->
-              VPi (idv v x y, (p, fun p ->
-                app (app (app (pi, x), y), p))))))))))
 </code></figure>
 
 <h4>Path-тип</h4>
+
+<p>Наконец многомерный Path тип представляет собой то гомотопическое кубическое гетерогенное
+   равенство с помощью которого можно построить групоиды (смотрите базовую библиотеку Андерса).</p>
 
 <figure><code>eval:
   | EPathP e -> VPathP (eval e ctx)
@@ -493,6 +535,354 @@ and appFormula v x = match v with
     end
 </code></figure>
 
+<p>Имея Π,Σ и Path типы а также урезанный транспорт можно построить
+   вычислительную семантику MLTT-73:</p>
+
+<figure><code>def MLTT (A : U) : U₁ ≔ Σ
+  (Π-form  : Π (B: A → U), U)
+  (Π-ctor₁ : Π (B: A → U), Pi A B → Pi A B)
+  (Π-elim₁ : Π (B: A → U), Pi A B → Pi A B)
+  (Π-comp₁ : Π (B: A → U) (a: A) (f: Pi A B),
+               Equ (B a) (Π-elim₁ B (Π-ctor₁ B f) a) (f a))
+  (Π-comp₂ : Π (B : A → U) (a : A) (f : Pi A B),
+               Equ (Pi A B) f (λ (x : A), f x))
+  (Σ-form  : Π (B: A → U), U)
+  (Σ-ctor₁ : Π (B: A → U) (a: A) (b : B a) , Sigma A B)
+  (Σ-elim₁ : Π (B: A → U) (p: Sigma A B), A)
+  (Σ-elim₂ : Π (B: A → U) (p: Sigma A B), B (pr₁ A B p))
+  (Σ-comp₁ : Π (B: A → U) (a: A) (b: B a), Equ A a (Σ-elim₁ B (Σ-ctor₁ B a b)))
+  (Σ-comp₂ : Π (B: A → U) (a: A) (b: B a), Equ (B a) b (Σ-elim₂ B (a, b)))
+  (Σ-comp₃ : Π (B: A → U) (p: Sigma A B), Equ (Sigma A B) p (pr₁ A B p, pr₂ A B p))
+  (=-form  : Π (a: A), A → U)
+  (=-ctor₁ : Π (a: A), Equ A a a)
+  (=-elim₁ : Π (a: A) (C: D A) (d: C a a (=-ctor₁ a)) (y: A) (p: Equ A a y), C a y p)
+  (=-comp₁ : Π (a: A) (C: D A) (d: C a a (=-ctor₁ a)),
+     Equ (C a a (=-ctor₁ a)) d (=-elim₁ a C d a (=-ctor₁ a))), 𝟏
+
+theorem internalizing (A : U) : MLTT A ≔
+  (Pi A, lambda A, app A, comp₁ A, comp₂ A,
+   Sigma A, pair A, pr₁ A, pr₂ A, comp₃ A, comp₄ A, comp₅ A,
+   Equ A, refl A, J A, comp₆ A, A)
+</code></figure>
+
+<p>Мы используем эти термы в качестве самопроверки (reality check).</p>
+
+<figure><code>
+def Path (A : U) (x y : A) : U := PathP (&lt;_> A) x y
+def idp (A : U) (x : A) : Path A x x := &lt;_> x
+def singl (A: U) (a: A): U := Σ (x: A), Path A a x
+def eta (A: U) (a: A): singl A a := (a, idp A a)
+def sym (A: U) (a b : A) (p : Path A a b) : Path A b a := &lt;i> p @ -i
+def contr (A : U) (a b : A) (p : Path A a b)
+  : Path (singl A a) (eta A a) (b, p) := &lt;i> (p @ i, &lt;j> p @ i /\ j)
+
+def isContr (A: U) : U := Σ (x: A), Π (y: A), Path A x y
+def isContrSingl (A : U) (a : A) : isContr (singl A a)
+ := ((a,idp A a),(\ (z:singl A a), contr A a z.1 z.2))
+
+def cong (A B : U) (f : A → B) (a b : A) (p : Path A a b)
+  : Path B (f a) (f b) := &lt;i> f (p @ i)
+
+def ap (A: U) (a x: A) (B: A → U) (f: A → B a) (b: B a) (p: Path A a x)
+  : Path (B a) (f a) (f x) := &lt;i> f (p @ i)
+
+def inv (A: U) (a b: A) (p: Path A a b): Path A b a := &lt;i> p @ -i
+def Path-η (A : U) (x y : A) (p : Path A x y)
+  : Path (Path A x y) p (&lt;i> p @ i) := &lt;_> p
+
+def idp-left (A : U) (x y : A) (p : Path A x y)
+  : Path (Path A x x) (&lt;_> x) (&lt;_> p @ 0) := &lt;_ _> x
+
+def idp-right (A : U) (x y : A) (p : Path A x y)
+  : Path (Path A y y) (&lt;_> y) (&lt;_> p @ 1) := &lt;_ _> y
+
+def sym-sym-eq-idp (A : U) (x y : A) (p : Path A x y)
+  : Path (Path A x y) p (sym A y x (sym A x y p)) := &lt;_> p
+
+def section (A B : U) (f : A -> B) (g : B -> A) : U
+ := Π (b : B), Path B (f (g b)) b
+
+def retract (A B : U) (f : A -> B) (g : B -> A) : U
+ := Π (a : A), Path A (g (f a)) a
+
+def hmtpy (A : U) (x y : A) (p : Path A x y)
+  : Path (Path A x x) (&lt;_> x) (&lt;i> p @ i /\ -i) := <j i> p @ j /\ i /\ -i
+
+def plam (A : U) (f : I → A) : Path A (f 0) (f 1) := &lt;i> f i
+def elim (A : U) (a b : A) (p : Path A a b) : I → A := λ (i : I), p @ i
+def plam-elim (A : U) (f : I → A)
+  : Id (I → A) (elim A (f 0) (f 1) (plam A f)) f := ref f
+
+def elim-plam (A : U) (a b : A) (p : Path A a b)
+  : Path (Path A a b) (plam A (elim A a b p)) p := &lt;_> p
+
+def isProp (A : U) : U := Π (a b : A), Path A a b
+def isSet (A : U) : U := Π (a b : A) (a0 b0 : Path A a b), Path (Path A a b) a0 b0
+def isGroupoid (A : U) : U := Π (a b : A) (x y : Path A a b)
+      (i j : Path (Path A a b) x y), Path (Path (Path A a b) x y) i j
+
+def SET : U₁ := Σ (X : U), isSet X
+
+def transport (A B: U) (p : PathP (&lt;_> U) A B) (a: A): B := transp p 0 a
+def trans_comp (A : U) (a : A) : Path A a (transport A A (&lt;i> A) a)
+ := &lt;j> transp (&lt;_> A) -j a
+def subst (A : U) (P : A -> U) (a b : A) (p : Path A a b) (e : P a)
+  : P b := transp (&lt;i> P (p @ i)) 0 e
+def D (A : U) : U₁ ≔ Π (x y : A), Path A x y → U
+def J (A: U) (x: A) (C: D A) (d: C x x (idp A x)) (y: A) (p: Path A x y) : C x y p
+ := subst (singl A x) (\ (z: singl A x), C x (z.1) (z.2))
+          (eta A x) (y, p) (contr A x y p) d
+  
+def subst_comp (A: U) (P: A → U) (a: A) (e: P a)
+  : Path (P a) e (subst A P a a (idp A a) e) := trans_comp (P a) e
+
+def J-β (A : U) (a : A) (C : D A) (d: C a a (idp A a))
+  : Path (C a a (idp A a)) d (J A a C d a (idp A a))
+ := subst_comp (singl A a) (\ (z: singl A a), C a (z.1) (z.2)) (eta A a) d
+
+</code></figure>
+
+<h4>ℕ-тип</h4>
+
+<p>Тип натуральных чисел выводим в нашей системе</p>
+
+<figure><code>def ℕ := W (x : 𝟐), ind₂ (λ (_ : 𝟐), U) 𝟎 𝟏 x
+def ℕ-ctor := ind₂ (λ (_ : 𝟐), U) 𝟎 𝟏
+def zero : ℕ := sup 𝟐 ℕ-ctor 0₂ (ind₀ ℕ)
+def succ (n : ℕ) : ℕ := sup 𝟐 ℕ-ctor 1₂ (λ (x : 𝟏), n)
+  
+def 𝟎⟶ℕ (C : ℕ → U) (f : 𝟎 → ℕ) : C zero → C (sup 𝟐 ℕ-ctor 0₂ f)
+ := transp (&lt;i> C (sup 𝟐 ℕ-ctor 0₂
+        (λ (x : 𝟎), ind₀ (PathP (&lt;_> ℕ) (ind₀ ℕ x) (f x)) x @ i))) 0
+  
+def 𝟏⟶ℕ (C : ℕ → U) (f : 𝟏 → ℕ) : C (succ (f ★)) → C (sup 𝟐 ℕ-ctor 1₂ f)
+ := transp (&lt;i> C (sup 𝟐 ℕ-ctor 1₂
+        (λ (x : 𝟏), ind₁ (λ (y : 𝟏), PathP (&lt;_> ℕ) (f ★) (f y))
+                (&lt;_> f ★) x @ i))) 0
+  
+def ℕ-ind (C : ℕ → U) (z : C zero) (s : Π (n : ℕ), C n → C (succ n))
+  : Π (n : ℕ), C n
+ := indᵂ 𝟐 ℕ-ctor C
+    (ind₂ (λ (x : 𝟐), Π (f : ℕ-ctor x → ℕ),
+             (Π (b : ℕ-ctor x), C (f b)) → C (sup 𝟐 ℕ-ctor x f))
+          (λ (f : 𝟎 → ℕ) (g : Π (x : 𝟎), C (f x)), 𝟎⟶ℕ C f z)
+          (λ (f : 𝟏 → ℕ) (g : Π (x : 𝟏), C (f x)), 𝟏⟶ℕ C f (s (f ★) (g ★))))
+  
+def ℕ-rec (C : U) (z : C) (s : ℕ → C → C) : ℕ → C := ℕ-ind (λ (_ : ℕ), C) z s
+def ℕ-iter (C : U) (z : C) (s : C → C) : ℕ → C := ℕ-rec C z (λ (_ : ℕ), s)
+def ℕ-case (C : U) (z s : C) : ℕ → C := ℕ-iter C z (λ (_ : C), s)
+  
+def plus : ℕ → ℕ → ℕ
+ := ℕ-iter (ℕ → ℕ) (idfun ℕ) (∘ ℕ ℕ ℕ succ)
+
+def mult : ℕ → ℕ → ℕ
+ := ℕ-rec (ℕ → ℕ) (\(_: ℕ), zero) (\(_: ℕ) (x: ℕ → ℕ) (m: ℕ), plus m (x m))
+</code></figure>
+
+<h4>+ тип</h4>
+
+<p>Операция логического или в IPL выводима в нашей системе</p>
+
+<figure><code>def + (A B: U) : U := Σ (x : 𝟐), ind₂ (λ (_ : 𝟐), U) A B x
+def inl (A B : U) (a : A) : + A B := (0₂, a)
+def inr (A B : U) (b : B) : + A B := (1₂, b)
+def +-ind (A B : U) (C : + A B → U) (f : Π (x : A), C (inl A B x))
+    (g : Π (y : B), C (inr A B y)) (w : + A B) : C w
+ := ind₂ (λ (x : 𝟐), Π (u : ind₂ (λ (_ : 𝟐), U) A B x), C (x, u)) f g w.1 w.2
+</code></figure>
+
+<h4>Maybe-тип</h4>
+
+<p>Maybe-тип выводим в нашей системе</p>
+
+<figure><code>def maybe (A : U) : U := + 𝟏 A
+def nothing (A : U) : maybe A := (0₂, ★)
+def just (A : U) (a : A) : maybe A := (1₂, a)
+def maybe-ind (A : U) (P: maybe A -> U) (n: P (nothing A))
+    (j: Π (x: A), P (just A x)) : Π (a: maybe A), P a
+ := +-ind 𝟏 A P (ind₁ (λ (x : 𝟏), P (0₂, x)) n) j
+</code></figure>
+
+<h4>Fin-тип</h4>
+
+<p>Тип конечных множеств выводим в нашей системе:</p>
+
+<figure><code>def Fin : ℕ → U := ℕ-iter U 𝟎 (+ 𝟏)
+def fzero (n : ℕ) : Fin (succ n) := (0₂, ★)
+def fsucc (n : ℕ) (m : Fin n) : Fin (succ n) := (1₂, m)
+def Fin-ind (T : Π (n : ℕ), Fin n → U) (z : Π (n : ℕ), T (succ n) (fzero n))
+    (s: Π (n: ℕ) (x: Fin n), T n x → T (succ n) (fsucc n x)) (m: ℕ) (x: Fin m)
+  : T m x
+ := ℕ-ind (λ (k : ℕ), Π (x : Fin k), T k x)
+          (λ (x : 𝟎), ind₀ (T zero x) x)
+          (λ (k : ℕ) (f : Π (x : Fin k), T k x),
+             +-ind 𝟏 (Fin k) (T (succ k)) (ind₁ (λ (w : 𝟏), T (succ k) (0₂, w)) (z k))
+                     (λ (w : Fin k), s k w (f w))) m x
+            </code></figure>
+
+            
+<h4>Vec-тип</h4>
+
+<p>Тип зависимого вектора выводим в нашей системе</p>
+
+<figure><code>def Vec (A : U) : ℕ → U := ℕ-iter U 𝟏 (λ (X : U), A × X)
+def vzero (A : U) : Vec A zero := ★
+def vsucc (A : U) (n : ℕ) (head : A) (tail : Vec A n)
+  : Vec A (succ n) := (head, tail)
+
+def Vec-ind (A : U) (T : Π (n : ℕ), Vec A n → U) (z : T zero (vzero A))
+    (s : Π (n : ℕ) (x : A) (v : Vec A n), T n v → T (succ n) (vsucc A n x v))
+    (m : ℕ) : Π (x : Vec A m), T m x
+ := ℕ-ind (λ (k : ℕ), Π (x : Vec A k), T k x)
+          (ind₁ (T zero) z)
+          (λ (k : ℕ) (f : Π (x : Vec A k), T k x) (y : Vec A (succ k)),
+             s k y.1 y.2 (f y.2)) m
+
+def Vec-rec (A B : U) (z : B) (s : Π (n : ℕ), A → Vec A n → B → B)
+    (m : ℕ) : Vec A m → B
+ := Vec-ind A (λ (n : ℕ) (_ : Vec A n), B) z s m
+
+def Vec-map (A B : U) (f : A → B) (n : ℕ) : Vec A n → Vec B n
+ := Vec-ind A (λ (k : ℕ) (_ : Vec A k), Vec B k) ★
+       (λ (k : ℕ) (x : A) (_ : Vec A k), vsucc B k (f x)) n  </code></figure>
+
+<h4>I-претип</h4>
+
+<p>Претипы I имеют в качестве элементов концы отрезка 0 и 1 и реализуют
+   алгебру де Моргана на них. Поэтому для вычисления кубических систем
+   достаточно алгоритма представления дизъюнктивных нормальных форм.</p>
+
+<figure><code>eval:
+| EI -> VI
+| EDir d -> VDir d
+| EAnd (e1, e2) -> evalAnd (eval e1 ctx) (eval e2 ctx)
+| EOr (e1, e2) -> evalOr (eval e1 ctx) (eval e2 ctx)
+| ENeg e -> negFormula (eval e ctx)
+
+inferV:
+| VI -> VPre Z.zero
+| VDir _ | VOr _ | VAnd _ | VNeg _ -> VI
+
+act:
+| VI -> VI
+| VDir d -> VDir d
+| VAnd (u, v) -> evalAnd (act rho u) (act rho v)
+| VOr (u, v) -> evalOr (act rho u) (act rho v)
+| VNeg u -> negFormula (act rho u)
+
+conv:
+| VI, VI -> true
+| VDir u, VDir v -> u = v
+
+infer:
+| EI -> VPre Z.zero | EDir _ -> VI | ENeg e -> check ctx e VI; VI
+| EOr (e1, e2) | EAnd (e1, e2) -> check ctx e1 VI; check ctx e2 VI; VI
+</code></figure>
+
+<p>Пример работы встроенного ДНФ солвера:</p>
+
+<figure><code>def ∂ (i: I) := i ∨ -i
+def ∂-eq-neg-∂ (i: I): Id I (∂ i) (∂ -i) := ref (∂ i)
+def min (i j: I) := i ∧ j
+def max (i j: I) := i ∨ j
+def ⊕ (i j: I) : I := (i ∧ -j) ∨ (-i ∧ j)
+def ⊕-comm (i j: I): Id I (⊕ i j) (⊕ j i) := ref (⊕ i j)
+def ∧-comm (i j: I): Id I (i ∧ j) (j ∧ i) := ref (i ∧ j)
+def ∨-comm (i j: I): Id I (i ∨ j) (j ∨ i) := ref (i ∨ j)
+def ¬-of-∧ (i j: I): Id I -(i ∧ j) (-i ∨ -j) := ref -(i ∧ j)
+def ¬-of-∨ (i j: I): Id I -(i ∨ j) (-i ∧ -j) := ref -(i ∨ j)
+def ∧-distrib-∨ (i j k: I): Id I ((i ∨ j)∧ k) ((i ∧ k)∨(j ∧ k)) := ref ((i ∨ j)∧ k)
+def ∨-distrib-∧ (i j k: I): Id I ((i ∧ j)∨ k) ((i ∨ k)∧(j ∨ k)) := ref ((i ∧ j)∨ k)
+def ∧-assoc (i j k: I): Id I (i ∧ (j ∧ k)) ((i ∧ j) ∧ k) := ref (i ∧ (j ∧ k))
+</code></figure>
+
+<h4>Id-тип</h4>
+
+<p>Система Воеводского HTS а также более новые ситемы 2LTT содержат в себе два вида равенств:
+одно для претипов (в нашем случае отрезка), а второе для фибрационных
+типов (в нешем случае для всех остальных типов).</p>
+
+<figure><code>eval:
+| EId e -> VId (eval e ctx)
+| ERef e -> VRef (eval e ctx)
+| EJ e -> VJ (eval e ctx)
+
+infer:
+| EId e -> let v = eval e ctx in implv v (implv v (VPre (extSet (infer ctx e))))
+| ERef e -> let v = eval e ctx in VApp (VApp (VId (infer ctx e)), v), v)
+| EJ e -> inferJ (eval e ctx) (infer ctx e)
+
+app:
+| VApp (VApp (VApp (VApp (VJ _, _), _), f), _), VRef _ -> f
+
+inferV:
+| VId v -> let n = extSet (inferV v) in implv v (implv v (VPre n))
+| VJ v -> inferJ v (inferV v)
+
+act:
+| VId v -> VId (act rho v)
+| VRef v -> VRef (act rho v)
+| VJ v -> VJ (act rho v)
+
+and inferJ v t =
+let x = freshName "x" in
+let y = freshName "y" in
+let pi = freshName "P" in
+let p = freshName "p" in
+let k = extSet t in
+let t = VPi (v, (x, fun x -> VPi (v, (y, fun y -> implv (idv v x y) (VPre k))))) in
+VPi (t, (pi, fun pi ->
+ VPi (v, (x, fun x ->
+   implv (app (app (app (pi, x), x), VRef x))
+         (VPi (v, (y, fun y ->
+           VPi (idv v x y, (p, fun p ->
+             app (app (app (pi, x), y), p))))))))))
+</code></figure>
+
+<figure><code>def ≤ (i j : I) := Id I (i ∧ j) i
+def ≥ (i j : I) := ≤ j i
+
+def ∧-split (i j : I) : Partial (1= i) (i ∧ j) := [(i = 1) (j = 1) → 1=1]
+def ∨-left (i j : I) (p : 1= i) : 1= (i ∨ j)
+:= idJ I (λ (i i′ : I) (_ : Id I i i′), Id I 1 (i′ ∨ j)) 1 1=1 i p
+def ∨-right (i j : I) (p : 1= j) : 1= (i ∨ j) := ∨-left j i p 
+def ∧-1 (i j : I) (p : 1= (i ∧ j)) : 1= i := ∧-split i j p
+def ∧-1′ (i j : I) (p : 1= (i ∧ j)) : 1= i
+:= cong-Id I I (λ (k : I), k ∨ i) 1 (i ∧ j) p
+def ∧-min-left  (i j : I) : ≤ (i ∧ j) i := ref (i ∧ j)
+def ∧-min-right (i j : I) : ≤ (i ∧ j) j := ref (i ∧ j)
+def ∨-max-left  (i j : I) : ≤ i (i ∨ j) := ref i
+def ∨-max-right (i j : I) : ≤ j (i ∨ j) := ref j
+def ∧-to-∨ (i j : I) (p : Id I (i ∧ j) i) : Id I (i ∨ j) j
+:= rev I j (i ∨ j) (cong-Id I I (λ (k : I), k ∨ j) (i ∧ j) i p)
+
+def ≤-asymm (i j : I) (p : ≤ i j) (q : ≤ j i) : Id I i j
+:= comp-Id I i (i ∧ j) j (rev I (i ∧ j) i p) q
+def ≤-refl (i : I) : ≤ i i := ref i
+def ≤-trans (i j k : I) (p : ≤ i j) (q : ≤ j k) : ≤ i k
+:= comp-Id I (i ∧ k) (i ∧ j) i
+ (comp-Id I (i ∧ k) (i ∧ j ∧ k) (i ∧ j)
+   (rev I (i ∧ j ∧ k) (i ∧ k) (cong-Id I I (min k) (i ∧ j) i p))
+   (cong-Id I I (min i) (j ∧ k) j q)) p
+
+def 0-is-min (i : I) : ≤ 0 i := ref 0
+def 1-is-max (i : I) : ≤ i 1 := ref i
+
+def Δ² := Σ (i j : I), ≤ i j
+def Δ²-1 : Δ² := (0, 0, ref 0)
+def Δ²-2 : Δ² := (0, 1, ref 0)
+def Δ²-3 : Δ² := (1, 1, ref 1)
+def Δ²-1-2 : PathP (&lt;_> Δ²) Δ²-1 Δ²-2 := &lt;i> (0, i, ref 0)
+def Δ²-2-3 : PathP (&lt;_> Δ²) Δ²-2 Δ²-3 := &lt;i> (i, 1, ref i)
+def Δ²-1-3 : PathP (&lt;_> Δ²) Δ²-1 Δ²-3 := &lt;i> (i, i, ref i)
+
+def Δ³ := Σ (i j k : I), (≤ i j) × (≤ j k)
+def Δ³-1 : Δ³ := (0, 0, 0, ref 0, ref 0)
+def Δ³-2 : Δ³ := (0, 0, 1, ref 0, ref 0)
+def Δ³-3 : Δ³ := (0, 1, 1, ref 0, ref 1)
+def Δ³-4 : Δ³ := (1, 1, 1, ref 1, ref 1)
+</code></figure>
+
 <h4>Частичные типы, кубические системы</h4>
 
 <figure><code>eval:
@@ -535,6 +925,14 @@ let reduceSystem ts x =
   | None   -> VApp (VSystem ts, x)
 </code></figure>
 
+<figure><code>
+def Partial′ (A : U) (i : I) := Partial A i
+def seg : PathP (&lt;_> I) 0 1 := &lt;i> i
+def Partial-app (A : U) (i : I) (u : Partial A i) (p : 1= i) : A := u p
+def Id-path (A : U) (a b : A) : Id A a b → Path A a b
+ := idJ A (λ (a b : A) (_ : Id A a b), Path A a b) a (&lt;_> a) b
+</code></figure>
+
 <h4>Кубические подтипы</h4>
 
 <figure><code>eval:
@@ -570,6 +968,12 @@ and ouc v = match v, inferV v with
   | _, VSub (_, VDir One, u) -> app (u, VRef vone)
   | VApp (VInc _, v), _ -> v
   | _, _ -> VOuc v
+</code></figure>
+
+<figure><code>
+def sub (A : U) (i : I) (u : Partial A i) : V := A[i ↦ u]
+def inc′ (A : U) (i : I) (a : A) : sub A i [(i = 1) → a] := inc A i a
+def ouc′ (A : U) (i : I) (u : Partial A i) (a : A[i ↦ u]) : A := ouc a
 </code></figure>
 
 <h4>Glue-тип</h4>
@@ -631,6 +1035,25 @@ and inferGlueElem r u t =
 
 </code></figure>
 
+<p>Тестируются Glue типы обычно типом-унивалентностью Воеводского:</p>
+
+<figure><code>
+def univ-formation (A B : U) := equiv A B -> PathP (&lt;_> U) A B
+def univ-intro (A B : U) : univ-formation A B
+ := λ (e : equiv A B), &lt;i> Glue B (∂ i)
+    [ (i = 0) → (A, e),
+      (i = 1) → (B, idEquiv B)]
+
+def univ-elim (A B : U) (p : PathP (&lt;_> U) A B) : equiv A B
+ := transp (&lt;i> equiv A (p @ i)) 0 (idEquiv A)
+
+def univ-computation (A B : U) (p : PathP (&lt;_> U) A B)
+  : PathP (&lt;_> PathP (&lt;_> U) A B) (univ-intro A B (univ-elim A B p)) p
+ := &lt;j i> Glue B (j ∨ ∂ i)
+          [ (i = 0) → (A, univ-elim A B p), (i = 1) → (B, idEquiv B),
+            (j = 1) → (p @ i, univ-elim (p @ i) B (&lt;k> p @ (i \/ k))) ]
+</code></figure>
+
 <h4>Стек де Рама</h4>
 
 <figure><code>eval:
@@ -671,6 +1094,72 @@ app:
 and join = function | VInf v -> v | v -> VJoin v
 and inf = function | VJoin v -> v | v -> VInf v
 
+</code></figure>
+
+<p>Стек де Рама тестируется докторской диссертацией Феликса Черубини:</p>
+
+<figure><code>
+def ι (A : U) (a : A) : ℑ A := ℑ-unit a
+def μ (A : U) (a : ℑ (ℑ A)) := ℑ-join a
+
+def is-coreduced (A : U) : U := isEquiv A (ℑ A) (ι A)
+def ℑ-coreduced (A : U) : is-coreduced (ℑ A)
+ := isoToEquiv (ℑ A) (ℑ (ℑ A)) (ι (ℑ A)) (μ A)
+       (λ (x : ℑ (ℑ A)), &lt;_> x) (λ (y : ℑ A), &lt;_> y)
+
+def ind-ℑβ (A : U) (B : ℑ A → U) (f : Π (a : A), ℑ (B (ι A a)))
+    (a : A) : Path (ℑ (B (ι A a))) (ind-ℑ A B f (ι A a)) (f a) := &lt;_> f a
+
+def trans-ℑ (A : I → U) (a : A 0) : ℑ (A 1) := ℑ-unit (transp (&lt;i> A i) 0 a)
+def trans-ℑ′ (A : I → U) (a : A 0) : ℑ (A 1) := transp (&lt;i> ℑ (A i)) 0 (ℑ-unit a)
+
+def trans-ℑ-is-correct (A : I → U) (a : A 0)
+  : Path (ℑ (A 1)) (trans-ℑ A a) (trans-ℑ′ A a) := &lt;_> trans-ℑ A a
+
+def hcomp-ℑ (A : U) (r : I) (u : I → Partial A r) (u₀ : A[r ↦ u 0])
+  : ℑ A := ℑ-unit (hcomp A r u (ouc u₀))
+
+def hcomp-ℑ′ (A : U) (r : I) (u : I → Partial A r) (u₀ : A[r ↦ u 0])
+  : ℑ A := hcomp (ℑ A) r (λ (i : I), [(r = 1) → ℑ-unit (u i 1=1)]) (ℑ-unit (ouc u₀))
+
+def hcomp-ℑ-is-correct (A : U) (r : I) (u : I → Partial A r) (u₀ : A[r ↦ u 0])
+  : Path (ℑ A) (hcomp-ℑ A r u u₀) (hcomp-ℑ′ A r u u₀) := &lt;_> hcomp-ℑ A r u u₀
+
+def ℑ-ind (A : U) (B : ℑ A → U) (c : Π (a : ℑ A), is-coreduced (B a))
+    (f : Π (a : A), B (ι A a)) (a : ℑ A) : B a
+ := (c a (ind-ℑ A B (λ (x : A), ι (B (ι A x)) (f x)) a)).1.1
+
+def ℑ-indβ (A : U) (B : ℑ A → U) (c : Π (a : ℑ A), is-coreduced (B a))
+    (f : Π (a : A), B (ι A a)) (a : A)
+  : Path (B (ι A a)) (f a) ((ℑ-ind A B c f) (ι A a))
+ := &lt;i> sec-equiv (B (ι A a)) (ℑ (B (ι A a))) (ι (B (ι A a)), c (ι A a)) (f a) @ -i
+
+def ℑ-rec (A B : U) (c : is-coreduced B) (f : A → B) : ℑ A → B
+ := ℑ-ind A (λ (_ : ℑ A), B) (λ (_ : ℑ A), c) f
+
+def ℑ-recβ (A B : U) (c : is-coreduced B) (f : A → B) (a : A)
+  : PathP (<_> B) (f a) ((ℑ-rec A B c f) (ι A a))
+ := ℑ-indβ A (λ (_ : ℑ A), B) (λ (_ : ℑ A), c) f a
+
+def ℑ-rec′ (A B : U) (f : A → ℑ B) : ℑ A → ℑ B := ind-ℑ A (λ (x : ℑ A), B) f
+def ℑ-rec′-β (A B : U) (f : A → ℑ B) (x : A)
+  : Path (ℑ B) (ℑ-rec′ A B f (ℑ-unit x)) (f x) := <_> f x
+
+def ℑ-app (A B : U) (f : A → B) : ℑ A → ℑ B
+ := ℑ-rec A (ℑ B) (ℑ-coreduced B) (∘ A B (ℑ B) (ι B) f)
+
+def ℑ-naturality (A B : U) (f : A → B) (a : A)
+  : Path (ℑ B) ((ι B) (f a)) ((ℑ-app A B f) (ι A a))
+ := &lt;_> ℑ-unit (f a)
+
+def ~ (X : U) (a x′ : X) : U := Path (ℑ X) (ι X a) (ι X x′)
+def 𝔻 (X : U) (a : X) : U := Σ (x′ : X), ~ X a x′
+def unitDisc (X : U) (x : ℑ X) : U := Σ (x′ : X), Path (ℑ X) x (ι X x′)
+def starDisc (X : U) (x : X) : 𝔻 X x := (x, idp (ℑ X) (ι X x))
+def T∞ (A : U) : U := Σ (a : A), 𝔻 A a
+
+def inf-prox-ap (X Y : U) (f : X → Y) (x x′ : X) (p : ~ X x x′)
+  : ~ Y (f x) (f x′) := &lt;i> ℑ-app X Y f (p @ i)
 </code></figure>
 
 <h4>Операции Кана</h4>
@@ -788,7 +1277,36 @@ and hfill t r i u u0 j = let k = freshName "κ" in
 
 </code></figure>
 
-<p></p>
+<h4>Уравнения Губера</h4>
+
+<figure><code>transpⁱ N φ u₀ = u₀
+transpⁱ U φ A = A
+transpⁱ (Π (x : A), B) φ u₀ v = transpⁱ B(x/w) φ (u₀ w(i/0)),
+  where [ w = transpFill⁻ⁱ A φ v, v : A(i/1) ]
+transpⁱ (Σ (x : A), B) φ u₀ = (transpⁱ A φ (u₀.1),transpⁱ B(x/v) φ(u₀.2)),
+  where [ v = transpFillⁱ A φ u₀.1 ]
+transpⁱ (Pathʲ A v w) φ u₀ =〈j〉compⁱ A [φ ↦ u₀ j, (j=0) ↦ v, (j=1) ↦ w] (u₀ j),
+  where [ u : A(j/0), v : A(j/1) ]
+transpⁱ (Glue [φ ↦ (T,w)] A) ψ u₀ = glue [φ(i/1) ↦ t′₁] a′₁ : B(i/1)
+transp⁻ⁱ A φ u = (transpⁱ A(i/1−i) φ u)(i/1−i) : A(i/0)
+transpFillⁱ A φ u₀ = transpʲ A(i/i∧j) (φ∨(i=0)) u₀ : A
+hfillⁱ A [φ ↦ u] u₀ = hcompʲ A [φ ↦ u(i/i∧j), (i=0) ↦ u₀] u₀ : A
+hcompⁱ N [φ ↦ 0] 0 = 0
+hcompⁱ N [φ ↦ S u] (S u₀) = S (hcompⁱ N [φ ↦ u] u₀)
+hcompⁱ U [φ ↦ E] A = Glue [φ ↦ (E(i/1), equivⁱ E(i/1−i))] A
+hcompⁱ (Π (x : A), B) [φ ↦ u] u₀ v = hcompⁱ B(x/v) [φ ↦ u v] (u₀ v)
+hcompⁱ (Σ (x : A), B) [φ ↦ u] u₀
+   = (v(i/1), compⁱ B(x/v) [φ ↦ u.2] u₀.2),
+        where [ v = hfillⁱ A [φ ↦ u.1] u₀.1 ]
+hcompⁱ (Pathʲ A v w) [φ ↦ u] u₀
+   = 〈j〉 hcompⁱ A [ φ ↦ u j, (j = 0) ↦ v, (j = 1) ↦ w ] (u₀ j)
+hcompⁱ (Glue [φ ↦ (T,w)] A) [ψ ↦ u] u₀ = glue [φ ↦ t₁] a₁
+   = glue [φ ↦ u(i/1)] (unglue u(i/1))
+   = u(i/1) : Glue [φ ↦ (T,w)] A,
+         where [ t₁ = u(i/1) : T,
+                 a₁ = unglue u(i/1) : A,
+                 glue [φ ↦ t₁] a1 = t₁ : T ]
+
 
 </section>
 </main>
