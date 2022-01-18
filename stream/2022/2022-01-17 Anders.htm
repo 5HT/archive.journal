@@ -1000,6 +1000,14 @@ let reduceSystem ts x =
   match System.find_opt eps ts with
   | Some v -> v
   | None   -> VApp (VSystem ts, x)
+
+and checkOverlapping ctx ts =
+  System.iter (fun alpha e1 ->
+    System.iter (fun beta e2 ->
+      if comparable alpha beta then
+        let ctx' = faceEnv (meet alpha beta) ctx in
+        eqNf (eval e1 ctx') (eval e2 ctx')
+      else ()) ts) ts
 </code></figure>
 
 <p>Тестирование кубические систем</p>
