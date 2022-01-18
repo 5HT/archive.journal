@@ -17,6 +17,7 @@
 </nav>
 <main>
     <section>
+
         <h3>Anders: верификатор математики</h3>
 
         <p>Верификатор математики Anders всего лишь один из трех гомотопических пруверов Групоид Инфинити.
@@ -926,6 +927,20 @@ let reduceSystem ts x =
 </code></figure>
 
 <figure><code>
+def φ (i : I) : Partial U₁ (i ∨ -i) := [(i = 0) → U, (i = 1) → U → U]
+def φ′ (i : I) : Partial U₁ (i ∨ -i) := [(i = 1) → U → U, (i = 0) → U]
+def ψ (i j : I) : Partial U₁ (-i ∨ i ∨ (i ∧ j))
+ := [(i = 1) → U, (i = 1) (j = 1) → U, (i = 0) → U → U]
+
+def φ-0 : PathP (&lt;_> U₁) (φ 0 1=1) U := &lt;_> U
+def φ-1 : PathP (&lt;_> U₁) (φ 1 1=1) (U → U) := &lt;_> U → U
+def φ-eq-φ′ (i : I) : Id (Partial U₁ (i ∨ -i)) (φ i) (φ′ i) := ref (φ′ i)
+def ρ (i j : I) : Partial U₁ (-i ∨ (i ∧ j)) := [(i = 0) → U, (i = 1) (j = 1) → U]
+def κ : Partial U₁ 1 := [(1 = 1) → U]
+def θ (A B : U) (a : A) (b : B) (φ : I)
+  : PartialP [(φ = 0) → A, (φ = 1) → B] (φ ∨ -φ) := [(φ = 0) → a, (φ = 1) → b]
+
+def partial-app-test (A : U) (a : A) (φ : I) (p : 1= φ) : A := [(φ = 1) → a] p
 def Partial′ (A : U) (i : I) := Partial A i
 def seg : PathP (&lt;_> I) 0 1 := &lt;i> i
 def Partial-app (A : U) (i : I) (u : Partial A i) (p : 1= i) : A := u p
@@ -1396,8 +1411,197 @@ hcompⁱ (Glue [φ ↦ (T,w)] A) [ψ ↦ u] u₀ = glue [φ ↦ t₁] a₁
 </code></figure>
 
 
+<h4>Некоторые выражения на языке Anders</h4>
+
+<p>Anders поставляется вместе с базовой библиотекой как пакет пакетного менеджера OPAM 
+   языка программирования OCaml, которую вы можете попробовать с помощью:</p>
+   
+<figure><code>$ opam install anderds</code></figure>
+
+<p>Здесь же приведены выброчно термы из модулей библиотеки
+  для ознакомления с синтаксисом и возможностями языка.</p>
+
+<figure><code>def CatGroupoid (X : U) (G : isGroupoid X)
+  : isCatGroupoid (PathCat X)
+ := ( idp X,
+      comp-Path X,
+      G,
+      sym X,
+      comp-inv-Path⁻¹ X,
+      comp-inv-Path X,
+      comp-Path-left X,
+      comp-Path-right X,
+      comp-Path-assoc X,
+      star
+    )
+
+
+def pushout (A B C : U) (f : C → A) (g : C → B) : U
+ := coequ C (+ A B) (∘ C A (+ A B) (inl A B) f) (∘ C B (+ A B) (inr A B) g)
+
+def po₁ (A B C: U) (f: C → A) (g: C → B) (a: A) : pushout A B C f g
+ := ι C (+ A B) (∘ C A (+ A B) (inl A B) f) (∘ C B (+ A B) (inr A B) g) (inl A B a)
+
+def po₂ (A B C: U) (f: C → A) (g: C → B) (b: B)
+  : pushout A B C f g
+ := ι C (+ A B) (∘ C A (+ A B) (inl A B) f) (∘ C B (+ A B) (inr A B) g) (inr A B b)
+  
+def po₃ (A B C: U) (f: C → A) (g: C → B) (c: C)
+  : Path (pushout A B C f g) (po₁ A B C f g (f c)) (po₂ A B C f g (g c))
+ := resp C (+ A B) (∘ C A (+ A B) (inl A B) f) (∘ C B (+ A B) (inr A B) g) c
+
+def S¹ : U := coequ 𝟏 𝟏 (id 𝟏) (id 𝟏)
+def base : S¹ := ι 𝟏 𝟏 (id 𝟏) (id 𝟏) ★
+def loop : Path S¹ base base := resp 𝟏 𝟏 (id 𝟏) (id 𝟏) ★ 
+
+def 𝚺 (A: U) : U := pushout 𝟏 𝟏 A (const₁ A) (const₁ A)
+def 𝜎₁ (A: U): 𝚺 A := po₁ 𝟏 𝟏 A (const₁ A) (const₁ A) ★
+def 𝜎₂ (A: U): 𝚺 A := po₂ 𝟏 𝟏 A (const₁ A) (const₁ A) ★
+def 𝜎₃ (A: U) (a: A) : Path (𝚺 A) (𝜎₁ A) (𝜎₂ A) := po₃ 𝟏 𝟏 A (const₁ A) (const₁ A) a
+
+def S : ℕ → U := ℕ-iter U 𝟐 𝚺
+
+def trunc (A: U) (n: ℕ): U := hs (S n) A
+def trunc₁ (A: U) (n: ℕ) (x: A): trunc A n := center (S n) A x
+def trunc₂ (A: U) (n: ℕ) (f: S n → trunc A n) : trunc A n := hub (S n) A f
+def trunc₃ (A: U) (n: ℕ) (f: S n → trunc A n) (s : S n)
+  : Path (trunc A n) (hub (S n) A f) (f s) := spoke (S n) A f s
+
+def ‖_‖₋₁ (A : U) : U := trunc A zero -- Propositional Truncation ‖A‖₋₁
+def ‖_‖₀ (A : U) : U := trunc A one   -- Set Truncation ‖A‖₀
+def ‖_‖₁ (A : U) : U := trunc A two   -- Groupoid Truncation ‖A‖₁
+def ‖_‖ (A : U) : ℕ → U := trunc A
+
+def full (A : U) (R : A → A → U) := Σ (x y : A), R x y
+def quot (A : U) (R : A → A → U)
+ := coequ (full A R) A (λ (w : full A R), w.1) (λ (w : full A R), w.2.1)
+def quot₁ (A : U) (R : A → A → U) : A → quot A R
+ := ι (full A R) A (λ (w : full A R), w.1) (λ (w : full A R), w.2.1)
+def quot₂ (A : U) (R : A → A → U) (x y : A) (ρ : R x y)
+  : Path (quot A R) (quot₁ A R x) (quot₁ A R y)
+ := resp (full A R) A (λ (w : full A R), w.1) (λ (w : full A R), w.2.1) (x, y, ρ)
+
+def 𝚺ₓ (A: U) : ℕ → U := ℕ-iter U A 𝚺
+def discreteTopology (G : abgroup) : U := G.1.1
+def R-K1 (G : group) : 𝟏 → 𝟏 → U := λ (x y : 𝟏), G.1.1
+axiom Q-K1 (G : group) (x y : 𝟏) (u w : R¯ 𝟏 (R-K1 G) x y) : U
+ 
+def K1 (G : group) : U
+ := ‖_‖₁ (2-quot 𝟏 (R-K1 G) (Q-K1 G))
+ 
+def K (G : abgroup) (n: ℕ) : U
+ := ℕ-iter U (discreteTopology G) (λ (_: U), ‖_‖ (𝚺ₓ (K1 (G.X, G.2.g)) n) n) n
+
+def algebra : U₁ := Σ
+    -- a semicategory of contexts and substitutions:
+    (Con: U)
+    (Sub: Con → Con → U)
+    (◊: Π (Г Θ ∆ : Con), Sub Θ ∆ → Sub Г Θ → Sub Г ∆)
+    (◊-assoc: Π (Г Θ ∆ Ф : Con) (σ: Sub Г Θ) (δ: Sub Θ ∆) (ν: Sub ∆ Ф),
+       PathP (&lt;_>Sub Г Ф) (◊ Г ∆ Ф ν (◊ Г Θ ∆ δ σ)) (◊ Г Θ Ф (◊ Θ ∆ Ф ν δ) σ))
+    -- identity morphisms as identity substitutions:
+    (id: Π (Г : Con), Sub Г Г)
+    (id-left: Π (Θ ∆ : Con) (δ : Sub Θ ∆), Path (Sub Θ ∆) δ (◊ Θ ∆ ∆ (id ∆) δ))
+    (id-right: Π (Θ ∆ : Con) (δ : Sub Θ ∆), Path (Sub Θ ∆) δ (◊ Θ Θ ∆ δ (id Θ)))
+    -- a terminal oject as empty context:
+    (•: Con)
+    (є: Π (Г : Con), Sub Г •)
+    (•-η: Π (Г: Con) (δ: Sub Г •), Path (Sub Г •) (є Г) δ)
+    -- a presheaf of types:
+    (Ty: Con → U)
+    (_|_|ᵀ: Π (Г ∆ : Con), Ty ∆ → Sub Г ∆ → Ty Г)
+    (|id|ᵀ: Π (∆ : Con) (A : Ty ∆), Path (Ty ∆) (_|_|ᵀ ∆ ∆ A (id ∆)) A)
+    (|◊|ᵀ: Π (Г ∆ Ф: Con) (A : Ty Ф) (σ : Sub Г ∆) (δ : Sub ∆ Ф),
+    PathP (&lt;_>Ty Г) (_|_|ᵀ Г Ф A (◊ Г ∆ Ф δ σ)) (_|_|ᵀ Г ∆ (_|_|ᵀ ∆ Ф A δ) σ))
+    -- a (covariant) presheaf on the category of elements as terms:
+    (Tm: Π (Г : Con), Ty Г → U)
+    (_|_|ᵗ: Π (Г ∆ : Con) (A : Ty ∆) (B : Tm ∆ A) (σ: Sub Г ∆), Tm Г (_|_|ᵀ Г ∆ A σ))
+    (|id|ᵗ: Π (∆ : Con) (A : Ty ∆) (t: Tm ∆ A),
+        PathP (&lt;i> Tm ∆ (|id|ᵀ ∆ A @ i)) (_|_|ᵗ ∆ ∆ A t (id ∆)) t)
+    (|◊|ᵗ: Π (Г ∆ Ф: Con) (A : Ty Ф) (t: Tm Ф A) (σ : Sub Г ∆) (δ : Sub ∆ Ф),
+       PathP (&lt;i> Tm Г (|◊|ᵀ Г ∆ Ф A σ δ @ i))
+             (_|_|ᵗ Г Ф A t (◊ Г ∆ Ф δ σ))
+             (_|_|ᵗ Г ∆ (_|_|ᵀ ∆ Ф A δ) (_|_|ᵗ ∆ Ф A t δ) σ)), unit
+
+def cc (A : U) (a : A) (p : Path A a a)
+  : Cube A a a a a a a a a p p p p p p p p (cs A a p) (cs A a p) p p p p
+    (cs A a p) (cs A a p) (cs A a p) (cs A a p)
+ := &lt;k j i> hcomp A (∂ i \/ ∂ j \/ ∂ k)
+                    (λ (l : I), [ (i = 0) -> c₀ A a p @ l @ j @ k,
+                                  (i = 1) -> c₁ A a p @ l @ j @ k,
+                                  (j = 0) -> c₀ A a p @ l @ i @ k,
+                                  (j = 1) -> c₁ A a p @ l @ i @ k,
+                                  (k = 0) -> c₀ A a p @ l @ i @ j,
+                                  (k = 1) -> c₁ A a p @ l @ i @ j ])
+                    (cb A a p @ i @ j @ k)
+
+-- Definition (1) Dependent
+def isFBundle1 (B: U) (p: B → U) (F: U): U₁
+ := Σ (_: Π (b: B), isContr (PathP (<_>U) (p b) F)), (Π (x: Sigma B p), B)
+                    
+-- Definition (2) Dependent
+def isFBundle2 (B: U) (p: B → U) (F: U): U
+ := Σ (v: U) (w: surjective v B), (Π (x: v), PathP (<_>U) (p (w.1 x)) F)
+                    
+-- Definition (3) Non-Dependent
+def im₁ (A B: U) (f: A → B): U := Σ (b: B), ||₋₁ (Π (a : A), Path B (f a) b)
+def BAut (F: U): U := im₁ 𝟏 U (λ (x: 𝟏), F)
+def 𝟏-Im₁ (A B: U) (f: A → B): im₁ A B f → B := λ (x : im₁ A B f), x.1
+def 𝟏-BAut (F: U): BAut F → U := 𝟏-Im₁ 𝟏 U (λ (x: 𝟏), F)
+def classify (E: U) (A' A: U) (E': A' → U) (E: A → U) (f: A' → A): U
+ := Π (x: A'), Path U (E'(x)) (E(f(x)))
+def isFBundle3 (E B: U) (p: E → B) (F: U): U₁
+ := Σ (X: B → BAut F), classify E B (BAut F) (λ (b: B), fiber E B p b) (𝟏-BAut F) X
+                    
+-- Definition (4) Non-Dependent
+def isFBundle4 (E B: U) (p: E → B) (F: U): U₁
+ := Σ (X: U) (v: surjective X B) (v': prod X F → E),
+      pullbackSq (prod X F) E X B p v.1 v' (λ (x: prod X F), x.1)
+         
+def isÉtaleMap (A B: U) (f: A -> B): U
+ := isPullbackSq A (ℑ A) B (ℑ B) (ℑ-app A B f)
+                 (ι B) (ι A) f (\(a : A), &lt;i> ℑ-naturality A B f a @ -i)
+     
+def EtaleMap (A B: U): U  := Σ (f: A -> B), isÉtaleMap A B f
+
+def Family (B : U) : U₁ := B → U
+def Fibration (B : U) : U₁ := Σ (X : U), X → B
+ 
+def encode (B : U) (F : B → U) (y : B) : fiber (Sigma B F) B (pr₁ B F) y → F y
+ := λ (x : fiber (Sigma B F) B (pr₁ B F) y),
+     subst B F x.1.1 y (&lt;i> x.2 @ -i) x.1.2
+ 
+def decode (B : U) (F : B → U) (y : B) : F y → fiber (Sigma B F) B (pr₁ B F) y
+ := λ (x : F y), ((y, x), idp B y)
+ 
+def decode-encode (B : U) (F : B → U) (y : B) (x : F y)
+  : Path (F y) (transp (&lt;i> F (idp B y @ i)) 0 x) x
+ := &lt;j> transp (&lt;i> F y) j x
+ 
+def encode-decode (B : U) (F : B → U) (y : B) (x : fiber (Sigma B F) B (pr₁ B F) y)
+  : Path (fiber (Sigma B F) B (pr₁ B F) y) ((y, encode B F y x), idp B y) x
+ := &lt;i> ((x.2 @ i, transp (&lt;j> F (x.2 @ i ∨ -j)) i x.1.2), &lt;j> x.2 @ i ∧ j)
+ 
+def Bundle=Pi (B : U) (F : B → U) (y : B)
+  : PathP (&lt;_> U) (fiber (Sigma B F) B (pr₁ B F) y) (F y)
+ := isoPath (fiber (Sigma B F) B (pr₁ B F) y) (F y)
+    (encode B F y) (decode B F y) (decode-encode B F y) (encode-decode B F y)
+ 
+            </code></figure>
+
+<p>Для детального ознакомления с прувером предлагаем вам следующие страницы:<br>
+  &mdash; Домашняя страница: <a href="https://groupoid.space/homotopy/">Anders CCHM HTS SDG</a><br>
+  &mdash; <a href="https://github.com/groupoid/anders">Репозиторий проекта</a> на Github<br>
+  &mdash; Другие пруверы Groupoid Infinity: <a href="https://cubical.systems">cubical.systems</a><br>
+</p>
+
+<br>
+<p><center><img height=64 src="https://openmoji.org/data/color/svg/2744.svg"/></center></p>
+
 </section>
 </main>
-<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2009—2022</footer>
+<footer>
+  Namdak Tonpa 🧊 Siegmentation Fault <br>
+  </footer>
 </body>
 </html>
