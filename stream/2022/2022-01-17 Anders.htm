@@ -803,38 +803,38 @@ def ∧-assoc (i j k: I): Id I (i ∧ (j ∧ k)) ((i ∧ j) ∧ k) := ref (i ∧
 типов (в нешем случае для всех остальных типов).</p>
 
 <figure><code>eval:
-| EId e -> VId (eval e ctx)
-| ERef e -> VRef (eval e ctx)
-| EJ e -> VJ (eval e ctx)
+  | EId e -> VId (eval e ctx)
+  | ERef e -> VRef (eval e ctx)
+  | EJ e -> VJ (eval e ctx)
 
 infer:
-| EId e -> let v = eval e ctx in implv v (implv v (VPre (extSet (infer ctx e))))
-| ERef e -> let v = eval e ctx in VApp (VApp (VId (infer ctx e)), v), v)
-| EJ e -> inferJ (eval e ctx) (infer ctx e)
+  | EId e -> let v = eval e ctx in implv v (implv v (VPre (extSet (infer ctx e))))
+  | ERef e -> let v = eval e ctx in VApp (VApp (VId (infer ctx e)), v), v)
+  | EJ e -> inferJ (eval e ctx) (infer ctx e)
 
 app:
-| VApp (VApp (VApp (VApp (VJ _, _), _), f), _), VRef _ -> f
+  | VApp (VApp (VApp (VApp (VJ _, _), _), f), _), VRef _ -> f
 
 inferV:
-| VId v -> let n = extSet (inferV v) in implv v (implv v (VPre n))
-| VJ v -> inferJ v (inferV v)
+  | VId v -> let n = extSet (inferV v) in implv v (implv v (VPre n))
+  | VJ v -> inferJ v (inferV v)
 
 act:
-| VId v -> VId (act rho v)
-| VRef v -> VRef (act rho v)
-| VJ v -> VJ (act rho v)
+  | VId v -> VId (act rho v)
+  | VRef v -> VRef (act rho v)
+  | VJ v -> VJ (act rho v)
 
 and inferJ v t =
-let x = freshName "x" in
-let y = freshName "y" in
-let pi = freshName "P" in
-let p = freshName "p" in
-let k = extSet t in
-let t = VPi (v, (x, fun x -> VPi (v, (y, fun y -> implv (idv v x y) (VPre k))))) in
-VPi (t, (pi, fun pi ->
- VPi (v, (x, fun x ->
-   implv (app (app (app (pi, x), x), VRef x))
-         (VPi (v, (y, fun y ->
+  let x = freshName "x" in
+  let y = freshName "y" in
+  let pi = freshName "P" in
+  let p = freshName "p" in
+  let k = extSet t in
+  let t = VPi (v, (x, fun x -> VPi (v, (y, fun y -> implv (idv v x y) (VPre k))))) in
+  VPi (t, (pi, fun pi ->
+  VPi (v, (x, fun x ->
+  implv (app (app (app (pi, x), x), VRef x))
+        (VPi (v, (y, fun y ->
            VPi (idv v x y, (p, fun p ->
              app (app (app (pi, x), y), p))))))))))
 </code></figure>
@@ -844,26 +844,26 @@ def ≥ (i j : I) := ≤ j i
 
 def ∧-split (i j : I) : Partial (1= i) (i ∧ j) := [(i = 1) (j = 1) → 1=1]
 def ∨-left (i j : I) (p : 1= i) : 1= (i ∨ j)
-:= idJ I (λ (i i′ : I) (_ : Id I i i′), Id I 1 (i′ ∨ j)) 1 1=1 i p
+ := idJ I (λ (i i′ : I) (_ : Id I i i′), Id I 1 (i′ ∨ j)) 1 1=1 i p
 def ∨-right (i j : I) (p : 1= j) : 1= (i ∨ j) := ∨-left j i p 
 def ∧-1 (i j : I) (p : 1= (i ∧ j)) : 1= i := ∧-split i j p
 def ∧-1′ (i j : I) (p : 1= (i ∧ j)) : 1= i
-:= cong-Id I I (λ (k : I), k ∨ i) 1 (i ∧ j) p
+ := cong-Id I I (λ (k : I), k ∨ i) 1 (i ∧ j) p
 def ∧-min-left  (i j : I) : ≤ (i ∧ j) i := ref (i ∧ j)
 def ∧-min-right (i j : I) : ≤ (i ∧ j) j := ref (i ∧ j)
 def ∨-max-left  (i j : I) : ≤ i (i ∨ j) := ref i
 def ∨-max-right (i j : I) : ≤ j (i ∨ j) := ref j
 def ∧-to-∨ (i j : I) (p : Id I (i ∧ j) i) : Id I (i ∨ j) j
-:= rev I j (i ∨ j) (cong-Id I I (λ (k : I), k ∨ j) (i ∧ j) i p)
+ := rev I j (i ∨ j) (cong-Id I I (λ (k : I), k ∨ j) (i ∧ j) i p)
 
 def ≤-asymm (i j : I) (p : ≤ i j) (q : ≤ j i) : Id I i j
-:= comp-Id I i (i ∧ j) j (rev I (i ∧ j) i p) q
+ := comp-Id I i (i ∧ j) j (rev I (i ∧ j) i p) q
 def ≤-refl (i : I) : ≤ i i := ref i
 def ≤-trans (i j k : I) (p : ≤ i j) (q : ≤ j k) : ≤ i k
-:= comp-Id I (i ∧ k) (i ∧ j) i
- (comp-Id I (i ∧ k) (i ∧ j ∧ k) (i ∧ j)
-   (rev I (i ∧ j ∧ k) (i ∧ k) (cong-Id I I (min k) (i ∧ j) i p))
-   (cong-Id I I (min i) (j ∧ k) j q)) p
+ := comp-Id I (i ∧ k) (i ∧ j) i
+    (comp-Id I (i ∧ k) (i ∧ j ∧ k) (i ∧ j)
+      (rev I (i ∧ j ∧ k) (i ∧ k) (cong-Id I I (min k) (i ∧ j) i p))
+      (cong-Id I I (min i) (j ∧ k) j q)) p
 
 def 0-is-min (i : I) : ≤ 0 i := ref 0
 def 1-is-max (i : I) : ≤ i 1 := ref i
@@ -1035,7 +1035,7 @@ and inferGlueElem r u t =
 
 </code></figure>
 
-<p>Тестируются Glue типы обычно типом-унивалентностью Воеводского:</p>
+<p>Тестируются Glue типы обычно типом-унивалентностью (Equiv -> Path) Воеводского:</p>
 
 <figure><code>
 def univ-formation (A B : U)
@@ -1057,7 +1057,7 @@ def univ-computation (A B : U) (p : PathP (&lt;_> U) A B)
             (j = 1) → (p @ i, univ-elim (p @ i) B (&lt;k> p @ (i \/ k))) ]
 </code></figure>
 
-<P>А также Минивалентностью</P>
+<P>А также Минивалентностью (Iso -> Equiv):</P>
 
 <figure><code>def mini-Form (A B : U) : U
  := iso A B -> equiv A B
@@ -1076,7 +1076,7 @@ def mini-Elim (A B : U)
       star
     )
 </code></figure>
-<p>и Юниморфизмом:</P>
+<p>и Юниморфизмом (Iso -> Path):</P>
 
 <figure><code>def iso-Form (A B: U) : U₁
  := iso A B -> PathP (&lt;_>U) A B
@@ -1094,7 +1094,51 @@ def iso-Elim (A B : U)
         λ (a : A), &lt;<k> trans-trans⁻¹ A B p a @ -k,
         star
       )
+
+def fiber (A B : U) (f: A -> B) (y : B): U := Σ (x : A), Path B y (f x)
+def isContr' (A: U) : U := Σ (x: A), Π (y: A), Path A x y
+def isEquiv (A B : U) (f : A -> B) : U := Π (y : B), isContr (fiber A B f y)
+def equiv (A B : U) : U := Σ (f : A -> B), isEquiv A B f
+
+def contrSingl (A : U) (a b : A) (p : Path A a b)
+  : Path (Σ (x : A), Path A a x) (a,&lt;_>a) (b,p) := &lt;i> (p @ i, &lt;j> p @ i /\ j)
+def idIsEquiv (A : U) : isEquiv A A (id A)
+ := \ (a : A), ((a,&lt;_>a),\ (z : fiber A A (id A) a), contrSingl A a z.1 z.2)
+def idEquiv (A : U) : equiv A A := (id A, isContrSingl A)
+
+def isInjective (A B : U) (f : A -> B) : U
+ := Π (x y : A), Path B (f x) (f y) -> Path A x y
+def isInjective' (A B : U) (f : A -> B): U
+ := Π (b : B), isProp (fiber A B f b)
+def injective (A B : U) : U := Σ (f : A -> B), isInjective A B f
+
+def isEmbedding (A B : U) (f : A -> B) : U
+ := Π (x y : A), isEquiv (Path A x y) (Path B (f x) (f y)) (cong A B f x y)
+def embedding (A B : U) : U := Σ (f : A -> B), isEmbedding A B f
+
+def inv-equiv (A B : U) (w : equiv A B) : B -> A := λ (y : B), (w.2 y).1.1
+def ret-equiv (A B : U) (w : equiv A B) (y : B)
+  : Path B (w.1 (inv-equiv A B w y)) y
+ := &lt;i> (w.2 y).1.2 @ -i
+
+def sec-equiv (A B : U) (w : equiv A B) (x : A)
+  : Path A (inv-equiv A B w (w.1 x)) x
+ := &lt;i> ((w.2 (w.1 x)).2 (x, &lt;j> w.1 x) @ i).1
+
+def Glue′ (A : U) (φ : I) (e : Partial (Σ (T : U), equiv T A) φ)
+  : U := Glue A φ e
+
+def glue′ (A : U) (φ : I) (u : Partial (Σ (T : U), equiv T A × T) φ)
+    (a : A[φ ↦ [(φ = 1) → (u 1=1).2.1.1 (u 1=1).2.2]])
+ := glue φ u (ouc a)
+
+def unglue′ (A : U) (φ : I) (e : Partial (Σ (T : U), equiv T A) φ)
+    (b : Glue A φ e)
+  : A := unglue b
+   
     </code></figure>
+
+
 <h4>Стек де Рама</h4>
 
 <figure><code>eval:
