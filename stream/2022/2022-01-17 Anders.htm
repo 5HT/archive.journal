@@ -1298,6 +1298,8 @@ conv:
 
 app:
   | VApp (VIndIm _, f), VInf a -> app (f, a)
+  | VApp (VIndIm (a, b), VLam (t, (x, g))), v -> let u = g (Var (x, t)) in
+    if mem x u then VApp (VApp (VIndIm (a, b), VLam (t, (x, g))), v) else u
 
 and join = function | VInf v -> v | v -> VJoin v
 and inf = function | VJoin v -> v | v -> VInf v
