@@ -1589,31 +1589,54 @@ Anders theorem prover [MLTT][CCHM][HTS][deRham] version 1.1.1
 <P>Структура базовой библиотеки</P>
 
 <figure><code>$ ls -1 library
-<a href="https://github.com/groupoid/anders/blob/master/library/ab.anders">ab.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/algebra.anders">algebra.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/bool.anders">bool.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/buddhism.anders">buddhism.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/bundle.anders">bundle.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/cat.anders">cat.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/coequalizer.anders">coequalizer.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/constcubes.anders">constcubes.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/equiv.anders">equiv.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/etale.anders">etale.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/fun.anders">fun.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/impredicative.anders">impredicative.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/induction.anders">induction.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/infinitesimal.anders">infinitesimal.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/iso.anders">iso.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/kraus.anders">kraus.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/list.anders">list.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/mltt.anders">mltt.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/path.anders">path.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/pi.anders">pi.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/prop.anders">prop.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/pullback.anders">pullback.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/real.anders">real.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/sigma.anders">sigma.anders</a>
-<a href="https://github.com/groupoid/anders/blob/master/library/topos.anders">topos.anders</a>
+├── foundations
+│   ├── mltt
+│   │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/foundations/mltt/bool.anders">bool.anders</a>
+│   │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/foundations/mltt/induction.anders">induction.anders</a>
+│   │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/foundations/mltt/list.anders">list.anders</a>
+│   │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/foundations/mltt/mltt.anders">mltt.anders</a>
+│   │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/foundations/mltt/pi.anders">pi.anders</a>
+│   │   └── <a href="https://github.com/groupoid/anders/blob/master/library/foundations/mltt/sigma.anders">sigma.anders</a>
+│   ├── modal
+│   │   └── <a href="https://github.com/groupoid/anders/blob/master/library/foundations/modal/infinitesimal.anders">infinitesimal.anders</a>
+│   └── univalent
+│       ├── <a href="https://github.com/groupoid/anders/blob/master/library/foundations/univalent/equiv.anders">equiv.anders</a>
+│       ├── <a href="https://github.com/groupoid/anders/blob/master/library/foundations/univalent/extensionality.anders">extensionality.anders</a>
+│       ├── <a href="https://github.com/groupoid/anders/blob/master/library/foundations/univalent/iso.anders">iso.anders</a>
+│       ├── <a href="https://github.com/groupoid/anders/blob/master/library/foundations/univalent/path.anders">path.anders</a>
+│       └── <a href="https://github.com/groupoid/anders/blob/master/library/foundations/univalent/prop.anders">prop.anders</a>
+└── mathematics
+    ├── algebra
+    │   └── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/algebra/algebra.anders">algebra.anders</a>
+    ├── analysis
+    │   └── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/analysis/real.anders">real.anders</a>
+    ├── categories
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/categories/abelian.anders">abelian.anders</a>
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/categories/category.anders">category.anders</a>
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/categories/functor.anders">functor.anders</a>
+    │   └── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/categories/groupoid.anders">groupoid.anders</a>
+    ├── geometry
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/geometry/bundle.anders">bundle.anders</a>
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/geometry/etale.anders">etale.anders</a>
+    │   └── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/geometry/formalDisc.anders">formalDisc.anders</a>
+    ├── homotopy
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/homotopy/">KGn.anders</a>
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/homotopy/">S1.anders</a>
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/homotopy/">Sn.anders</a>
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/homotopy/">coequalizer.anders</a>
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/homotopy/">constcubes.anders</a>
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/homotopy/">hubSpokes.anders</a>
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/homotopy/">pullback.anders</a>
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/homotopy/">pushout.anders</a>
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/homotopy/">quotient.anders</a>
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/homotopy/">suspension.anders</a>
+    │   └── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/homotopy/">truncation.anders</a>
+    ├── meta
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/meta/awodey.anders">awodey.anders</a>
+    │   ├── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/meta/favonia.anders">favonia.anders</a>
+    │   └── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/meta/kraus.anders">kraus.anders</a>
+    └── topoi
+        └── <a href="https://github.com/groupoid/anders/blob/master/library/mathematics/topoi/topos.anders">topos.anders</a>
 </code></figure>
 
 
@@ -1631,7 +1654,7 @@ def po₁ (A B C: U) (f: C → A) (g: C → B) (a: A) : pushout A B C f g
 def po₂ (A B C: U) (f: C → A) (g: C → B) (b: B)
   : pushout A B C f g
  := ι C (+ A B) (∘ C A (+ A B) (inl A B) f) (∘ C B (+ A B) (inr A B) g) (inr A B b)
-  
+
 def po₃ (A B C: U) (f: C → A) (g: C → B) (c: C)
   : Path (pushout A B C f g) (po₁ A B C f g (f c)) (po₂ A B C f g (g c))
  := resp C (+ A B) (∘ C A (+ A B) (inl A B) f) (∘ C B (+ A B) (inr A B) g) c
