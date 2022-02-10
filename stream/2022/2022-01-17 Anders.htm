@@ -1544,19 +1544,20 @@ hcompⁱ (Glue [φ ↦ (T,w)] A) [ψ ↦ u] u₀ = glue [φ ↦ t₁] a₁
 <p>Вы будете удивлены приятной особенностью языка Anders &mdash; отзывчивостью
    не только при сборке из исходников:</p>
 
-<figure><code>$ time make
-real    0m4.936s
-user    0m1.874s
-sys     0m0.670s
+<figure><code>$ time dune build
+real    0m1.456s
+user    0m2.794s
+sys     0m0.564s
 </code></figure>
 
 <p>Но и скоростью верификации:</p>
 
 <figure><code>
-$ time for i in library/* ; do ./anders.native check $i ; done
-real    0m2.085s
-user    0m1.982s
-sys     0m0.105s
+$ time dune exec anders check library/book.anders
+
+real    0m0.468s
+user    0m0.051s
+sys     0m0.032s
 </code></figure>
 
 <p>Пример консольной сессии и работа с дырами:</p>
