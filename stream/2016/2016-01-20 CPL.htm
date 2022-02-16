@@ -1,11 +1,33 @@
-CPL
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="Maxim Sokhatsky" />
+    <title>2016-01-20</title>
+    <link rel="stylesheet" href="https://n2o.dev/blank.css" />
+    <link rel="stylesheet" href="../../journal.css" />
+    <link rel="stylesheet" href="../../black.css" />
+</head>
+<body>
+<nav>
+    <a href='../../index.html'>5HT</a>
+    <a href='../index.html'>TOP</a>
+    <a href='#'>2016-01-20</a>
+</nav>
+<main>
+    <section>
+        <h3>CPL</h3>
 
-Я только сейчас начинаю понимать задвиги Хагино и его концепт. Удобный в
+<p>Я только сейчас начинаю понимать задвиги Хагино и его концепт. Удобный в
 принципе теоретический инструмент для исследования категорий. В порядке
 актуальности: SECD, CAM, CPL, OM :-) Надо построить такую же машину для LCCC и
-инфинити топоса.
+инфинити топоса.</p>
 
-Бутстреп Декартово Замкнутой Категории и NNO:
+<p>Бутстреп Декартово Замкнутой Категории и NNO:</p>
+
+<figure><code>
 cpl>
 right object 1 with !
 end object;
@@ -34,8 +56,11 @@ left object coprod(a,b) with case is
 end object;
 left object coprod(+,+) defined
 cpl>
+</code></figure>
 
+<p>Бутстреп натуральных чисел:</p>
 
+<figure><code>
 cpl>set trace on
 cpl>simp eval.pair(pr(curry(pi2),curry(s.eval)).pi1,pi2).pair(s.0,s.0)
 0:eval.pair(pr(curry(pi2),curry(s.eval)).pi1,pi2).pair(s.0,s.0)*
@@ -65,7 +90,9 @@ s.s.0
 :1 -> nat
 cpl>
 
-Факториальчик:
+<p>Факториальчик:</p>
+
+<figure><code>
 cpl>let mult=eval.prod(pr(curry(0.!),curry(add.pair(eval,pi2))),id)
     mult : prod(nat,nat) -> nat defined
 cpl>let fact=pi1.pr(pair(s.0,0),pair(mult.pair(s.pi2,pi1),s.pi2))
@@ -77,4 +104,11 @@ cpl>simp fact.s.s.s.s.0
     s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.s.0.!
 :1 -> nat
 cpl>
+</code></figure>
+
+    </section>
+</main>
+<footer>Namdak Tonpa <span class="heart">&nbsp;❤&nbsp;</span> 2016</footer>
+</body>
+</html>
 
