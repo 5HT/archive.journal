@@ -25,4 +25,4 @@ $ curl -vs https://raw.githubusercontent.com/`urlencode \
   "5HT/maxim.livejournal.com/master/articles/2012/2012-05-28 Erlang.txt"` 2>&1 | less
 ```
 
-Maxim &copy; 2009—2022
+Maxim &copy; 1980—2022
