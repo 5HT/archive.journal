@@ -1,0 +1,11 @@
+DIY Intel 4000
+4-bit platform 1971
+
+No Code Description
+-- ---- ------------------------------------
+-1 4001 ROM
+-2 4002 RAM
+-3 4003 Shift register
+-4 4004 MPU
+-5 4008 Address latch
+-6 4009 I/O Interface

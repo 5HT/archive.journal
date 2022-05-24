@@ -1,0 +1,9 @@
+DIY PC ZX
+8-bit platform 1974
+
+No Code Description
+-- ---- ----------------------
+-1 8008 8-bit CPU
+-2 8080 8-bit CPU
+-3 8085 8-bit CPU 8080
+-4 8253 PIC 8085

@@ -1,0 +1,20 @@
+
+Year Code     Bit  Description                    Chipset
+==== ======== ==== ============================== =======================
+1970 3000     2    Intel 3000                     DIY
+1971 4000     4    Intel 4000                     MCS-4
+1974 ZX       8    Intel 8085/8080                MCS-85
+---- -------- ---- ------------------------------ -----------------------
+1976 XT       16   Intel 8086/8088                MCS-86
+1982 AT       16   Intel 80286                    PS/2 Model 30
+1985 IA-32    32   Intel 80486                    PS/2 Model 50
+1995 IA-32    32   Intel Pentium Pro/II/III       82443BX
+2000 EM64T    64   Intel Pentium 4                82865P
+2006 EM64T    64   Intel Core                     Q35
+2011 AVX      128  Intel Core (Sandy Bridge)      Z77, X99
+2013 AVX-2    256  Intel Core (Haswell)           Z97
+2017 AVX-512  512  Intel Phi, Core (Skylake)      Z370, X299
+2023 AMX      1024 Intel Core (Sapphire Rapids)   W790
+---- -------- ---- ------------------------------ -----------------------
+                                                          Intel Platforms
+

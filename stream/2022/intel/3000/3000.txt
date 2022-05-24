@@ -1,0 +1,9 @@
+DIY Intel 3000
+2-bit platform 1970
+
+No Code Description
+-- ---- ------------------------------------
+-1 3001 Microprogram Control Unit
+-2 3002 Central Processing Element
+-3 3214 Interrupt Control Unit
+-4 3226 Parallel Bidirectional Bus Driver

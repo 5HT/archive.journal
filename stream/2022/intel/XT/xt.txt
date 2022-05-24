@@ -1,0 +1,26 @@
+DIY PC XT
+16-bit platform 1976
+
+No Code Description
+-- ---- ----------------------
+-1 2142 1024 x 4-bit SRAM
+-2 2764 8K EPROM
+-3 6264 8K SRAM
+-4 8086 16-bit bus CPU
+-5 8087 16-bit bus MPU
+-6 8088 8-bit bus CPU
+-7 8089 16-bit bus MPU
+-8 8155 256 x 8-bit SRAM, I/O, Timer
+-9 8185 1024 x 8-bit SRAM
+-A 8212 8-bit I/O port
+-B 8214 PICU
+-C 8254 PIC 8086
+-D 8257 DMA
+-E 8282 8-bit latch
+-F 8284 Clock generator
+-G 8286 Transeiver
+-H 8288 Bus controller
+-I 8289 Bus arbiter
+-J S244 Octal buffer
+-K S245 Bi-directional octal buffer
+-L S373 8-bit latch
