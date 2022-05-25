@@ -8,14 +8,21 @@
 %define syscall_open    0x2000005
 %define syscall_close   0x2000006
 
-_main: mov qword [machine.ptr], 1
+_main: mov rbx, machine
+       mov rsi, machine.ptr
+       add rbx, [rsi]
+       inc qword [rsi]
+       mov al,  [rbx]
        call parse_mod_rm
-       mov rsi, inst0
-       mov rcx, 7
+       mov rsi, opcodes
+       mov cl, [rsi+8]
+       mov rsi, [rsi]
 line:  mov rax, [rsi+8]
        push rsi
        push rcx
+       push rbx
        call [rsi]
+       pop rbx
        pop rcx
        pop rsi
        mov al, 16
@@ -23,6 +30,8 @@ line:  mov rax, [rsi+8]
        dec ecx
        jnz line
        call show_pointer
+       dec qword [display.ptr]
+       jnz _main
        mov rax, 0x2000001 ; exit
        xor rdi, rdi
        syscall
@@ -98,6 +107,14 @@ print_mov:
        syscall
        ret
 
+print_add:
+       mov rsi, add
+       mov rdx, add.len
+       mov rax, syscall_write ; print ADD
+       mov rdi, 1
+       syscall
+       ret
+
 parse_mod_rm:
        xor eax, eax
        mov al, [machine.ptr] ; SI=src
@@ -123,13 +140,13 @@ print_hex_string:
        mov rdi, hex
        mov rsi, machine
        add rsi, [machine.ptr]
-       mov rbp, hexwout
+       mov rbp, hexout
        mov eax, edx
        shl eax, 1
        inc eax
        inc eax
        inc eax
-       mov dword [hexwout.len], eax
+       mov dword [hexout.len], eax
        dec eax
        add rbp, rax
 loop:  mov bl, [rsi]
@@ -148,21 +165,22 @@ loop:  mov bl, [rsi]
        jne loop
        pop rdx
        add qword [machine.ptr], rdx
-       mov rdx, qword [hexwout.len]
+       mov rdx, qword [hexout.len]
        mov rax, syscall_write ; print hex
-       mov rsi, hexwout
+       mov rsi, hexout
        mov rdi, 1
        syscall
        ret
 
        section .data
-hexbout: db '+0xXX'
-.len: equ $-hexbout
-hexwout: db '+0xXXXXZZYYDDDFFFFFFFFFFFFF'
-.len: dq 4
+
+hexout: db '+0x01234567890123456789012345678901'
+.len: dq 35
+
 regb:  db "ALCLDLBLAHCHDHBH"
 regw:  db "AXCXDXBXSPBPSIDI"
 hex:   db '01234567890ABCDEF'
+
 rm000: db '[BX+SI'
 .len: equ $-rm000
 rm001: db '[BX+DI'
@@ -179,6 +197,7 @@ rm110: db '[BP'
 .len: equ $-rm110
 rm111: db '[BX'
 .len: equ $-rm111
+
 rmter: db ']'
 .len: equ $-rmter
 comma: db ','
@@ -186,7 +205,13 @@ comma: db ','
 linefeed: db 10
 .len: equ $-linefeed
 
-inst0:    dq print_mov
+rm: dq rm000,     rm001,     rm010,     rm011,     rm100,     rm101,     rm101,     rm110,     rm111
+rd: dq rm000.len, rm001.len, rm010.len, rm011.len, rm100.len, rm101.len, rm101.len, rm110.len, rm111.len
+
+inst3:
+inst2:
+inst1:
+inst0:    dq print_add
           dq 0
           dq print_rm
 inst0_1:  dq 0
@@ -200,16 +225,37 @@ inst0_3:  dq 2
 inst0_2:  dq 0
           dq println
           dq 0
-inst0_p:  dq 0
 
-rm:    dq rm000,     rm001,     rm010,     rm011,     rm100,     rm101,     rm101,     rm110,     rm111
-rd:    dq rm000.len, rm001.len, rm010.len, rm011.len, rm100.len, rm101.len, rm101.len, rm110.len, rm111.len
-machine: db 0x00, 0x83, 0x13, 0x90, 0x91
+inst4:    dq println
+          dq 0
+
+machine: db 0x00, 0x83, 0x13, 0x01, 0x01, 0x03, 0x04, 0x12
 .ptr: dq 0
+
+display: db 0
+.ptr: dq 2
+
+opcodes: dq inst0
+         db 7
+         dq inst1
+         db 7
+         dq inst2
+         db 7
+         dq inst3
+         db 7
+         dq inst4
+         db 1
+
 mov: db 'MOV '
 .len: equ $-mov
+
+add: db 'ADD '
+.len: equ $-add
+
+adc: db 'ADC '
+.len: equ $-adc
+
 pointer:   db 'Pointer: '
 hex_emiter:  db 0, 10
 .len:  equ $-pointer
-str:   db "SYNRC DASM",10
-.len:  equ $-str
+

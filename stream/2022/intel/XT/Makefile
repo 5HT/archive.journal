@@ -10,4 +10,4 @@ run:
 	./dasm
 
 show:
-	objdump ./dasm --disassemble
+	objdump ./dasm --disassemble --x86-asm-syntax=intel --wide
