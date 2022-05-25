@@ -9,11 +9,10 @@
 %define syscall_close   0x2000006
 
 _main: mov qword [machine.ptr], 1
-       call show_pointer
        call parse_mod_rm
        mov rsi, inst0
        mov rcx, 7
-loop1: mov rax, [rsi+8]
+line:  mov rax, [rsi+8]
        push rsi
        push rcx
        call [rsi]
@@ -22,24 +21,8 @@ loop1: mov rax, [rsi+8]
        mov al, 16
        add rsi, rax
        dec ecx
-       jnz loop1
-
-;       hand made fold
-;
-;       call show_pointer
-;       mov qword [machine.ptr], 2
-;       mov qword [inst0_3], 1
-;       call print_mov
-;       mov rax, [inst0_1]
-;       call print_rm                ; [ ADDR
-;       mov rax, [inst0_3]
-;       call print_hex_string
-;       call closesq
-;       call printcomma
-;       mov rax, [inst0_2]
-;       call print_reg               ; print REG
-;       call println
-
+       jnz line
+       call show_pointer
        mov rax, 0x2000001 ; exit
        xor rdi, rdi
        syscall
@@ -202,6 +185,7 @@ comma: db ','
 .len: equ $-comma
 linefeed: db 10
 .len: equ $-linefeed
+
 inst0:    dq print_mov
           dq 0
           dq print_rm
@@ -220,7 +204,7 @@ inst0_p:  dq 0
 
 rm:    dq rm000,     rm001,     rm010,     rm011,     rm100,     rm101,     rm101,     rm110,     rm111
 rd:    dq rm000.len, rm001.len, rm010.len, rm011.len, rm100.len, rm101.len, rm101.len, rm110.len, rm111.len
-machine: db 0x00, 0b10111111, 0x13, 0x90, 0x91
+machine: db 0x00, 0x83, 0x13, 0x90, 0x91
 .ptr: dq 0
 mov: db 'MOV '
 .len: equ $-mov
