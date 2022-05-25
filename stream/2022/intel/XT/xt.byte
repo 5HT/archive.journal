@@ -1,0 +1,160 @@
+Groupoid Infinity 8086 HACKING GUIDE
+
+v      0: count=1; 1: count=CL;
+d      0: from reg; 1: to reg;
+w      0: byte; 1: word;
+sg    00: ES; 01: CS; 10: SS; 11: DS;
+mod   00: disp=0, disp-lo=N/A, disp-hi=N/A;
+      01: disp=disp-lo sign-extended to 16-bit, disp-hi=N/A;
+      10: disp=[disp-hi,disp-lo];
+      11: r/m treaded as reg field;
+reg  000: AX AL; 001: CX CL; 010: DX DL; 011: BX BL;
+     100: SP AH; 101: BP CH; 110: SI DH; 111: DI BH;
+r/m  000: (BX) + (SI) + disp; 001: (BX) + (DI) + disp;
+     010: (BP) + (SI) + disp; 011: (BP) + (DI) + disp;
+     100: (SI) + disp; 101: (DI) + disp;
+     110: (BP) + disp; 111: (BX) + disp;
+
+ADD    | 0000 00dw | mod reg r/m
+ADD    | 0000 010w | data | data if w=1
+PUSH   | 000s g110
+POP    | 000s g111
+OR     | 0000 10dw | mod reg r/m
+OR     | 0000 110w | data | data if w=1
+ADC    | 0001 00dw | mod reg r/m
+ADC    | 0001 010w | data | data if w=1
+SBB    | 0001 10dw | mod reg r/m
+SBB    | 0001 110w | data | data if w=1
+BAA    | 0010 0111
+SUB    | 0010 10dw | mod reg r/m
+SUB    | 0010 110w | data | data if w=1
+DAS    | 0010 1111
+AND    | 0010 00dw | mod reg r/m
+AND    | 0010 010w | data | data if w=1
+AAA    | 0011 0111
+CMP    | 0011 110w | data | data if w=1
+AAS    | 0011 1111
+CMP    | 0011 10dw | mod reg r/m
+XOR    | 0011 00dw | mod reg r/m
+XOR    | 0011 010w | data | data if w=1
+INC    | 0100 0reg
+DEC    | 0100 1reg
+PUSH   | 0101 0reg
+POP    | 0101 1reg
+JE     | 0111 0100 | disp
+JL     | 0111 1100 | disp
+JLE    | 0111 1110 | disp
+JB     | 0111 0010 | disp
+JBE    | 0111 0110 | disp
+JP     | 0111 1010 | disp
+JO     | 0111 0000 | disp
+JS     | 0111 1000 | disp
+JNE    | 0111 0101 | disp
+JNL    | 0111 1101 | disp
+JNLE   | 0111 1111 | disp
+JNB    | 0111 0011 | disp
+JNBE   | 0111 0111 | disp
+JNP    | 0111 1011 | disp
+JNO    | 0111 0001 | disp
+JNS    | 0111 1001 | disp
+ADD    | 1000 00sw | mod 000 r/m | data | data if sw=01
+ADC    | 1000 00sw | mod 010 r/m | data | data if sw=01
+SBB    | 1000 00sw | mod 011 r/m | data | data if sw=01
+MOV    | 1000 10dw | mod reg r/m
+MOV    | 1000 1100 | mod 0sg r/m
+MOV    | 1000 1110 | mod 0sg r/m
+LEA    | 1000 1101 | mod reg r/m
+POP    | 1000 1111 | mod 000 r/m
+SUB    | 1000 00sw | mod 101 r/m | data | data if sw=01
+CMP    | 1000 00sw | mod 111 r/m | data | data if sw=01
+OR     | 1000 000w | mod reg r/m | data | data if w=1
+AND    | 1000 000w | mod 100 r/m | data | data if w=1
+XOR    | 1000 000w | mod 110 r/m | data | data if w=1
+TEST   | 1000 010w | mod reg r/m
+XCHG   | 1000 011w | mod reg r/m
+NOP    | 1001 0000
+XCHG   | 1001 0reg
+CBW    | 1001 1000
+CWD    | 1001 1001
+CALL   | 1001 1010 | olo | ohi | slo | shi
+WAIT   | 1001 1011
+PUSHF  | 1001 1100
+POPF   | 1001 1101
+SAHF   | 1001 1110
+LAHF   | 1001 1111
+MOV    | 1010 000w | lo | hi
+MOV    | 1010 001w | lo | hi
+MOVS   | 1010 010w
+CMPS   | 1010 011w
+SCAS   | 1010 111w
+LODS   | 1010 110w
+STOS   | 1010 101w
+TEST   | 1010 100w | data | data if w=1
+MOV    | 1011 wreg | data | data if w=1
+INT    | 1100 1101 | type
+LDS    | 1100 0101 | mod reg r/m
+LES    | 1100 0100 | mod reg r/m
+MOV    | 1100 011w | mod 000 r/m | data | data if w=1
+RET    | 1100 0010 | lo | hi
+RET    | 1100 0011
+RET    | 1100 1010 | lo | hi
+RET    | 1100 1011
+INT 3  | 1100 1100
+INTO   | 1100 1110
+IRET   | 1100 1111
+XLAT   | 1101 0111
+AAM    | 1101 0100 | 0000 1010
+AAD    | 1101 0101 | 0000 1010
+SHL    | 1101 00vw | mod 100 r/m
+SHR    | 1101 00vw | mod 101 r/m
+SAR    | 1101 00vw | mod 111 r/m
+ROL    | 1101 00vw | mod 000 r/m
+ROR    | 1101 00vw | mod 001 r/m
+RCL    | 1101 00vw | mod 010 r/m
+RCR    | 1101 00vw | mod 011 r/m
+ESC    | 1101 1xxx | mod xxx r/m
+IN     | 1110 010w | port
+OUT    | 1110 011w | port
+IN     | 1110 110w
+OUT    | 1110 111w
+LOOPNE | 1110 0000 | disp
+LOOPE  | 1110 0001 | disp
+LOOP   | 1110 0010 | disp
+JCXZ   | 1110 0011 | disp
+CALL   | 1110 1000 | lo | hi
+JMP    | 1110 1001 | lo | hi
+JMP    | 1110 1011 | disp
+JMP    | 1110 1010 | olo | ohi | slo | shi
+LOCK   | 1111 0000
+REP    | 1111 0010
+REPNE  | 1111 0011
+HLT    | 1111 0100
+CMC    | 1111 0101
+NEG    | 1111 011w | mod 011 r/m
+MUL    | 1111 011w | mod 100 r/m
+IMUL   | 1111 011w | mod 101 r/m
+TEST   | 1111 011w | mod 000 r/m | data | data if w=1
+NOT    | 1111 011w | mod 010 r/m
+DIV    | 1111 011w | mod 110 r/m
+IDIV   | 1111 011w | mod 111 r/m
+CLC    | 1111 1000
+STC    | 1111 1001
+CLI    | 1111 1010
+STI    | 1111 1011
+CLD    | 1111 1100
+STD    | 1111 1101
+INC    | 1111 111w | mod 000 r/m
+DEC    | 1111 111w | mod 001 r/m
+CALL   | 1111 1111 | mod 010 r/m
+CALL   | 1111 1111 | mod 011 r/m
+JMP    | 1111 1111 | mod 100 r/m
+JMP    | 1111 1111 | mod 101 r/m
+PUSH   | 1111 1111 | mod 110 r/m
+
+[BX]+[SI] - source
+[BP]+[DI] - destination
+
+BX = &source_buffer
+SI = current_src_ptr
+BP = &destiation_buffer
+DI = current_dst_ptr

@@ -1,0 +1,135 @@
+MOV    | 1000 10dw | mod reg r/m
+MOV    | 1100 011w | mod 000 r/m | data | data if w=1
+MOV    | 1011 wreg | data | data if w=1
+MOV    | 1010 000w | lo | hi
+MOV    | 1010 001w | lo | hi
+MOV    | 1000 1110 | mod 0 eg r/m
+MOV    | 1000 1100 | mod 0 eg r/m
+PUSH   | 1111 1111 | mod 110 r/m
+PUSH   | 0101 0reg
+PUSH   | 000e g110
+POP    | 1000 1111 | mod 000 r/m
+POP    | 0101 1reg
+POP    | 000e g111
+XCHG   | 1000 011w | mod reg r/m
+XCHG   | 1001 0reg
+XLAT   | 1101 0111
+IN     | 1110 010w | port
+IN     | 1110 110w
+OUT    | 1110 011w | port
+OUT    | 1110 111w
+LEA    | 1000 1101 | mod reg r/m
+LDS    | 1100 0101 | mod reg r/m
+LES    | 1100 0100 | mod reg r/m
+LAHF   | 1001 1111
+SAHF   | 1001 1110
+PUSHF  | 1001 1100
+POPF   | 1001 1101
+ADD    | 0000 00dw | mod reg r/m
+ADD    | 1000 00sw | mod 000 r/m | data | data if sw=01
+ADD    | 0000 010w | data | data if w=1
+ADC    | 0001 00dw | mod reg r/m
+ADC    | 1000 00sw | mod 010 r/m | data | data if sw=01
+ADC    | 0001 010w | data | data if w=1
+INC    | 1111 111w | mod 000 r/m
+INC    | 0100 0reg
+AAA    | 0011 0111
+BAA    | 0010 0111
+SUB    | 0010 10dw | mod reg r/m
+SUB    | 1000 00sw | mod 101 r/m | data | data if sw=01
+SUB    | 0010 110w | data | data if w=1
+SBB    | 0001 10dw | mod reg r/m
+SBB    | 1000 00sw | mod 011 r/m | data | data if sw=01
+SBB    | 0001 110w | data | data if w=1
+DEC    | 1111 111w | mod 001 r/m
+DEC    | 0100 1reg
+NEG    | 1111 011w | mod 011 r/m
+CMP    | 0011 10dw | mod reg r/m
+CMP    | 1000 00sw | mod 111 r/m | data | data if sw=01
+CMP    | 0011 110w | data | data if w=1
+AAS    | 0011 1111
+DAS    | 0010 1111
+MUL    | 1111 011w | mod 100 r/m
+IMUL   | 1111 011w | mod 101 r/m
+AAM    | 1101 0100 | 0000 1010
+DIV    | 1111 011w | mod 110 r/m
+IDIV   | 1111 011w | mod 111 r/m
+AAD    | 1101 0101 | 0000 1010
+CBW    | 1001 1000
+CWD    | 1001 1001
+NOT    | 1111 011w | mod 010 r/m
+AND    | 0010 00dw | mod reg r/m
+AND    | 1000 000w | mod 100 r/m | data | data if w=1
+AND    | 0010 010w | data | data if w=1
+TEST   | 1000 010w | mod reg r/m
+TEST   | 1111 011w | mod 000 r/m | data | data if w=1
+TEST   | 1010 100w | data | data if w=1
+OR     | 0000 10dw | mod reg r/m
+OR     | 1000 000w | mod reg r/m | data | data if w=1
+OR     | 0000 110w | data | data if w=1
+XOR    | 0011 00dw | mod reg r/m
+XOR    | 1000 000w | mod 110 r/m | data | data if w=1
+XOR    | 0011 010w | data | data if w=1
+SHL    | 1101 00vw | mod 100 r/m
+SHR    | 1101 00vw | mod 101 r/m
+SAR    | 1101 00vw | mod 111 r/m
+ROL    | 1101 00vw | mod 000 r/m
+ROR    | 1101 00vw | mod 001 r/m
+RCL    | 1101 00vw | mod 010 r/m
+RCR    | 1101 00vw | mod 011 r/m
+REP    | 1111 0010
+REPNE  | 1111 0011
+MOVS   | 1010 010w
+CMPS   | 1010 011w
+SCAS   | 1010 111w
+LODS   | 1010 110w
+STOS   | 1010 101w
+JMP    | 1110 1001 | lo | hi
+JMP    | 1110 1011 | disp
+JMP    | 1111 1111 | mod 100 r/m
+JMP    | 1110 1010 | olo | ohi | slo | shi
+JMP    | 1111 1111 | mod 101 r/m
+RET    | 1100 0011
+RET    | 1100 0010 | lo | hi
+RET    | 1100 1011
+RET    | 1100 1010 | lo | hi
+CALL   | 1110 1000 | lo | hi
+CALL   | 1111 1111 | mod 010 r/m
+CALL   | 1001 1010 | olo | ohi | slo | shi
+CALL   | 1111 1111 | mod 011 r/m
+JE     | 0111 0100 | disp
+JL     | 0111 1100 | disp
+JLE    | 0111 1110 | disp
+JB     | 0111 0010 | disp
+JBE    | 0111 0110 | disp
+JP     | 0111 1010 | disp
+JO     | 0111 0000 | disp
+JS     | 0111 1000 | disp
+JNE    | 0111 0101 | disp
+JNL    | 0111 1101 | disp
+JNLE   | 0111 1111 | disp
+JNB    | 0111 0011 | disp
+JNBE   | 0111 0111 | disp
+JNP    | 0111 1011 | disp
+JNO    | 0111 0001 | disp
+JNS    | 0111 1001 | disp
+LOOP   | 1110 0010 | disp
+LOOPE  | 1110 0001 | disp
+LOOPNE | 1110 0000 | disp
+JCXZ   | 1110 0011 | disp
+INT    | 1100 1101 | type
+INT3   | 1100 1100
+INTO   | 1100 1110
+IRET   | 1100 1111
+CMC    | 1111 0101
+CLC    | 1111 1000
+STC    | 1111 1001
+CLD    | 1111 1100
+STD    | 1111 1101
+CLI    | 1111 1010
+STI    | 1111 1011
+WAIT   | 1001 1011
+ESC    | 1101 1xxx | mod xxx r/m
+LOCK   | 1111 0000
+HLT    | 1111 0100
+NOP    | 1001 0000
