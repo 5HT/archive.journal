@@ -8,3 +8,6 @@ build:
 
 run:
 	./dasm
+
+show:
+	objdump ./dasm --disassemble
