@@ -8,9 +8,7 @@
 %define syscall_open    0x2000005
 %define syscall_close   0x2000006
 
-_main:          mov rax, 2
-                call print_hex
-                sub qword [machine.ptr], 2
+_main:          call dump
                 mov rsi, [machine.ptr]
                 xor rdx, rdx
                 xor rbx, rbx
@@ -23,10 +21,8 @@ _main:          mov rax, 2
 line:           push rsi
                 push rdi
                 push rdx
-                push rbx
                 mov rax, [rdi+8] ; call rope chain
                 call [rdi]
-                pop rbx
                 pop rdx
                 pop rdi
                 pop rsi
@@ -39,6 +35,11 @@ line:           push rsi
                 mov rax, 0x2000001 ; exit
                 xor rdi, rdi
                 syscall
+                ret
+
+dump:           mov rax, 2
+                call print_hex
+                sub qword [machine.ptr], 2
                 ret
 
 parse_mod_rm:   mov rsi, [machine.ptr]
@@ -162,7 +163,7 @@ machine: db 0x00, 0b00100101
          db 0x01, 0b10010011, 0x26, 0x25
          db 0x02, 0b01001110, 0x34
          db 0x03, 0b11101110, 0x76, 0x75, 0x77
-         db 0x03, 0b10111111, 0x66, 0x65
+         db 0x02, 0b10111111, 0x66, 0x65
          db 0x03, 0b11011101, 0x86, 0x85, 0x88
 .ptr: dq machine
 
@@ -200,8 +201,18 @@ linefeed: db 10
 rm: dq rm000,     rm001,     rm010,     rm011,     rm100,     rm101,     rm101,     rm110,     rm111
 rd: dq rm000.len, rm001.len, rm010.len, rm011.len, rm100.len, rm101.len, rm101.len, rm110.len, rm111.len
 
+calls:    dq parse_mod_rm ; 0
+          dq print_add    ; 1
+          dq print_rm     ; 2
+          dq print_hex    ; 3
+          dq close        ; 4
+          dq comma        ; 5
+          dq print_reg    ; 6
+          dq println      ; 7
+
 inst2:
-inst0:
+inst0:    ;db 0,0,1,0,2,0,3,0,4,0,5,0,6,0,7,0
+
           dq parse_mod_rm  ; 0
 inst0_0:  dq 0             ; +8
           dq print_add     ; 16
@@ -220,7 +231,8 @@ inst0_6:  dq 0             ; +104
 inst0_7:  dq 0             ; 120
 
 inst3:
-inst1:
+inst1:    ;db 0,0,1,0,6,0,5,0,2,0,4,0,3,0,7,0
+
           dq parse_mod_rm
 inst1_0:  dq 0
           dq print_add
@@ -238,37 +250,16 @@ inst1_6:  dq 0
           dq println
 inst1_7:  dq 0
 
-inst4:    dq println
-          dq 0
-
-inst5:    dq println
-          dq 0
-
-inst6:    dq println
-          dq 0
-
-inst7:    dq println
-          dq 0
+inst4:    db 7,0
+inst5:    db 7,0
+inst6:    db 7,0
+inst7:    db 7,0
 
 display: db 0
 .ptr: dq 6
 
-opcodes: dq inst0
-         dq 7
-         dq inst1
-         dq 7
-         dq inst2
-         dq 7
-         dq inst3
-         dq 7
-         dq inst4
-         dq 3
-         dq inst5
-         dq 2
-         dq inst6
-         dq 1
-         dq inst7
-         dq 0
+opcodes: dq inst0, 7, inst1, 7, inst2, 7, inst3, 7,
+         dq inst4, 7, inst5, 7, inst6, 7, inst7, 7
 
 mov: db ' MOV '
 .len: equ $-mov
