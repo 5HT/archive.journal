@@ -8,9 +8,14 @@
 %define syscall_open    0x2000005
 %define syscall_close   0x2000006
 
-_main:          xor rdx, rdx
+_main:          mov rax, 2
+                call print_hex
+                sub qword [machine.ptr], 2
+                mov rsi, [machine.ptr]
+                xor rdx, rdx
+                xor rbx, rbx
                 inc qword [machine.ptr]
-                mov rbx, rdx
+                mov bl, [rsi]
                 shl rbx, 4
                 mov rsi, opcodes
                 mov rdx, [rsi+rbx+8]
@@ -18,8 +23,10 @@ _main:          xor rdx, rdx
 line:           push rsi
                 push rdi
                 push rdx
+                push rbx
                 mov rax, [rdi+8] ; call rope chain
                 call [rdi]
+                pop rbx
                 pop rdx
                 pop rdi
                 pop rsi
@@ -34,23 +41,25 @@ line:           push rsi
                 syscall
                 ret
 
-parse_mod_rm:
-                mov rsi, [machine.ptr]
-                xor eax, eax
+parse_mod_rm:   mov rsi, [machine.ptr]
+                xor rax, rax
                 mov al, [rsi]
-                xor ecx, ecx
+                xor rcx, rcx
                 mov cl, 3
-                mov ebx, eax
-                mov edx, eax
-                shr ebx, cl
-                add ecx, ecx
-                shr eax, cl
-                inc ecx
-                and ebx, ecx
-                and ecx, edx
+                mov rbx, rax
+                mov rdx, rax
+                shr rbx, cl
+                add rcx, rcx
+                shr rax, cl
+                inc rcx
+                and rbx, rcx
+                and rcx, rdx
+                mov qword [inst0_3], rax ; mod
                 mov qword [inst0_1], rcx ; r/m
                 mov qword [inst0_2], rbx ; reg
-                mov qword [inst0_3], rax ; mod
+                mov qword [inst1_5], rax ; mod
+                mov qword [inst1_1], rbx ; reg
+                mov qword [inst1_2], rcx ; r/m
                 inc qword [machine.ptr]
                 ret
 
@@ -59,7 +68,7 @@ write:          mov rax, syscall_write ; print ]
                 syscall
                 ret
 
-closesq:        mov rsi, rmter
+close:          mov rsi, rmter
                 mov rdx, rmter.len
                 call write
                 ret
@@ -191,25 +200,43 @@ linefeed: db 10
 rm: dq rm000,     rm001,     rm010,     rm011,     rm100,     rm101,     rm101,     rm110,     rm111
 rd: dq rm000.len, rm001.len, rm010.len, rm011.len, rm100.len, rm101.len, rm101.len, rm110.len, rm111.len
 
-inst3:
 inst2:
+inst0:
+          dq parse_mod_rm  ; 0
+inst0_0:  dq 0             ; +8
+          dq print_add     ; 16
+inst0_1:  dq 0             ; 24
+          dq print_rm      ; 32
+inst0_2:  dq 0             ; +40
+          dq print_hex     ; 48
+inst0_3:  dq 0             ; +56
+          dq close         ; 64
+inst0_4:  dq 0             ; 72
+          dq comma         ; 80
+inst0_5:  dq 0             ; 88
+          dq print_reg     ; 96
+inst0_6:  dq 0             ; +104
+          dq println       ; 112
+inst0_7:  dq 0             ; 120
+
+inst3:
 inst1:
-inst0:    dq parse_mod_rm
-inst0_4:  dq 0
+          dq parse_mod_rm
+inst1_0:  dq 0
           dq print_add
-          dq 0
-          dq print_rm
-inst0_1:  dq 0
-          dq print_hex
-inst0_3:  dq 0
-          dq closesq
-          dq 0
-          dq comma
-          dq 0
+inst1_1:  dq 0
           dq print_reg
-inst0_2:  dq 0
+inst1_2:  dq 0
+          dq comma
+inst1_3:  dq 0
+          dq print_rm
+inst1_4:  dq 0
+          dq print_hex
+inst1_5:  dq 0
+          dq close
+inst1_6:  dq 0
           dq println
-          dq 0
+inst1_7:  dq 0
 
 inst4:    dq println
           dq 0
