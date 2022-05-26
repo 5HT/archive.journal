@@ -20,9 +20,6 @@ _main:          mov rsi, [machine.ptr]
 line:           push rsi
                 push rdi
                 push rdx
-;                mov qword [machine.ptr], rdi
- ;               mov rax, 8
-  ;              call dump
                 xor rbx, rbx
                 mov bl, byte [rdi]
                 shl bl, 3
