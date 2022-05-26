@@ -1,159 +1,150 @@
 
-       global _main
-       default  rel
-       section .text
+                global _main
+                default  rel
+                section .text
 
 %define syscall_exit    0x2000001
 %define syscall_write   0x2000004
 %define syscall_open    0x2000005
 %define syscall_close   0x2000006
 
-_main: xor rdx, rdx
-       inc qword [machine.ptr]
-       mov rbx, rdx
-       shl rbx, 4
-       mov rsi, opcodes
-       mov rdx, [rsi+rbx+8]
-       mov rdi, [rsi+rbx]
-line:  push rsi
-       push rdi
-       push rdx
-       mov rax, [rdi+8] ; call rope chain
-       call [rdi]
-       pop rdx
-       pop rdi
-       pop rsi
-       add rdi, 16
-       dec rdx
-       jnz line
-       call println
-       dec qword [display.ptr]
-       jnz _main
-       mov rax, 0x2000001 ; exit
-       xor rdi, rdi
-       syscall
-       ret
+_main:          xor rdx, rdx
+                inc qword [machine.ptr]
+                mov rbx, rdx
+                shl rbx, 4
+                mov rsi, opcodes
+                mov rdx, [rsi+rbx+8]
+                mov rdi, [rsi+rbx]
+line:           push rsi
+                push rdi
+                push rdx
+                mov rax, [rdi+8] ; call rope chain
+                call [rdi]
+                pop rdx
+                pop rdi
+                pop rsi
+                add rdi, 16
+                dec rdx
+                jnz line
+                call println
+                dec qword [display.ptr]
+                jnz _main
+                mov rax, 0x2000001 ; exit
+                xor rdi, rdi
+                syscall
+                ret
 
 parse_mod_rm:
-       xor rax, rax
-       mov rsi, [machine.ptr] ; SI=src
-       mov al, [rsi]
-       mov rcx, rax
-       mov rbx, rax
-       mov rdx, rax
-       and rcx, 7
-       mov [inst0_1], rcx
-       shr rbx, 3
-       and rbx, 7
-       mov [inst0_2], rbx
-       xor rdx, rdx
-       mov dl, [rsi]
-       shr rdx, 6
-       and rdx, 3
-       mov rax, rdx
-       mov qword [inst0_3], rdx
-       inc qword [machine.ptr]
-       ret
+                mov rsi, [machine.ptr]
+                xor eax, eax
+                mov al, [rsi]
+                xor ecx, ecx
+                mov cl, 3
+                mov ebx, eax
+                mov edx, eax
+                shr ebx, cl
+                add ecx, ecx
+                shr eax, cl
+                inc ecx
+                and ebx, ecx
+                and ecx, edx
+                mov qword [inst0_1], rcx ; r/m
+                mov qword [inst0_2], rbx ; reg
+                mov qword [inst0_3], rax ; mod
+                inc qword [machine.ptr]
+                ret
 
-write:
-       mov rax, syscall_write ; print ]
-       mov rdi, 1
-       syscall
-       ret
+write:          mov rax, syscall_write ; print ]
+                mov rdi, 1
+                syscall
+                ret
 
-closesq:
-       mov rsi, rmter
-       mov rdx, rmter.len
-       call write
-       ret
+closesq:        mov rsi, rmter
+                mov rdx, rmter.len
+                call write
+                ret
 
-comma:
-       mov rsi, com
-       mov rdx, com.len
-       call write
-       ret
+comma:          mov rsi, com
+                mov rdx, com.len
+                call write
+                ret
 
-println:
-       mov rsi, linefeed
-       mov rdx, linefeed.len
-       call write
-       ret
+println:        mov rsi, linefeed
+                mov rdx, linefeed.len
+                call write
+                ret
 
 print_rm:
-       mov rdi, rax
-       shl rdi, 3
-       mov rbx, rm
-       mov rsi, [rbx+rdi]
-       mov rbx, rd
-       mov rdx, [rbx+rdi]
-       call write
-       ret
-
+                mov rdi, rax
+                shl rdi, 3
+                mov rbx, rm
+                mov rsi, [rbx+rdi]
+                mov rbx, rd
+                mov rdx, [rbx+rdi]
+                call write
+                ret
 print_reg:
-       mov rsi, regb
-       shl rax, 1
-       add rsi, rax
-       mov rdx, 2
-       call write
-       ret
+                mov rsi, regb
+                shl rax, 1
+                add rsi, rax
+                mov rdx, 2
+                call write
+                ret
 
 print_add:
-       mov rsi, add
-       mov rdx, add.len
-       call write
-       ret
+                mov rsi, add
+                mov rdx, add.len
+                call write
+                ret
 
 print_hex:
-       push rax
-       cmp rax, 0
-       jz empty
-       xor rdx, rdx
-       mov rdx, rax
-       mov rdi, hex
-       mov rsi, [machine.ptr]
-       mov rbp, hexout
-       mov rax, rdx
-       shl rax, 1
-       inc rax
-       inc rax
-       inc rax
-       mov qword [hexout.len], rax
-       dec rax
-       add rbp, rax
-pair:  mov bl, [rsi]
-       and rbx, 15
-       mov al, [rbx+rdi]
-       mov [rbp], al
-       dec rbp
-       mov bl, [rsi]
-       shr rbx, 4
-       and rbx, 15
-       mov al, [rbx+rdi]
-       mov [rbp], al
-       dec rbp
-       inc rsi
-       dec rdx
-       jne pair
-       mov rdx, qword [hexout.len]
-       mov rax, syscall_write ; print hex
-       mov rsi, hexout
-       mov rdi, 1
-       syscall
-empty:
-       pop rdx
-       add qword [machine.ptr], rdx
-       ret
+                push rax
+                cmp rax, 0
+                jz empty
+                xor edx, edx
+                mov edx, eax
+                mov rdi, hex
+                mov rsi, [machine.ptr]
+                mov rbp, hexout
+                mov eax, edx
+                shl eax, 1
+                inc eax
+                inc eax
+                inc eax
+                mov qword [hexout.len], rax
+                dec eax
+                add rbp, rax
+pair:           mov bl, [rsi]
+                and ebx, 15
+                mov al, [rbx+rdi]
+                mov [rbp], al
+                dec rbp
+                mov bl, [rsi]
+                shr ebx, 4
+                and ebx, 15
+                mov al, [rbx+rdi]
+                mov [rbp], al
+                dec rbp
+                inc rsi
+                dec edx
+                jne pair
+                mov rdx, qword [hexout.len]
+                mov rax, syscall_write ; print hex
+                mov rsi, hexout
+                mov rdi, 1
+                syscall
+empty:          pop rdx
+                add qword [machine.ptr], rdx
+                ret
 
 show_pointer:   mov rsi, hex_emiter
                 mov rbx, hex
-                and rax, 15
-                add rax, 0x30
+                and al, 15
+                add al, 0x30
                 mov [rsi], al
-                mov rax, syscall_write ; print int
                 mov rsi, pointer
                 mov rdx, hex_emiter.len
-                mov rdi, 1
-                syscall
+                call write
                 ret
 
        section .data
