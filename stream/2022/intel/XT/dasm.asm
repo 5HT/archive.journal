@@ -21,7 +21,7 @@ line:           push rsi
                 push rdi
                 push rdx
                 xor rbx, rbx
-                mov bl, byte [rdi]
+                mov bl, [rdi]
                 shl bl, 3
                 mov rsi, ropes
                 mov al, [rdi+1] ; rope args
@@ -55,22 +55,25 @@ parse_mod_rm:   mov rsi, [machine.ptr]
                 inc rcx
                 and rbx, rcx
                 and rcx, rdx
-                push rdi
                 push rsi
-                mov rsi, inst0
-                mov rdi, inst1
-;                     0     1     2     3     4     5     6     7
-                ;  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
-;inst0:         db 0, 0, 1, 0, 2, 0, 3, 0, 4, 2, 5, 0, 6, 0, 7, 0
-;inst1:         db 0, 0, 1, 0, 6, 0, 5, 0, 2, 0, 3, 2, 4, 0, 7, 0
-                mov [rsi+7], al   ; inst0_3], rax ; mod
-                mov [rsi+5], cl   ; inst0_1], rcx ; r/m
-                mov [rsi+13], bl  ; inst0_2], rbx ; reg
-                mov [rdi+11], al  ; inst1_5], rax ; mod
-                mov [rdi+9], cl   ; inst1_2], rcx ; r/m
-                mov [rdi+5], bl   ; inst1_1], rbx ; reg
-                pop rsi
-                pop rdi
+                push rax
+                push rbx
+                push rcx
+                mov bl, [rsi-1]
+                mov dl, bl
+                shl bl, 4
+                mov rsi, opcodes
+                add rsi, rbx
+                mov rsi, [rsi]
+                pop rcx
+                pop rbx
+                pop rax
+                test dl, 1
+                jnz odd
+                call from_reg
+                jmp quit_rm
+odd:            call to_reg
+quit_rm:        pop rsi
                 inc qword [machine.ptr]
                 ret
 ; rope 1
@@ -90,7 +93,7 @@ print_rm:
                 call write
                 ret
 ; rope 3
-print_hex:
+print_hex:      ;call show_pointer
                 push rax
                 cmp rax, 0
                 jz empty
@@ -152,8 +155,21 @@ eol:            mov rsi, linefeed
                 mov rdx, 1
                 call write
                 ret
+; rope 8
+from_reg:       ;call show_pointer
+                mov [rsi+7], al   ; inst0_3], rax ; mod
+                mov [rsi+5], cl   ; inst0_1], rcx ; r/m
+                mov [rsi+13], bl  ; inst0_2], rbx ; reg
+                ret
+; rope 9
+to_reg:         ;call show_pointer
+                mov [rsi+11], al  ; inst1_5], rax ; mod
+                mov [rsi+9], cl   ; inst1_2], rcx ; r/m
+                mov [rsi+5], bl   ; inst1_1], rbx ; reg
+                ret
 
-show_pointer:   mov rsi, hex_emiter
+show_pointer:   push rax
+                mov rsi, hex_emiter
                 mov rbx, hex
                 and al, 15
                 add al, 0x30
@@ -161,6 +177,7 @@ show_pointer:   mov rsi, hex_emiter
                 mov rsi, pointer
                 mov rdx, hex_emiter.len
                 call write
+                pop rax
                 ret
 
 dump:           push rax
@@ -198,6 +215,7 @@ ropes:          dq parse_mod_rm
 opcodes:        dq inst0, 7, inst1, 7, inst2, 7, inst3, 7,
                 dq inst4, 7, inst5, 7, inst6, 7, inst7, 7
 
+                ;  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
 inst0:          db 0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0
 inst1:          db 0, 0, 1, 0, 6, 0, 5, 0, 2, 0, 3, 2, 4, 0, 7, 0
 inst4:          db 7, 0
