@@ -9,11 +9,6 @@
 %define syscall_close   0x2000006
 
 _main: xor rdx, rdx
-       mov rax, 2
-       call print_hex
-       sub qword [machine.ptr], 2
-       mov rbx, [machine.ptr]
-       mov dl, byte [rbx]
        inc qword [machine.ptr]
        mov rbx, rdx
        shl rbx, 4
@@ -23,7 +18,7 @@ _main: xor rdx, rdx
 line:  push rsi
        push rdi
        push rdx
-       mov al, [rdi+8] ; call rope chain
+       mov rax, [rdi+8] ; call rope chain
        call [rdi]
        pop rdx
        pop rdi
@@ -41,20 +36,22 @@ line:  push rsi
 
 parse_mod_rm:
        xor rax, rax
-       mov al, [machine.ptr] ; SI=src
-       xor rcx, rcx
-       mov cl, 3
+       mov rsi, [machine.ptr] ; SI=src
+       mov al, [rsi]
+       mov rcx, rax
        mov rbx, rax
        mov rdx, rax
-       shr rbx, cl
-       add rcx, rcx
-       shr rax, cl   ; AX=mod
-       inc rcx
-       and rbx, rcx  ; BX=reg
-       and rcx, rdx  ; CX=r/m
+       and rcx, 7
        mov [inst0_1], rcx
+       shr rbx, 3
+       and rbx, 7
        mov [inst0_2], rbx
-       mov qword [inst0_3], 2 ;rdx
+       xor rdx, rdx
+       mov dl, [rsi]
+       shr rdx, 6
+       and rdx, 3
+       mov rax, rdx
+       mov qword [inst0_3], rdx
        inc qword [machine.ptr]
        ret
 
@@ -107,8 +104,10 @@ print_add:
        ret
 
 print_hex:
-       xor rdx, rdx
        push rax
+       cmp rax, 0
+       jz empty
+       xor rdx, rdx
        mov rdx, rax
        mov rdi, hex
        mov rsi, [machine.ptr]
@@ -135,21 +134,37 @@ pair:  mov bl, [rsi]
        inc rsi
        dec rdx
        jne pair
-       pop rdx
-       add qword [machine.ptr], rdx
        mov rdx, qword [hexout.len]
        mov rax, syscall_write ; print hex
        mov rsi, hexout
        mov rdi, 1
        syscall
+empty:
+       pop rdx
+       add qword [machine.ptr], rdx
        ret
+
+show_pointer:   mov rsi, hex_emiter
+                mov rbx, hex
+                and rax, 15
+                add rax, 0x30
+                mov [rsi], al
+                mov rax, syscall_write ; print int
+                mov rsi, pointer
+                mov rdx, hex_emiter.len
+                mov rdi, 1
+                syscall
+                ret
 
        section .data
 
-machine: db 0x00, 0x81, 0x18, 0x19
-         db 0x01, 0x83, 0x14, 0x20
-         db 0x02, 0x83, 0x66, 0x65
-.ptr:    dq machine
+machine: db 0x00, 0b00100101
+         db 0x01, 0b10010011, 0x26, 0x25
+         db 0x02, 0b01001110, 0x34
+         db 0x03, 0b11101110, 0x76, 0x75, 0x77
+         db 0x03, 0b10111111, 0x66, 0x65
+         db 0x03, 0b11011101, 0x86, 0x85, 0x88
+.ptr: dq machine
 
 hexout: db '+0x01234567890123456789012345678901'
 .len: dq 35
@@ -218,16 +233,16 @@ inst7:    dq println
           dq 0
 
 display: db 0
-.ptr: dq 3
+.ptr: dq 6
 
 opcodes: dq inst0
          dq 7
          dq inst1
-         dq 6
+         dq 7
          dq inst2
-         dq 5
+         dq 7
          dq inst3
-         dq 4
+         dq 7
          dq inst4
          dq 3
          dq inst5
@@ -246,7 +261,7 @@ add: db ' ADD '
 adc: db ' ADC '
 .len: equ $-adc
 
-pointer:   db 'Pointer: '
+pointer:   db ' Pointer: '
 hex_emiter:  db 0, 10
 .len:  equ $-pointer
 
