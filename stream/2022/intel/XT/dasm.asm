@@ -8,28 +8,30 @@
 %define syscall_open    0x2000005
 %define syscall_close   0x2000006
 
-_main: mov rbx, machine
-       mov rsi, machine.ptr
-       add rbx, [rsi]
-       inc qword [rsi]
-       mov al,  [rbx]
-       call parse_mod_rm
+_main: xor rdx, rdx
+       mov rax, 2
+       call print_hex
+       sub qword [machine.ptr], 2
+       mov rbx, [machine.ptr]
+       mov dl, byte [rbx]
+       inc qword [machine.ptr]
+       mov rbx, rdx
+       shl rbx, 4
        mov rsi, opcodes
-       mov cl, [rsi+8]
-       mov rsi, [rsi]
-line:  mov rax, [rsi+8]
-       push rsi
-       push rcx
-       push rbx
-       call [rsi]
-       pop rbx
-       pop rcx
+       mov rdx, [rsi+rbx+8]
+       mov rdi, [rsi+rbx]
+line:  push rsi
+       push rdi
+       push rdx
+       mov al, [rdi+8] ; call rope chain
+       call [rdi]
+       pop rdx
+       pop rdi
        pop rsi
-       mov al, 16
-       add rsi, rax
-       dec ecx
+       add rdi, 16
+       dec rdx
        jnz line
-       call show_pointer
+       call println
        dec qword [display.ptr]
        jnz _main
        mov rax, 0x2000001 ; exit
@@ -37,29 +39,47 @@ line:  mov rax, [rsi+8]
        syscall
        ret
 
-closesq:
-       mov rsi, rmter
-       mov rdx, rmter.len
+parse_mod_rm:
+       xor rax, rax
+       mov al, [machine.ptr] ; SI=src
+       xor rcx, rcx
+       mov cl, 3
+       mov rbx, rax
+       mov rdx, rax
+       shr rbx, cl
+       add rcx, rcx
+       shr rax, cl   ; AX=mod
+       inc rcx
+       and rbx, rcx  ; BX=reg
+       and rcx, rdx  ; CX=r/m
+       mov [inst0_1], rcx
+       mov [inst0_2], rbx
+       mov qword [inst0_3], 2 ;rdx
+       inc qword [machine.ptr]
+       ret
+
+write:
        mov rax, syscall_write ; print ]
        mov rdi, 1
        syscall
        ret
 
-printcomma:
-       mov rsi, comma
-       mov rdx, comma.len
-       mov rax, syscall_write ; print ,
-       mov rdi, 1
-       syscall
+closesq:
+       mov rsi, rmter
+       mov rdx, rmter.len
+       call write
        ret
 
+comma:
+       mov rsi, com
+       mov rdx, com.len
+       call write
+       ret
 
 println:
        mov rsi, linefeed
        mov rdx, linefeed.len
-       mov rax, syscall_write ; print \n
-       mov rdi, 1
-       syscall
+       call write
        ret
 
 print_rm:
@@ -69,24 +89,7 @@ print_rm:
        mov rsi, [rbx+rdi]
        mov rbx, rd
        mov rdx, [rbx+rdi]
-       mov rax, syscall_write ; print addr
-       mov rdi, 1
-       syscall
-       ret
-
-show_pointer:
-       mov rsi, hex_emiter
-       mov rbx, hex
-       xor rax, rax
-       mov al, byte [machine.ptr]
-       and rax, 15
-       xlat
-       mov [rsi], al
-       mov rax, syscall_write ; print int
-       mov rsi, pointer
-       mov rdx, hex_emiter.len
-       mov rdi, 1
-       syscall
+       call write
        ret
 
 print_reg:
@@ -94,75 +97,44 @@ print_reg:
        shl rax, 1
        add rsi, rax
        mov rdx, 2
-       mov rax, syscall_write ; print register
-       mov rdi, 1
-       syscall
-       ret
-
-print_mov:
-       mov rsi, mov
-       mov rdx, mov.len
-       mov rax, syscall_write ; print MOV
-       mov rdi, 1
-       syscall
+       call write
        ret
 
 print_add:
        mov rsi, add
        mov rdx, add.len
-       mov rax, syscall_write ; print ADD
-       mov rdi, 1
-       syscall
+       call write
        ret
 
-parse_mod_rm:
-       xor eax, eax
-       mov al, [machine.ptr] ; SI=src
-       xor ecx, ecx
-       mov cl, 3
-       mov ebx, eax
-       mov edx, eax
-       shr ebx, cl
-       add ecx, ecx
-       shr eax, cl   ; AX=mod
-       inc ecx
-       and ebx, ecx  ; BX=reg
-       and ecx, edx  ; CX=r/m
-       mov [inst0_1], cl
-       mov [inst0_2], bl
-       inc qword [machine.ptr]
-       ret
-
-print_hex_string:
-       xor edx, edx
+print_hex:
+       xor rdx, rdx
        push rax
-       mov edx, eax
+       mov rdx, rax
        mov rdi, hex
-       mov rsi, machine
-       add rsi, [machine.ptr]
+       mov rsi, [machine.ptr]
        mov rbp, hexout
-       mov eax, edx
-       shl eax, 1
-       inc eax
-       inc eax
-       inc eax
-       mov dword [hexout.len], eax
-       dec eax
+       mov rax, rdx
+       shl rax, 1
+       inc rax
+       inc rax
+       inc rax
+       mov qword [hexout.len], rax
+       dec rax
        add rbp, rax
-loop:  mov bl, [rsi]
-       and ebx, 15
+pair:  mov bl, [rsi]
+       and rbx, 15
        mov al, [rbx+rdi]
        mov [rbp], al
        dec rbp
        mov bl, [rsi]
-       shr ebx, 4
-       and ebx, 15
+       shr rbx, 4
+       and rbx, 15
        mov al, [rbx+rdi]
        mov [rbp], al
        dec rbp
        inc rsi
-       dec edx
-       jne loop
+       dec rdx
+       jne pair
        pop rdx
        add qword [machine.ptr], rdx
        mov rdx, qword [hexout.len]
@@ -173,6 +145,11 @@ loop:  mov bl, [rsi]
        ret
 
        section .data
+
+machine: db 0x00, 0x81, 0x18, 0x19
+         db 0x01, 0x83, 0x14, 0x20
+         db 0x02, 0x83, 0x66, 0x65
+.ptr:    dq machine
 
 hexout: db '+0x01234567890123456789012345678901'
 .len: dq 35
@@ -200,8 +177,8 @@ rm111: db '[BX'
 
 rmter: db ']'
 .len: equ $-rmter
-comma: db ','
-.len: equ $-comma
+com: db ','
+.len: equ $-com
 linefeed: db 10
 .len: equ $-linefeed
 
@@ -211,15 +188,17 @@ rd: dq rm000.len, rm001.len, rm010.len, rm011.len, rm100.len, rm101.len, rm101.l
 inst3:
 inst2:
 inst1:
-inst0:    dq print_add
+inst0:    dq parse_mod_rm
+inst0_4:  dq 0
+          dq print_add
           dq 0
           dq print_rm
 inst0_1:  dq 0
-          dq print_hex_string
-inst0_3:  dq 2
+          dq print_hex
+inst0_3:  dq 0
           dq closesq
           dq 0
-          dq printcomma
+          dq comma
           dq 0
           dq print_reg
 inst0_2:  dq 0
@@ -229,30 +208,42 @@ inst0_2:  dq 0
 inst4:    dq println
           dq 0
 
-machine: db 0x00, 0x83, 0x13, 0x01, 0x01, 0x03, 0x04, 0x12
-.ptr: dq 0
+inst5:    dq println
+          dq 0
+
+inst6:    dq println
+          dq 0
+
+inst7:    dq println
+          dq 0
 
 display: db 0
-.ptr: dq 2
+.ptr: dq 3
 
 opcodes: dq inst0
-         db 7
+         dq 7
          dq inst1
-         db 7
+         dq 6
          dq inst2
-         db 7
+         dq 5
          dq inst3
-         db 7
+         dq 4
          dq inst4
-         db 1
+         dq 3
+         dq inst5
+         dq 2
+         dq inst6
+         dq 1
+         dq inst7
+         dq 0
 
-mov: db 'MOV '
+mov: db ' MOV '
 .len: equ $-mov
 
-add: db 'ADD '
+add: db ' ADD '
 .len: equ $-add
 
-adc: db 'ADC '
+adc: db ' ADC '
 .len: equ $-adc
 
 pointer:   db 'Pointer: '
