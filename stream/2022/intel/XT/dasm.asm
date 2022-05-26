@@ -76,7 +76,7 @@ parse_mod_rm:   mov rsi, [machine.ptr]
 ; rope 1
 print_add:
                 mov rsi, add
-                mov rdx, 3
+                mov rdx, 4
                 call write
                 ret
 ; rope 2
