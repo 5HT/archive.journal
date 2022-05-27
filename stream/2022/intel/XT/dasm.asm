@@ -66,7 +66,7 @@ quit_rm:        inc qword [machine.ptr]
 ; rope 1
 print_add:
                 mov rsi, add
-                mov rdx, 4
+                mov dl, 4
                 call write
                 ret
 ; rope 2
@@ -76,7 +76,7 @@ print_rm:       and rax, 255
                 mov rbx, rm
                 mov rsi, [rbx+rdi]
                 mov rbx, rd
-                mov rdx, [rbx+rdi]
+                mov dl, [rbx+rdi]
                 call write
                 ret
 ; rope 3
@@ -120,29 +120,29 @@ empty:          pop rdx
                 ret
 ; rope 4
 brace:          mov rsi, rmter
-                mov rdx, 1
+                mov dl, 1
                 call write
                 ret
 ; rope 5
 comma:          mov rsi, com
-                mov rdx, 1
+                mov dl, 1
                 call write
                 ret
 ; rope 6
-print_reg:      test rax, 16
+print_reg:      test al, 16
                 jnz w
                 mov rsi, regb
                 jmp e
 w:              mov rsi, regw
-e:              and rax, 15
-                shl rax, 1
+e:              and al, 15
+                shl al, 1
                 add rsi, rax
-                mov rdx, 2
+                mov dl, 2
                 call write
                 ret
 ; rope 7
 eol:            mov rsi, linefeed
-                mov rdx, 1
+                mov dl, 1
                 call write
                 ret
 ; rope 8
