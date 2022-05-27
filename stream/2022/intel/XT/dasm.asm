@@ -90,9 +90,7 @@ print_hex:      push rax
                 mov rbp, hexout
                 mov eax, edx
                 shl eax, 1
-                inc eax
-                inc eax
-                inc eax
+                add al, 3
                 mov qword [hexout.len], rax
                 dec eax
                 add rbp, rax
