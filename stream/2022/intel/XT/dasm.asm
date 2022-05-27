@@ -3,20 +3,14 @@
                 default  rel
                 section .text
 
-%define syscall_exit    0x2000001
-%define syscall_write   0x2000004
-%define syscall_open    0x2000005
-%define syscall_close   0x2000006
-
 _main:          mov rsi, [machine.ptr]
                 xor rbx, rbx
-                xor rdx, rdx
                 inc qword [machine.ptr]
                 mov bl, [rsi]
                 shl rbx, 4
                 mov rsi, opcodes
                 mov rdx, [rsi+rbx+8]
-                mov rdi, [rsi+rbx] ; instx: 0,0,1,0,2,0,..
+                mov rdi, [rsi+rbx]
 line:           push rsi
                 push rdi
                 push rdx
@@ -36,20 +30,21 @@ line:           push rsi
                 call eol
                 dec qword [display.ptr]
                 jnz _main
-                mov rax, 0x2000001 ; exit
+                mov rax, 0x2000001
                 xor rdi, rdi
                 syscall
                 ret
-
 ; rope 0
 parse_mod_rm:   mov rsi, [machine.ptr]
                 mov rdi, opcodes
                 mov al, [rsi]
                 mov ah, [rsi-1]
                 mov bl, ah
-                shl bl, 4
+                mov cl, 4
+                shl ah, cl
+                shl bl, cl
                 mov rdi, [rdi+rbx]
-                mov cl, 3
+                dec cl
                 mov bl, al
                 mov dl, al
                 shr bl, cl
@@ -57,10 +52,11 @@ parse_mod_rm:   mov rsi, [machine.ptr]
                 shr al, cl
                 inc cl
                 and bl, cl
-                and cl, dl
-                shl ah, 4
+                and dl, cl
                 or bl, ah
-                test bl, 16
+                inc cl
+                add cl, cl
+                test bl, cl
                 jnz odd
                 call from_reg
                 jmp quit_rm
@@ -84,8 +80,7 @@ print_rm:       and rax, 255
                 call write
                 ret
 ; rope 3
-print_hex:      ;call show_pointer
-                push rax
+print_hex:      push rax
                 cmp rax, 0
                 jz empty
                 xor edx, edx
@@ -116,7 +111,7 @@ pair:           mov bl, [rsi]
                 dec edx
                 jne pair
                 mov rdx, qword [hexout.len]
-                mov rax, syscall_write ; print hex
+                mov rax, syscall_write
                 mov rsi, hexout
                 mov rdi, 1
                 syscall
@@ -134,8 +129,7 @@ comma:          mov rsi, com
                 call write
                 ret
 ; rope 6
-print_reg:      ;call show_pointer
-                test rax, 16
+print_reg:      test rax, 16
                 jnz w
                 mov rsi, regb
                 jmp e
@@ -152,14 +146,14 @@ eol:            mov rsi, linefeed
                 call write
                 ret
 ; rope 8
-from_reg:       mov [rdi+7], al   ; inst0_3], rax ; mod
-                mov [rdi+13], bl  ; inst0_2], rbx ; reg
-                mov [rdi+5], cl   ; inst0_1], rcx ; r/m
+from_reg:       mov [rdi+7], al   ; mod
+                mov [rdi+13], bl  ; reg
+                mov [rdi+5], dl   ; r/m
                 ret
 ; rope 9
-to_reg:         mov [rdi+11], al  ; inst1_5], rax ; mod
-                mov [rdi+5], bl   ; inst1_1], rbx ; reg
-                mov [rdi+9], cl   ; inst1_2], rcx ; r/m
+to_reg:         mov [rdi+11], al  ; mod
+                mov [rdi+5], bl   ; reg
+                mov [rdi+9], dl   ; r/m
                 ret
 
 show_pointer:   push rax
@@ -182,7 +176,7 @@ dump:           push rax
                 sub qword [machine.ptr], rax
                 ret
 
-write:          mov rax, syscall_write ; print ]
+write:          mov rax, syscall_write
                 mov rdi, 1
                 syscall
                 ret
@@ -209,7 +203,6 @@ ropes:          dq parse_mod_rm
 opcodes:        dq inst0, 7, inst1, 7, inst2, 7, inst3, 7,
                 dq inst4, 7, inst5, 7, inst6, 7, inst7, 7
 
-                ;  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
 inst0:          db 0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0
 inst1:          db 0, 0, 1, 0, 6, 0, 5, 0, 2, 0, 3, 0, 4, 0, 7, 0
 inst4:          db 7, 0
@@ -261,3 +254,9 @@ rl111:          equ rmter-rm110
 
 inst2           equ inst0
 inst3           equ inst1
+
+syscall_exit    equ 0x2000001
+syscall_write   equ 0x2000004
+syscall_open    equ 0x2000005
+syscall_close   equ 0x2000006
+
