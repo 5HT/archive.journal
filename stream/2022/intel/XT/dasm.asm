@@ -58,7 +58,9 @@ parse_mod_rm:   mov rsi, [machine.ptr]
                 inc cl
                 and bl, cl
                 and cl, dl
-                test ah, 1
+                shl ah, 4
+                or bl, ah
+                test bl, 16
                 jnz odd
                 call from_reg
                 jmp quit_rm
@@ -72,7 +74,7 @@ print_add:
                 call write
                 ret
 ; rope 2
-print_rm:
+print_rm:       and rax, 255
                 mov rdi, rax
                 shl rdi, 3
                 mov rbx, rm
@@ -132,8 +134,13 @@ comma:          mov rsi, com
                 call write
                 ret
 ; rope 6
-print_reg:
+print_reg:      ;call show_pointer
+                test rax, 16
+                jnz w
                 mov rsi, regb
+                jmp e
+w:              mov rsi, regw
+e:              and rax, 15
                 shl rax, 1
                 add rsi, rax
                 mov rdx, 2
@@ -146,13 +153,13 @@ eol:            mov rsi, linefeed
                 ret
 ; rope 8
 from_reg:       mov [rdi+7], al   ; inst0_3], rax ; mod
-                mov [rdi+5], cl   ; inst0_1], rcx ; r/m
                 mov [rdi+13], bl  ; inst0_2], rbx ; reg
+                mov [rdi+5], cl   ; inst0_1], rcx ; r/m
                 ret
 ; rope 9
 to_reg:         mov [rdi+11], al  ; inst1_5], rax ; mod
-                mov [rdi+9], cl   ; inst1_2], rcx ; r/m
                 mov [rdi+5], bl   ; inst1_1], rbx ; reg
+                mov [rdi+9], cl   ; inst1_2], rcx ; r/m
                 ret
 
 show_pointer:   push rax
