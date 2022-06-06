@@ -13,7 +13,7 @@ reg  000: AX AL; 001: CX CL; 010: DX DL; 011: BX BL;
 r/m  000: (BX) + (SI) + disp; 001: (BX) + (DI) + disp;
      010: (BP) + (SI) + disp; 011: (BP) + (DI) + disp;
      100: (SI) + disp; 101: (DI) + disp;
-     110: (BP) + disp; 111: (BX) + disp;
+     110: (BP) + disp or direct address when mod=00; 111: (BX) + disp;
 
 ADD    | 0000 00dw | mod reg r/m
 ADD    | 0000 010w | data | data if w=1

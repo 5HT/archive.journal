@@ -11,21 +11,19 @@ _main:          mov rsi, [machine.ptr]
                 mov rsi, opcodes
                 mov rdx, [rsi+rbx+8]
                 mov rdi, [rsi+rbx]
-line:           push rsi
-                push rdi
+line:           push rdi
                 push rdx
                 xor rbx, rbx
                 mov bl, [rdi]
                 shl bl, 3
                 mov rsi, ropes
-                xor rax, rax
                 mov al, [rdi+1]
                 call [rsi+rbx]
                 pop rdx
                 pop rdi
-                pop rsi
-                add rdi, 2
-                dec rdx
+                add rdi, rax
+                shr rax, 1
+                sub rdx, rax
                 jnz line
                 call eol
                 dec qword [display.ptr]
@@ -56,18 +54,21 @@ parse_mod_rm:   mov rsi, [machine.ptr]
                 or bl, ah
                 inc cl
                 add cl, cl
-                test bl, cl
+                ;
+mem:            test bl, cl
                 jnz odd
                 call from_reg
                 jmp quit_rm
 odd:            call to_reg
 quit_rm:        inc qword [machine.ptr]
+                mov rax, 2
                 ret
 ; rope 1
 print_add:
                 mov rsi, add
                 mov dl, 4
                 call write
+                mov rax, 2
                 ret
 ; rope 2
 print_rm:       and rax, 255
@@ -78,6 +79,7 @@ print_rm:       and rax, 255
                 mov rbx, rd
                 mov dl, [rbx+rdi]
                 call write
+                mov rax, 2
                 ret
 ; rope 3
 print_hex:      push rax
@@ -115,16 +117,19 @@ pair:           mov bl, [rsi]
                 syscall
 empty:          pop rdx
                 add qword [machine.ptr], rdx
+                mov rax, 2
                 ret
 ; rope 4
 brace:          mov rsi, rmter
                 mov dl, 1
                 call write
+                mov rax, 2
                 ret
 ; rope 5
 comma:          mov rsi, com
                 mov dl, 1
                 call write
+                mov rax, 2
                 ret
 ; rope 6
 print_reg:      test al, 16
@@ -137,11 +142,13 @@ e:              and al, 15
                 add rsi, rax
                 mov dl, 2
                 call write
+                mov rax, 2
                 ret
 ; rope 7
 eol:            mov rsi, linefeed
                 mov dl, 1
                 call write
+                mov rax, 2
                 ret
 ; rope 8
 from_reg:       mov [rdi+7], al   ; mod
@@ -178,6 +185,10 @@ write:          mov rax, syscall_write
                 mov rdi, 1
                 syscall
                 ret
+
+                xacquire xacquire lock lock lock cmpxchg BYTE [rdi], cl
+                xacquire lock add qword [ss:rsp+0x12345678], 0x12345678
+                xacquire lock lwpins rax,[fs:rax+rbx+0x12345678],0x12345678
 
                 section .data
 
