@@ -20,48 +20,466 @@
 
     <h3>XT: 8086 дизасемблер</h3>
 
+    <h4>Вступ</h4>
+
+       <figure><table cellspacing=10 bgcolor=white>
+       <thead>
+       <th>Year</th><th>Code</th><th>Word</th><th>Description</th><th>Chipset</th>
+       </thead>
+       <tbody>
+       <tr><td>1970</td><td>3000</a></td><td>2</td><td>Intel 3000</td><td>DIY</td></tr>
+       <tr><td>1971</td><td>4000</a></td><td>4</td><td>Intel 4000</td><td>MCS-4</td></tr>
+       <tr><td>1974</td><td>ZX</a></td><td>8</td><td>Intel 8085/8080</td><td>MCS-85</td></tr>
+       <tr><td>1976</td><td>XT</a></td><td>16</td><td>Intel 8086/8088</td><td>MCS-86</td></tr>
+       <tr><td>1982</td><td>AT</a></td><td>16</td><td>Intel 80286</td><td>PS/2 Model 30</td></tr>
+       <tr><td>1985</td><td>IA-32</a></td><td>32</td><td>Intel 80386</td><td>PS/2 Model 50</td></tr>
+       <tr><td>1995</td><td>IA-32</a></td><td>32</td><td>P6</td><td>82443BX</td></tr>
+       <tr><td>2000</td><td>EM64T</a></td><td>64</td><td>Pentium 4</td><td>82865P</td></tr>
+       <tr><td>2006</td><td>EM64T</a></td><td>64</td><td>Intel Core</td><td>Q35</td></tr>
+       <tr><td>2011</td><td>AVX</a></td><td>128</td><td>Intel Core (Sandy Bridge)</td><td>Z77, X99</td></tr>
+       <tr><td>2013</td><td>AVX-2</a></td><td>256</td><td>Intel Core (Haswell)</td><td>Z97</td></tr>
+       <tr><td>2017</td><td>AVX-512</a></td><td>512</td><td>Intel Phi, Core (Skylake)</td><td>Z370, X299</td></tr>
+       <tr><td>2023</td><td>AMX</a></td><td>1024</td><td>Intel Core (Sapphire Rapids)</td><td>W790</td></tr>
+       </tbody></table></figure>
+
     <h4>Анотація</h4>
 
     <p>TL;DR &mdash; Дизасемблер на асемблері.</p>
 
     <h4>Специфікація на архітектуру опкодів</h4>
 
+<figure><code>ADD    | 0000 00dw | mod reg r/m
+ADD    | 0000 010w | data | data if w=1
+PUSH   | 000s g110
+POP    | 000s g111
+OR     | 0000 10dw | mod reg r/m
+OR     | 0000 110w | data | data if w=1
+ADC    | 0001 00dw | mod reg r/m
+ADC    | 0001 010w | data | data if w=1
+SBB    | 0001 10dw | mod reg r/m
+SBB    | 0001 110w | data | data if w=1
+BAA    | 0010 0111
+SUB    | 0010 10dw | mod reg r/m
+SUB    | 0010 110w | data | data if w=1
+DAS    | 0010 1111
+AND    | 0010 00dw | mod reg r/m
+AND    | 0010 010w | data | data if w=1
+AAA    | 0011 0111
+CMP    | 0011 110w | data | data if w=1
+AAS    | 0011 1111
+CMP    | 0011 10dw | mod reg r/m
+XOR    | 0011 00dw | mod reg r/m
+XOR    | 0011 010w | data | data if w=1
+INC    | 0100 0reg
+DEC    | 0100 1reg
+PUSH   | 0101 0reg
+POP    | 0101 1reg
+JE     | 0111 0100 | disp
+JL     | 0111 1100 | disp
+JLE    | 0111 1110 | disp
+JB     | 0111 0010 | disp
+JBE    | 0111 0110 | disp
+JP     | 0111 1010 | disp
+JO     | 0111 0000 | disp
+JS     | 0111 1000 | disp
+JNE    | 0111 0101 | disp
+JNL    | 0111 1101 | disp
+JNLE   | 0111 1111 | disp
+JNB    | 0111 0011 | disp
+JNBE   | 0111 0111 | disp
+JNP    | 0111 1011 | disp
+JNO    | 0111 0001 | disp
+JNS    | 0111 1001 | disp
+ADD    | 1000 00sw | mod 000 r/m | data | data if sw=01
+ADC    | 1000 00sw | mod 010 r/m | data | data if sw=01
+SBB    | 1000 00sw | mod 011 r/m | data | data if sw=01
+MOV    | 1000 10dw | mod reg r/m
+MOV    | 1000 1100 | mod 0sg r/m
+MOV    | 1000 1110 | mod 0sg r/m
+LEA    | 1000 1101 | mod reg r/m
+POP    | 1000 1111 | mod 000 r/m
+SUB    | 1000 00sw | mod 101 r/m | data | data if sw=01
+CMP    | 1000 00sw | mod 111 r/m | data | data if sw=01
+OR     | 1000 000w | mod reg r/m | data | data if w=1
+AND    | 1000 000w | mod 100 r/m | data | data if w=1
+XOR    | 1000 000w | mod 110 r/m | data | data if w=1
+TEST   | 1000 010w | mod reg r/m
+XCHG   | 1000 011w | mod reg r/m
+NOP    | 1001 0000
+XCHG   | 1001 0reg
+CBW    | 1001 1000
+CWD    | 1001 1001
+CALL   | 1001 1010 | olo | ohi | slo | shi
+WAIT   | 1001 1011
+PUSHF  | 1001 1100
+POPF   | 1001 1101
+SAHF   | 1001 1110
+LAHF   | 1001 1111
+MOV    | 1010 000w | lo | hi
+MOV    | 1010 001w | lo | hi
+MOVS   | 1010 010w
+CMPS   | 1010 011w
+SCAS   | 1010 111w
+LODS   | 1010 110w
+STOS   | 1010 101w
+TEST   | 1010 100w | data | data if w=1
+MOV    | 1011 wreg | data | data if w=1
+INT    | 1100 1101 | type
+LDS    | 1100 0101 | mod reg r/m
+LES    | 1100 0100 | mod reg r/m
+MOV    | 1100 011w | mod 000 r/m | data | data if w=1
+RET    | 1100 0010 | lo | hi
+RET    | 1100 0011
+RET    | 1100 1010 | lo | hi
+RET    | 1100 1011
+INT 3  | 1100 1100
+INTO   | 1100 1110
+IRET   | 1100 1111
+XLAT   | 1101 0111
+AAM    | 1101 0100 | 0000 1010
+AAD    | 1101 0101 | 0000 1010
+SHL    | 1101 00vw | mod 100 r/m
+SHR    | 1101 00vw | mod 101 r/m
+SAR    | 1101 00vw | mod 111 r/m
+ROL    | 1101 00vw | mod 000 r/m
+ROR    | 1101 00vw | mod 001 r/m
+RCL    | 1101 00vw | mod 010 r/m
+RCR    | 1101 00vw | mod 011 r/m
+ESC    | 1101 1xxx | mod xxx r/m
+IN     | 1110 010w | port
+OUT    | 1110 011w | port
+IN     | 1110 110w
+OUT    | 1110 111w
+LOOPNE | 1110 0000 | disp
+LOOPE  | 1110 0001 | disp
+LOOP   | 1110 0010 | disp
+JCXZ   | 1110 0011 | disp
+CALL   | 1110 1000 | lo | hi
+JMP    | 1110 1001 | lo | hi
+JMP    | 1110 1011 | disp
+JMP    | 1110 1010 | olo | ohi | slo | shi
+LOCK   | 1111 0000
+REP    | 1111 0010
+REPNE  | 1111 0011
+HLT    | 1111 0100
+CMC    | 1111 0101
+NEG    | 1111 011w | mod 011 r/m
+MUL    | 1111 011w | mod 100 r/m
+IMUL   | 1111 011w | mod 101 r/m
+TEST   | 1111 011w | mod 000 r/m | data | data if w=1
+NOT    | 1111 011w | mod 010 r/m
+DIV    | 1111 011w | mod 110 r/m
+IDIV   | 1111 011w | mod 111 r/m
+CLC    | 1111 1000
+STC    | 1111 1001
+CLI    | 1111 1010
+STI    | 1111 1011
+CLD    | 1111 1100
+STD    | 1111 1101
+INC    | 1111 111w | mod 000 r/m
+DEC    | 1111 111w | mod 001 r/m
+CALL   | 1111 1111 | mod 010 r/m
+CALL   | 1111 1111 | mod 011 r/m
+JMP    | 1111 1111 | mod 100 r/m
+JMP    | 1111 1111 | mod 101 r/m
+PUSH   | 1111 1111 | mod 110 r/m
+</code></figure>
+
     <h4>Таблиці</h4>
+
+<figure><code>opcode: dq inst0, 7, inst1, 7, inst2, 7, inst3, 7,
+        dq inst4, 7, inst5, 7, inst6, 7, inst7, 7</code></figure>
+
+<figure><code>
+inst0:          db 0,0,1,0,2,0,3,0,4,0,5,0,6,0,7,0
+inst1:          db 0,0,1,0,6,0,5,0,2,0,3,0,4,0,7,0
+inst2           equ inst0
+inst3           equ inst1
+
+machine:        db 0x00, 0b00100101
+                db 0x01, 0b10010011, 0x26, 0x25
+                db 0x02, 0b01001110, 0x34
+                db 0x03, 0b11101110, 0x76, 0x75, 0x77
+                db 0x02, 0b10111111, 0x66, 0x65
+                db 0x03, 0b11011101, 0x86, 0x85, 0x88
+
+machine.ptr:    dq machine
+
+rm000:          db '[BX+SI'
+rm001:          db '[BX+DI'
+rm010:          db '[BP+SI'
+rm011:          db '[BP+DI'
+rm100:          db '[SI'
+rm101:          db '[DI'
+rm110:          db '[BP'
+rm111:          db '[BX'
+rmter:          db ']'
+com:            db ','
+linefeed:       db 0xa
+
+rm:             dq rm000, rm001, rm010, rm011, rm100, rm101, rm101, rm110, rm111
+
+hexout:         db '+0x01234567890123456789012345678901'
+regb:           db "ALCLDLBLAHCHDHBH"
+regw:           db "AXCXDXBXSPBPSIDI"
+hex:            db '01234567890ABCDEF'
+
+syscall_exit    equ 0x2000001
+syscall_write   equ 0x2000004
+syscall_open    equ 0x2000005
+syscall_close   equ 0x2000006
+
+</code></figure>
 
     <h4>Передача параметрів</h4>
 
+    <p>Мінімізація використання операцій зі стеком.
+       Мінімізація звертань до шини.
+       Бампінг короткими версіями інструкцій, бажано мінімальною довжиною 2 байти.
+       Функції-мотузочки (ropes) довжиною у розмір конвеєра.</p>
+
     <h4>Бібліотека функцій</h4>
+
+    <p>Rope #0. Функція обробки байту MOD-R/M</p>
+
+<figure><code>parse_mod_rm:   mov rsi, [machine.ptr]
+                mov rdi, opcodes
+                mov al, [rsi]
+                mov ah, [rsi-1]
+                mov bl, ah
+                mov cl, 4
+                shl ah, cl
+                shl bl, cl
+                mov rdi, [rdi+rbx]
+                dec cl
+                mov bl, al
+                mov dl, al
+                shr bl, cl
+                add cl, cl
+                shr al, cl
+                inc cl
+                and bl, cl
+                and dl, cl
+                or bl, ah
+                inc cl
+                add cl, cl
+mem:            test bl, cl
+                jnz odd
+                call from_reg
+                jmp quit_rm
+odd:            call to_reg
+quit_rm:        inc qword [machine.ptr]
+                mov rax, 2
+                ret</code></figure>
+
+<p>Rope #1. Функція другу операції</p>
+
+<figure><code>
+print_add:
+                mov rsi, add
+                mov dl, 4
+                call write
+                mov rax, 2
+                ret</code></figure>
+
+<p>Rope #2. Функція друку адресації памʼяті</p>
+
+<figure><code>
+print_rm:       and rax, 255
+                mov rdi, rax
+                shl rdi, 3
+                mov rbx, rm
+                mov rsi, [rbx+rdi]
+                mov rbx, rd
+                mov dl, [rbx+rdi]
+                call write
+                mov rax, 2
+                ret</code></figure>
+
+
+<p>Rope #3. Функція друку шістнадцяткового числа</p>
+
+<figure><code>
+print_hex:      push rax
+                cmp rax, 0
+                jz empty
+                xor edx, edx
+                mov edx, eax
+                mov rdi, hex
+                mov rsi, [machine.ptr]
+                mov rbp, hexout
+                mov eax, edx
+                shl eax, 1
+                add al, 3
+                mov qword [hexout.len], rax
+                dec eax
+                add rbp, rax
+pair:           mov bl, [rsi]
+                and ebx, 15
+                mov al, [rbx+rdi]
+                mov [rbp], al
+                dec rbp
+                mov bl, [rsi]
+                shr ebx, 4
+                and ebx, 15
+                mov al, [rbx+rdi]
+                mov [rbp], al
+                dec rbp
+                inc rsi
+                dec edx
+                jne pair
+                mov rdx, qword [hexout.len]
+                mov rax, syscall_write
+                mov rsi, hexout
+                mov rdi, 1
+                syscall
+empty:          pop rdx
+                add qword [machine.ptr], rdx
+                mov rax, 2
+                ret</code></figure>
+
+<p>Rope #4. Функція друку дужки</p>
+
+<figure><code>brace:          mov rsi, rmter
+                mov dl, 1
+                call write
+                mov rax, 2
+                ret</code></figure>
+
+<p>Rope #5. Функція друку коми</p>
+
+<figure><code>comma:          mov rsi, com
+                mov dl, 1
+                call write
+                mov rax, 2
+                ret</code></figure>
+
+<p>Rope #6. Функція друку регістра</p>
+
+<figure><code>print_reg:      test al, 16
+                jnz w
+                mov rsi, regb
+                jmp e
+w:              mov rsi, regw
+e:              and al, 15
+                shl al, 1
+                add rsi, rax
+                mov dl, 2
+                call write
+                mov rax, 2
+                ret
+
+</code></figure>
+
+<p>Rope #7. Функція-патч для регістрових вихідних операндів</p>
+
+<figure><code>from_reg:       mov [rdi+7], al   ; mod
+                mov [rdi+13], bl  ; reg
+                mov [rdi+5], dl   ; r/m
+                ret</code></figure>
+
+<p>Rope #8. Функція-патч для регістрових вхідних операндів</p>
+
+<figure><code>to_reg:         mov [rdi+11], al  ; mod
+                mov [rdi+5], bl   ; reg
+                mov [rdi+9], dl   ; r/m
+                ret</code></figure>
+
+<p>Таблиця функцій</p>
+
+<figure><code>ropes:          dq parse_mod_rm
+                dq print_add
+                dq print_rm
+                dq print_hex
+                dq brace
+                dq comma
+                dq print_reg
+                dq eol
+</code></figure>
 
     <h4>Головна програма</h4>
 
+<figure><code>_main:          mov rsi, [machine.ptr]
+                xor rbx, rbx
+                inc qword [machine.ptr]
+                mov bl, [rsi]
+                shl rbx, 4
+                mov rsi, opcodes
+                mov rdx, [rsi+rbx+8]
+                mov rdi, [rsi+rbx]
+line:           push rdi
+                push rdx
+                xor rbx, rbx
+                mov bl, [rdi]
+                shl bl, 3
+                mov rsi, ropes
+                mov al, [rdi+1]
+                call [rsi+rbx]
+                pop rdx
+                pop rdi
+                add rdi, rax
+                shr rax, 1
+                sub rdx, rax
+                jnz line
+                call eol
+                dec qword [display.ptr]
+                jnz _main
+                mov rax, 0x2000001
+                xor rdi, rdi
+                syscall
+                ret
+</code></figure>
+
+    <h4>Виконання</h4>
+
+    <figure><code>
+nasm -f macho64 -o dasm.o dasm.asm
+gcc -fno-pie -o dasm dasm.o
+be dasm
+    </code></figure>
+
+<p>[:0x3d2f] [d]</p>
+
+
+<figure><img src="img/_main.png" width=600></figure>
+
+    <figure><code>
+$ ./dasm
+ADD [DI],AH
+ADD DX,[BP+DI+0x2526]
+ADD [DI+0x34],CL
+ADD BP,[DI+0x777576]
+ADD [BP+0x6566],BH
+ADD BX,[DI+0x888586]
+    </code></figure>
 
     <h4>DYI PC XT</h4>
 
-       <figure><table cellspacing=10 width=600 bgcolor=white>
+       <figure><table cellspacing=10 bgcolor=white>
        <thead>
        <th>No</th><th>Chip</th><th>Description</th>
        </thead>
        <tbody>
-       <tr><td>1</td><td>2142</td><td>1024 x 4-bit SRAM</td></tr>
-       <tr><td>2</td><td>2764</td><td>8K EPROM</td></tr>
-       <tr><td>3</td><td>6264</td><td>8K SRAM</td></tr>
-       <tr><td>4</td><td>8086</td><td>16-bit bus CPU</td></tr>
-       <tr><td>5</td><td>8087</td><td>16-bit bus MPU</td></tr>
-       <tr><td>6</td><td>8088</td><td>8-bit bus CPU</td></tr>
-       <tr><td>7</td><td>8089</td><td>16-bit bus MPU</td></tr>
-       <tr><td>8</td><td>8155</td><td>256 x 8-bit SRAM, I/O, Timer</td></tr>
-       <tr><td>9</td><td>8212</td><td>8-bit I/O port</td></tr>
-       <tr><td>A</td><td>8214</td><td>PICU</td></tr>
-       <tr><td>A</td><td>8254</td><td>PIC 8086</td></tr>
-       <tr><td>B</td><td>8257</td><td>DMA</td></tr>
-       <tr><td>C</td><td>8282</td><td>8-bit latch</td></tr>
-       <tr><td>D</td><td>8284</td><td>Clock generator</td></tr>
-       <tr><td>E</td><td>8286</td><td>Transeiver</td></tr>
-       <tr><td>F</td><td>8288</td><td>Bus controller</td></tr>
-       <tr><td>G</td><td>8289</td><td>Bus arbiter</td></tr>
-       <tr><td>H</td><td>S244</td><td>Octal buffer</td></tr>
-       <tr><td>I</td><td>S245</td><td>Bi-directional octal buffer</td></tr>
-       <tr><td>J</td><td>S373</td><td>8-bit latch</td></tr>
+       <tr><td>1</td><td><a href="intel/XT/2142.pdf">2142</a></td><td>1024 x 4-bit SRAM</td></tr>
+       <tr><td>2</td><td><a href="intel/XT/2764.pdf">2764</a></td><td>8K EPROM</td></tr>
+       <tr><td>3</td><td><a href="intel/XT/6264.pdf">6264</a></td><td>8K SRAM</td></tr>
+       <tr><td>4</td><td><a href="intel/XT/8086.pdf">8086</a></td><td>16-bit bus CPU</td></tr>
+       <tr><td>5</td><td><a href="intel/XT/8087.pdf">8087</a></td><td>16-bit bus MPU</td></tr>
+       <tr><td>6</td><td><a href="intel/XT/8088.pdf">8088</a></td><td>8-bit bus CPU</td></tr>
+       <tr><td>7</td><td><a href="intel/XT/8089.pdf">8089</a></td><td>16-bit bus MPU</td></tr>
+       <tr><td>8</td><td><a href="intel/XT/8155.pdf">8155</a></td><td>256 x 8-bit SRAM, I/O, Timer</td></tr>
+       <tr><td>9</td><td><a href="intel/XT/8212.pdf">8212</a></td><td>8-bit I/O port</td></tr>
+       <tr><td>A</td><td><a href="intel/XT/8214.pdf">8214</a></td><td>PICU</td></tr>
+       <tr><td>A</td><td><a href="intel/XT/8254.pdf">8254</a></td><td>PIC 8086</td></tr>
+       <tr><td>B</td><td><a href="intel/XT/8257.pdf">8257</a></td><td>DMA</td></tr>
+       <tr><td>C</td><td><a href="intel/XT/8282.pdf">8282</a></td><td>8-bit latch</td></tr>
+       <tr><td>D</td><td><a href="intel/XT/8284.pdf">8284</a></td><td>Clock generator</td></tr>
+       <tr><td>E</td><td><a href="intel/XT/8286.pdf">8286</a></td><td>Transeiver</td></tr>
+       <tr><td>F</td><td><a href="intel/XT/8288.pdf">8288</a></td><td>Bus controller</td></tr>
+       <tr><td>G</td><td><a href="intel/XT/8289.pdf">8289</a></td><td>Bus arbiter</td></tr>
+       <tr><td>H</td><td><a href="intel/XT/74LS244.pdf">74LS244</a></td><td>Octal buffer</td></tr>
+       <tr><td>I</td><td><a href="intel/XT/74LS245.pdf">74LS245</a></td><td>Bi-directional octal buffer</td></tr>
+       <tr><td>J</td><td><a href="intel/XT/74LS373.pdf">74LS373</a></td><td>8-bit latch</td></tr>
        </tbody></table></figure>
 
     <h4>Код</h4>
