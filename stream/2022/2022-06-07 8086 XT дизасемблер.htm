@@ -130,7 +130,7 @@
         <a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html">Intel SDM</a>.
         В цих специфікацях детально буде показано які біти яких регістрів змінюються та
         що відбувається з шиною пам'яті та даних. Зараз же ми соредимося виключно
-        на серіалазії та компактифікації дизасемблера, тобто на синтаксичній специфікації.
+        на серіалазації та компактифікації дизасемблера, тобто на синтаксичній специфікації.
         </p>
 
      <p><b>Легенда</b></p>
@@ -155,7 +155,7 @@ r/m  000: (BX) + (SI) + disp; 001: (BX) + (DI) + disp;
 
      <p>Таблиця мнемонік буде вміщувати 136 рядків, однак ми звузимо
         завдання до лобораторної роботи для для першого рядка,
-        це одразу 4 варіанта інструкції ADD.
+        це одразу 4 варіанта інструкції ADD.</p>
 
 <figure><code>ADD    | 0000 00dw | mod reg r/m
 ADD    | 0000 010w | data | data if w=1
@@ -293,6 +293,31 @@ CALL   | 1111 1111 | mod 011 r/m
 JMP    | 1111 1111 | mod 100 r/m
 JMP    | 1111 1111 | mod 101 r/m
 PUSH   | 1111 1111 | mod 110 r/m
+</code></figure>
+
+    <h4>Асемблер nasm</h4>
+
+    <p>Ставимо популярний x86 асемблер з підтримкою усіх розширень Intel:
+       MMX, SSE, SSE2, SSE3, SSE4.1 SSE4.2, SSE5, KNI, AVX, AVX-2,
+       AVX-512, AES, AMX, ADX, TSX, MPX, FMA, VNNI, GFNI, SGX, CET, PKU.
+       Ми будемо працювати в x86-64 режимі, з Mach-O вихідним форматом.</p>
+
+<figure><code>$ brew install nasm</code></figure>
+
+    <p>Нуль-програма.</p>
+
+<figure><code>$ cat dasm.asm
+           global  _main
+           default  rel
+           section .text
+_main:     ret
+           section .data</code></figure>
+
+    <p>Асемблювання, лінковка та запуск.</p>
+
+<figure><code>$ nasm -f macho64 -o dasm.o dasm.asm
+gcc -fno-pie -o dasm dasm.o
+./dasm
 </code></figure>
 
     <h4>Таблиці</h4>
