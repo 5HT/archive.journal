@@ -119,8 +119,8 @@
        2) арифметичні інструкції (20): ADD, ADC, INC, AAA, BAA, SUB, SSB, DEC, NEG, CMP, AAS, DAS, MUL, IMUL, AAM, DIV, IDIV, AAD, CBW, CWD;
        3) логічні інструкції (11): NOT, SHL, SHR, ROL, ROR, RCL, RCR, AND, TEST, OR, XOR;
        4) маніпуляція з послідовностями (6): REP, MOVS, CMPS, SCAS, LODS, STOS;
-       5) контроль потоку виконання (27): CALL, JMP, RET, INT, INT 3, INTO, IRET, JE, LJ, JLE, JB, JBE, JP, JO, JS, JNE, JNL, JNLE, JNB, JUNBE, JNP, JNO, JNS, LOOP, LOOPZ, LOOPNZ, JCXZ;
-       6) контроль процесора (11): CLC, CMC, STC, CLD, STD, CLI, STI, HLT, WAIT, ESC, LOCK. </p>
+       5) управління потоком виконання (27): CALL, JMP, RET, INT, INT 3, INTO, IRET, JE, LJ, JLE, JB, JBE, JP, JO, JS, JNE, JNL, JNLE, JNB, JUNBE, JNP, JNO, JNS, LOOP, LOOPZ, LOOPNZ, JCXZ;
+       6) управління станом процесору (11): CLC, CMC, STC, CLD, STD, CLI, STI, HLT, WAIT, ESC, LOCK. </p>
 
      <p>Тут ми використовуємо виключно синтаксичну специфікацію, тобто визначення
         на формат бінарної серіалізації певної програми певної архітектури. На курсі
@@ -149,6 +149,18 @@ r/m  000: (BX) + (SI) + disp; 001: (BX) + (DI) + disp;
      010: (BP) + (SI) + disp; 011: (BP) + (DI) + disp;
      100: (SI) + disp; 101: (DI) + disp;
      110: (BP) + disp or direct address when mod=00; 111: (BX) + disp;
+</code></figure>
+
+     <p><b>Загальний формат інструкції</b></p>
+
+<figure><code>
+LOCK    | префікс блокування шини
+REP     | префікс циклічних операцій
+SEG     | префікс перевизначення сегменту
+OPCODE  | головний байт по якому здійснюється діспатч
+MOD R/M | байт mod r/m для кодування адресації та порядку операндів
+DISP    | відносна адреса на шині
+IMM     | безпосередній операнд
 </code></figure>
 
      <p><b>Таблиця мнемонік</b></p>
@@ -565,9 +577,13 @@ ADD BX,[DI+0x888586]
 
     <h4>DYI PC XT</h4>
 
+       <p>На курсі "КВ-123-16 Схемотехніка" вивчається як будувати XT комп`ютери та збирати їх самому,
+          на прикладі платформи PC/104. Тут показана повна елементна база для побудови ХТ комп`ютера
+          для максимального та мінімального режимів.</p>
+
        <figure><table cellspacing=10 bgcolor=white>
        <thead>
-       <th>No</th><th>Chip</th><th>Description</th>
+       <th>№</th><th>Чіп</th><th>Опис</th>
        </thead>
        <tbody>
        <tr><td>1</td><td><a href="intel/XT/2142.pdf">2142</a></td><td>1024 x 4-bit SRAM</td></tr>
@@ -591,6 +607,10 @@ ADD BX,[DI+0x888586]
        <tr><td>I</td><td><a href="intel/XT/74LS245.pdf">74LS245</a></td><td>Bi-directional octal buffer</td></tr>
        <tr><td>J</td><td><a href="intel/XT/74LS373.pdf">74LS373</a></td><td>8-bit latch</td></tr>
        </tbody></table></figure>
+
+    <p><b>Приклад компоновки процесору 8088 у мінімальному режимі </b></p>
+
+ <figure><a href="pdf/April20-03_8088SBC.pdf"><img src="img/xt.png"></a></figure>
 
     <h4>Код</h4>
 
