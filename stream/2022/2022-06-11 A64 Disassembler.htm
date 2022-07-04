@@ -50,25 +50,45 @@
           тобто на тип по 4 біти, і якшо робити діспатч по першому байту то для таблиці першого діспатча
           потрібно 128 байт. У файлі 6.A64.GROUPS показані типи інструкцій:</p>
 
-    <figure><figcaption>ASCII Графіка 2. Загальний формат ARM64 інструкції</figcaption><code><font size=3>
+    <figure><figcaption>ASCII Графіка 2.6. Загальний формат ARM64 інструкції</figcaption><code><font size=3>
 |                31-21  | 20-16: Rm | F | 14-10: Ra | 9-5: Rn   | 4-0: Rd   | Description
 +-----------------------+-----------+---+-----------+-----------+-----------+--------------------------
-| s x x t t t t z a r w | x x x x x | x | x x x x x | x x x x x | x x x x x | % 0-way PURE:
-| s x x t t t t z a r w | x x o o o | x | x x x x x | x x o o o | Rd        | % 1-way REG:
-| s x x t t t t z a r w | Rm        | c | c c c x x | Rn        | x n z c v | % 2-way REG RIGHT:
-| s x x t t t t z a r w | x x x x x | x | x Z x x M | Rn        | Rd        | % 2-way REG LEFT:
-| s x x t t t t z a r w | Rm        | x | x x x x x | Rn        | Rd        | % 3-way REG:
-| s x x t t t t z a r w | Rm        | x | Ra        | Rn        | Rd        | % 4-way REG:
-| s x x t t t | imm26                                                       | % 0-way BRA:
-| s x x t t t t z a r w | imm5      | c | c c c x x | Rn        | x n z c v | % 1-way REG IMM:
-| s x x t t t t z a r w | imm16                                 | Rd        | % 1-way REG BIG IMM:
-| s x x t t t t z | imm19                                       | Rd        | % 1-way REG LARGE IMM:
-| s x x t t t t z a r w | imm9                | x x | Rn        | Rd        | % 2-way REG IMM:
-| s x x t t t t z a r | imm12                       | Rn        | Rd        | % 2-way REG BIG IMM:
-| s x x t t t t z a r | immr        | imms          | Rn        | Rd        | % 2-way REG PAIR IMM:
-| s x x t t t t z a r w | Rm        | imm6          | Rn        | Rd        | % 3-way REG RIGHT IMM:
-| s x x t t t t z a r | imm7            | Ra        | Rn        | Rd        | % 3-way REG LEFT IMM:
+| s q x t t t t z a r w | x x x x x | x | x x x x x | x x x x x | x x x x x | % 0-way PURE:
+| s q x t t t t z a r w | x x o o o | x | x x x x x | x x o o o | Rd        | % 1-way REG:
+| s q x t t t t z a r w | Rm        | c | c c c x x | Rn        | x n z c v | % 2-way REG RIGHT:
+| s q x t t t t z a r w | x x x x x | x | x Z x x M | Rn        | Rd        | % 2-way REG LEFT:
+| s q x t t t t z a r w | Rm        | x | x x x x x | Rn        | Rd        | % 3-way REG:
+| s q x t t t t z a r w | Rm        | x | Ra        | Rn        | Rd        | % 4-way REG:
+| s q x t t t | imm26                                                       | % 0-way BRA:
+| s q x t t t t z a r w | imm5      | c | c c c x x | Rn        | x n z c v | % 1-way REG IMM:
+| s q x t t t t z a r w | imm16                                 | Rd        | % 1-way REG BIG IMM:
+| s q x t t t t z | imm19                                       | Rd        | % 1-way REG LARGE IMM:
+| s q x t t t t z a r w | imm9                | x x | Rn        | Rd        | % 2-way REG IMM:
+| s q x t t t t z a r | imm12                       | Rn        | Rd        | % 2-way REG BIG IMM:
+| s q x t t t t z a r | immr        | imms          | Rn        | Rd        | % 2-way REG PAIR IMM:
+| s q x t t t t z a r w | Rm        | imm6          | Rn        | Rd        | % 3-way REG RIGHT IMM:
+| s q x t t t t z a r | imm7            | Ra        | Rn        | Rd        | % 3-way REG LEFT IMM:
     </font></code></figure>
+
+    <figure><figcaption>ASCII Графіка 2.7. Загальний формат FPU/SIMD aka NEON інструкції</figcaption><code><font size=3>
+|                31-21  | 20-16: Rm | F | 14-10: Ra | 9-5: Rn   | 4-0: Rd   | Description
++-----------------------+-----------+---+-----------+-----------+-----------+-------------------
+| s q x t t t t z a r w | Rm        | x | x x x x x | Rn        | Rd        | % 3-way REG:
+| s q x t t t t z a r w | a b c d e | x | x x x x x | f g h i j | Rd        | % 1-way REG:
+| s q x t t t t z a r w | imm5      | x | x x x x x | Rn        | Rd        | % 2-way REG IMM:
+| s a x t t t t z a r w | Rm        | 0 | Ra        | Rn        | Rd        | % 4-way REG:
+| s q x t t t t z a r w | Rm        | 0 | imm4  | 0 | Rn        | Rd        | % 3-way REG IMM:
+</font></code></figure>
+
+    <figure><figcaption>ASCII Графіка 2.9. Загальний формат SME інструкції</figcaption><code><font size=3>
+|                31-21  | 20-16: Rm | F | 14-10: Ra | 9-5: Rn   | 4-0: Rd   | Description
++-----------------------+-----------+---+-----------+-----------+-----------+-------------------
+| s q x t t t t z a r w | x x x x x | x | y y z z z | a b c d e | f g h i j | % 0-Way PURE:
+| s q x t t t t z a r w | x x x x x | x | y y z z z | Zn        | a b c d e | % 1-Way REG LEFT:
+| s q x t t t t z a r w | x x x x x | x | y y z z z | a b c d e | Zd        | % 1-Way REG RIGHT:
+| s q x t t t t z a r w | Zm        | x | y y z z z | Zn        | a b c d e | % 2-Way REG:
+| s q x t t t t z a r w | Rn        | x | y y z z | imm6        | Rd        | % 2-Way REG IMM:
+</font></code></figure>
 
     <p>Всього ARM64 має 4 головних розширення (по главам):<br>
        6) Скалярне ядро A64;<br>
@@ -133,6 +153,20 @@ SVE:  P0-P15     -- SVE predicate registers (255..0, ..., 15..0)
 +---------+---------+---------+---------+---------+---------+---------+---------+
     </font></code></figure>
 
+    <figure><figcaption>ASCII Графіка 6. Спеціальні регістри ARM64</figcaption><code style="font-size: 6pt;">
+  63...60   59...56   55...52   51...48   47...44   43...40   39...36   35...32   31...28   27...24   23...20   19...16   15...12   11...08   07...05   04...00
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+
+|  CSV3   |   CSV2  |   RME   |   DIT   |   AMU   |   MPAM  |   SEL2  |   SVE   |   RAS   |   GIC   | AdvSIMD |    FP   |   EL3   |   EL2  |    EL1   |   EL0   | PFR #0
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+
+|                                                           |   NMI   |   CSV2  | RNDRtrap|   SME   |         |  MPAM   |   RAS   |   MTE   |   SSBS  |   BT    | PFR #1
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+
+|  RNDR   |   TLB   |   TS    |   FHM   |   DP    |   SM4   |   SM3   |   SHA3  |   RDM   |   TME   |  ATOMIC |  CRC32  |  SHA2   |   SHA1  |   AES   |   RES0  | ISAR #0
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+
+|  LS64   |   XS    |   I8MM  |   DGH   |   BF16  | SPECRES |    SB   | FRINTTS |   GPI   |   GPA   |  LRCPC  |  FCMA   |  JCVT   |   API   |   APA   |   DPB   | ISAR #1
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+
+|                                                                               |  RES0   |   PAC   |   HBC   |  MOPS   |  APA3   |   GPA3  |  RPRES  |  WFxT   | ISAR #2
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+
+    </font></code></figure>
 
     <p>Регістри архітектури ARM64 розширюють регістри ARM32 і відповідають за
        визначення імплементації певних секцій інструкцій різної гранулярності.
@@ -156,20 +190,6 @@ A32 ISAR #0 Divide:
 
 <p></p>
 
-    <figure><figcaption>ASCII Графіка 6. Спеціальні регістри ARM64</figcaption><code style="font-size: 6pt;">
-  63...60   59...56   55...52   51...48   47...44   43...40   39...36   35...32   31...28   27...24   23...20   19...16   15...12   11...08   07...05   04...00
-+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+
-|  CSV3   |   CSV2  |   RME   |   DIT   |   AMU   |   MPAM  |   SEL2  |   SVE   |   RAS   |   GIC   | AdvSIMD |    FP   |   EL3   |   EL2  |    EL1   |   EL0   | PFR #0
-+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+
-|                                                           |   NMI   |   CSV2  | RNDRtrap|   SME   |         |  MPAM   |   RAS   |   MTE   |   SSBS  |   BT    | PFR #1
-+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+
-|  RNDR   |   TLB   |   TS    |   FHM   |   DP    |   SM4   |   SM3   |   SHA3  |   RDM   |   TME   |  ATOMIC |  CRC32  |  SHA2   |   SHA1  |   AES   |   RES0  | ISAR #0
-+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+
-|  LS64   |   XS    |   I8MM  |   DGH   |   BF16  | SPECRES |    SB   | FRINTTS |   GPI   |   GPA   |  LRCPC  |  FCMA   |  JCVT   |   API   |   APA   |   DPB   | ISAR #1
-+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+
-|                                                                               |  RES0   |   PAC   |   HBC   |  MOPS   |  APA3   |   GPA3  |  RPRES  |  WFxT   | ISAR #2
-+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+
-    </font></code></figure>
 
 <p>Для визначення розширень на поточному процесорі використовується інструкція MSR. Передбачається, що
    редактор BE, який буде використовувати бібліотеку DASM-ARM, зможе визначати на ARM процесорах доступний набір розширень.</p>
