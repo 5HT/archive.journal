@@ -80,6 +80,13 @@
 | s q x t t t t z a r w | Rm        | 0 | imm4  | 0 | Rn        | Rd        | % 3-way REG IMM:
 </font></code></figure>
 
+    <figure><figcaption>ASCII Графіка 2.8. Загальний формат SVE інструкції</figcaption><code><font size=3>
+|                31-21  | 20-16: Rm | F | 14-10: Ra | 9-5: Rn   | 4-0: Rd   | Description
++-----------------------+-----------+---+-----------+-----------+-----------+-------------------
+| s q x t t t t z a r w | Zm        | x | x x x x x | Zn        | Zd        | % 3-Way REG:
+| s q x t t t t z a r w | x x x x x | x | x x | imm8            | Zd        | % 1-Way REG IMM:
+</font></code></figure>
+
     <figure><figcaption>ASCII Графіка 2.9. Загальний формат SME інструкції</figcaption><code><font size=3>
 |                31-21  | 20-16: Rm | F | 14-10: Ra | 9-5: Rn   | 4-0: Rd   | Description
 +-----------------------+-----------+---+-----------+-----------+-----------+-------------------
